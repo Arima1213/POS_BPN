@@ -3,15 +3,13 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ServicesResource\Pages;
-use App\Filament\Resources\ServicesResource\RelationManagers;
 use App\Models\Services;
+use App\Models\Unit;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ServicesResource extends Resource
 {
@@ -23,7 +21,36 @@ class ServicesResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->label('Nama Jasa')
+                    ->placeholder('Masukkan nama jasa')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\FileUpload::make('image')
+                    ->label('Gambar Jasa')
+                    ->directory('services')
+                    ->image()
+                    ->required(),
+
+                Forms\Components\TextInput::make('price')
+                    ->label('Harga per Satuan')
+                    ->placeholder('Masukkan harga jasa')
+                    ->numeric()
+                    ->prefix('Rp')
+                    ->required(),
+
+                Forms\Components\Select::make('unit_id')
+                    ->label('Satuan')
+                    ->relationship('unit', 'name')
+                    ->placeholder('Pilih satuan')
+                    ->searchable()
+                    ->required(),
+
+                Forms\Components\Textarea::make('description')
+                    ->label('Deskripsi')
+                    ->placeholder('Tuliskan deskripsi jasa (opsional)')
+                    ->rows(4),
             ]);
     }
 
@@ -31,7 +58,29 @@ class ServicesResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\ImageColumn::make('image')
+                    ->label('Gambar')
+                    ->circular(),
+
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nama Jasa')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('price')
+                    ->label('Harga')
+                    ->money('IDR', true),
+
+                Tables\Columns\TextColumn::make('unit.name')
+                    ->label('Satuan'),
+
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Deskripsi')
+                    ->limit(50)
+                    ->wrap(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Dibuat')
+                    ->dateTime('d M Y'),
             ])
             ->filters([
                 //
@@ -48,9 +97,7 @@ class ServicesResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
