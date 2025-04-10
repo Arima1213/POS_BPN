@@ -3,7 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Models\Category;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,7 +11,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductResource extends Resource
 {
@@ -23,7 +22,40 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Select::make('category_id')
+                    ->label('Category')
+                    ->relationship('category', 'name')
+                    ->searchable()
+                    ->required(),
+
+                Forms\Components\TextInput::make('itemcode')
+                    ->label('Item Code')
+                    ->required()
+                    ->unique(ignoreRecord: true),
+
+                Forms\Components\FileUpload::make('image')
+                    ->label('Product Image')
+                    ->image()
+                    ->directory('products'),
+
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\TextInput::make('brand')
+                    ->maxLength(255),
+
+                Forms\Components\TextInput::make('itemweight')
+                    ->numeric()
+                    ->label('Item Weight (gr)'),
+
+                Forms\Components\Textarea::make('description')
+                    ->rows(3),
+
+                Forms\Components\TextInput::make('price')
+                    ->numeric()
+                    ->required()
+                    ->prefix('Rp'),
             ]);
     }
 
@@ -31,10 +63,19 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('itemcode')->label('Code')->searchable(),
+                Tables\Columns\ImageColumn::make('image')->label('Image')->circular(),
+                Tables\Columns\TextColumn::make('name')->searchable(),
+                Tables\Columns\TextColumn::make('brand'),
+                Tables\Columns\TextColumn::make('category.name')->label('Category')->sortable(),
+                Tables\Columns\TextColumn::make('itemweight')->label('Weight')->suffix(' gr'),
+                Tables\Columns\TextColumn::make('price')->money('IDR', true),
+                Tables\Columns\TextColumn::make('created_at')->dateTime('d M Y')->label('Created'),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('category_id')
+                    ->label('Category')
+                    ->relationship('category', 'name'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
