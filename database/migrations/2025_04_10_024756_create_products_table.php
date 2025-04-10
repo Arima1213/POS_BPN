@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->string('itemcode')->unique();
+            $table->string('image');
             $table->string('name');
             $table->string('brand')->nullable();
             $table->integer('itemweight')->nullable();
