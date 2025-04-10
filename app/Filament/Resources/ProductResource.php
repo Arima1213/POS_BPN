@@ -26,37 +26,45 @@ class ProductResource extends Resource
                     ->label('Category')
                     ->relationship('category', 'name')
                     ->searchable()
-                    ->required(),
+                    ->required()
+                    ->placeholder('Select a category'),
 
                 Forms\Components\TextInput::make('itemcode')
                     ->label('Item Code')
                     ->required()
-                    ->unique(ignoreRecord: true),
+                    ->unique(ignoreRecord: true)
+                    ->placeholder('Enter item code'),
 
                 Forms\Components\FileUpload::make('image')
                     ->label('Product Image')
                     ->image()
                     ->directory('products')
-                    ->visibility('public'),
+                    ->visibility('public')
+                    ->placeholder('Upload product image'),
 
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->placeholder('Enter product name'),
 
                 Forms\Components\TextInput::make('brand')
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->placeholder('Enter brand name'),
 
                 Forms\Components\TextInput::make('itemweight')
                     ->numeric()
-                    ->label('Item Weight (gr)'),
+                    ->label('Item Weight (gr)')
+                    ->placeholder('Enter item weight in grams'),
 
                 Forms\Components\Textarea::make('description')
-                    ->rows(3),
+                    ->rows(3)
+                    ->placeholder('Enter product description'),
 
                 Forms\Components\TextInput::make('price')
                     ->numeric()
                     ->required()
-                    ->prefix('Rp'),
+                    ->prefix('Rp')
+                    ->placeholder('Enter product price'),
             ]);
     }
 
