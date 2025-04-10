@@ -36,7 +36,8 @@ class ProductResource extends Resource
                 Forms\Components\FileUpload::make('image')
                     ->label('Product Image')
                     ->image()
-                    ->directory('products'),
+                    ->directory('products')
+                    ->visibility('public'),
 
                 Forms\Components\TextInput::make('name')
                     ->required()
@@ -64,7 +65,12 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('itemcode')->label('Code')->searchable(),
-                Tables\Columns\ImageColumn::make('image')->label('Image')->circular(),
+                Tables\Columns\ImageColumn::make('image')
+                    ->label('Image')
+                    ->disk('public')
+                    ->circular()
+                    ->height(50)
+                    ->width(50),
                 Tables\Columns\TextColumn::make('name')->searchable(),
                 Tables\Columns\TextColumn::make('brand'),
                 Tables\Columns\TextColumn::make('category.name')->label('Category')->sortable(),
@@ -79,6 +85,7 @@ class ProductResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
