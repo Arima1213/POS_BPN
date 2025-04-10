@@ -16,4 +16,9 @@ class Units extends Model
     {
         return $this->hasMany(Services::class);
     }
+
+    public function getNameWithShortAttribute()
+    {
+        return "{$this->name} ({$this->short})";
+    }
 }

@@ -42,9 +42,11 @@ class ServicesResource extends Resource
 
                 Forms\Components\Select::make('unit_id')
                     ->label('Satuan')
-                    ->relationship('unit', 'name')
-                    ->placeholder('Pilih satuan')
+                    ->options(
+                        \App\Models\Units::all()->pluck('nameWithShort', 'id') // gunakan accessor
+                    )
                     ->searchable()
+                    ->placeholder('Pilih satuan')
                     ->required(),
 
                 Forms\Components\Textarea::make('description')

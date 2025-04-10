@@ -25,6 +25,9 @@ class ProductResource extends Resource
                 Forms\Components\Select::make('category_id')
                     ->label('Category')
                     ->relationship('category', 'name')
+                    ->options(
+                        Category::all()->pluck('name', 'id')
+                    )
                     ->searchable()
                     ->required()
                     ->placeholder('Select a category'),
@@ -38,6 +41,7 @@ class ProductResource extends Resource
                 Forms\Components\FileUpload::make('image')
                     ->label('Product Image')
                     ->image()
+                    ->required()
                     ->directory('products')
                     ->visibility('public')
                     ->placeholder('Upload product image'),
@@ -49,11 +53,13 @@ class ProductResource extends Resource
 
                 Forms\Components\TextInput::make('brand')
                     ->maxLength(255)
+                    ->required()
                     ->placeholder('Enter brand name'),
 
                 Forms\Components\TextInput::make('itemweight')
                     ->numeric()
-                    ->label('Item Weight (gr)')
+                    ->label('Item Weight (KG)')
+                    ->required()
                     ->placeholder('Enter item weight in grams'),
 
                 Forms\Components\Textarea::make('description')
