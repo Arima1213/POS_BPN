@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaction_details', function (Blueprint $table) {
+        Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
+            $table->foreignId('customer_id')->constrained()->onDelete('cascade');
+            $table->integer('total');
+            $table->integer('paid_amount');
+            $table->integer('change_amount');
             $table->timestamps();
         });
     }
@@ -22,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transaction_details');
+        Schema::dropIfExists('transactions');
     }
 };
