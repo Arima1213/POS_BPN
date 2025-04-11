@@ -24,6 +24,7 @@ class OwnerPanelProvider extends PanelProvider
     {
         return $panel
             ->id('owner')
+            ->spa()
             ->path('owner')
             ->login()
             ->colors([
