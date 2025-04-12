@@ -4,24 +4,24 @@ namespace App\Filament\Cashier\Resources;
 
 use App\Filament\Cashier\Resources\TransactionsResource\Pages;
 use App\Models\Customer;
-use Filament\Forms\Get;
 use App\Models\Product;
 use App\Models\Services;
 use App\Models\Transactions;
 use Filament\Forms;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Set;
 
 class TransactionsResource extends Resource
@@ -129,11 +129,7 @@ class TransactionsResource extends Resource
                         ->reactive()
                         ->placeholder(function (Set $set, Get $get) {
                             $total = collect($get('details'))->pluck('subtotal')->sum();
-                            if ($total == null) {
-                                $set('total', 0);
-                            } else {
-                                $set('total', $total);
-                            }
+                            $set('total', $total ?? 0);
                         }),
 
                     TextInput::make('paid_amount')
@@ -141,9 +137,9 @@ class TransactionsResource extends Resource
                         ->numeric()
                         ->required()
                         ->live()
-                        ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                        ->afterStateUpdated(function ($state, Set $set, Get $get) {
                             $total = $get('total') ?? 0;
-                            $set('change_amount', $state - $total);
+                            $set('change_amount', intval($state - $total));
                         }),
 
                     TextInput::make('change_amount')
@@ -183,7 +179,7 @@ class TransactionsResource extends Resource
                         ->visible(fn(Get $get) => $get('add_new_customer') === true),
 
                     Hidden::make('customer_id')
-                        ->dehydrated(fn(Get $get) => $get('add_new_customer') === true),
+                        ->dehydrated(), // <- diperbaiki: selalu ikut dikirim
                 ]),
         ]);
     }
@@ -226,7 +222,7 @@ class TransactionsResource extends Resource
 
     public static function mutateFormDataBeforeCreate(array $data): array
     {
-        if (!empty($data['add_new_customer'])) {
+        if (!empty($data['add_new_customer']) && $data['add_new_customer'] === true) {
             $customer = Customer::create([
                 'name' => $data['new_customer_name'],
                 'phone' => $data['new_customer_phone'],
