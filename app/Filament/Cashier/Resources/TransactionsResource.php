@@ -4,6 +4,8 @@ namespace App\Filament\Cashier\Resources;
 
 use App\Filament\Cashier\Resources\TransactionsResource\Pages;
 use App\Models\Customer;
+use App\Models\Product;
+use App\Models\Service;
 use App\Models\Transactions;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,6 +14,12 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Hidden;
+use App\Models\Unit;
 
 class TransactionsResource extends Resource
 {
@@ -22,33 +30,112 @@ class TransactionsResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\TextInput::make('code')
+            TextInput::make('code')
                 ->label('Kode Transaksi')
                 ->default(fn() => 'TRX-' . strtoupper(Str::random(8)))
                 ->disabled()
                 ->dehydrated(true)
                 ->required(),
 
-            Forms\Components\Select::make('customer_id')
+            Select::make('customer_id')
                 ->label('Customer')
                 ->searchable()
                 ->preload()
                 ->options(fn() => Customer::pluck('name', 'id'))
                 ->required(),
 
-            Forms\Components\TextInput::make('total')
+            TextInput::make('total')
                 ->label('Total')
                 ->numeric()
                 ->required(),
 
-            Forms\Components\TextInput::make('paid_amount')
+            TextInput::make('paid_amount')
                 ->label('Uang Pembeli')
                 ->numeric()
                 ->required(),
 
-            Forms\Components\TextInput::make('change_amount')
+            TextInput::make('change_amount')
                 ->label('Kembalian')
                 ->numeric()
+                ->required(),
+
+            Repeater::make('details')
+                ->label('Detail Transaksi')
+                ->relationship('details')
+                ->schema([
+                    Radio::make('item_type')
+                        ->label('Tipe')
+                        ->options([
+                            'product' => 'Product',
+                            'service' => 'Service',
+                        ])
+                        ->live()
+                        ->afterStateUpdated(fn($state, callable $set) => $set('item_id', null))
+                        ->required(),
+
+                    Select::make('item_id')
+                        ->label('Produk / Jasa')
+                        ->options(function (callable $get) {
+                            return $get('item_type') === 'service'
+                                ? Service::pluck('name', 'id')
+                                : Product::pluck('name', 'id');
+                        })
+                        ->reactive()
+                        ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                            $type = $get('item_type');
+                            if ($type === 'product') {
+                                $product = Product::find($state);
+                                if ($product) {
+                                    $set('price', $product->price);
+                                    $set('quantity', 1);
+                                    $set('qty_label', 'qty');
+                                    $set('subtotal', $product->price);
+                                }
+                            } elseif ($type === 'service') {
+                                $service = Service::with('unit')->find($state);
+                                if ($service) {
+                                    $set('price', $service->price);
+                                    $set('quantity', 1);
+                                    $set('qty_label', $service->unit->short_name ?? 'unit');
+                                    $set('subtotal', $service->price);
+                                }
+                            }
+                        })
+                        ->required(),
+
+                    TextInput::make('qty_label')
+                        ->default('qty')
+                        ->disabled()
+                        ->visible(false)
+                        ->dehydrated(false),
+
+                    TextInput::make('price')
+                        ->label('Harga')
+                        ->numeric()
+                        ->disabled()
+                        ->dehydrated()
+                        ->required(),
+
+                    TextInput::make('quantity')
+                        ->label(fn(callable $get) => 'Jumlah (' . ($get('qty_label') ?? 'qty') . ')')
+                        ->numeric()
+                        ->default(1)
+                        ->reactive()
+                        ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                            $price = $get('price') ?? 0;
+                            $set('subtotal', $price * (int) $state);
+                        })
+                        ->required(),
+
+                    TextInput::make('subtotal')
+                        ->label('Subtotal')
+                        ->disabled()
+                        ->dehydrated()
+                        ->required(),
+                ])
+                ->columns(2)
+                ->createItemButtonLabel('Tambah Item')
+                ->defaultItems(1)
                 ->required(),
         ]);
     }
@@ -64,9 +151,7 @@ class TransactionsResource extends Resource
                 Tables\Columns\TextColumn::make('change_amount')->label('Kembalian')->money('IDR'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Tanggal'),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
