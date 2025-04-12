@@ -114,7 +114,13 @@ class TransactionsResource extends Resource
                 ->columns(2)
                 ->createItemButtonLabel('Tambah Item')
                 ->defaultItems(1)
-                ->required(),
+                ->required()
+                ->reactive()
+                ->live()
+                ->afterStateUpdated(function ($state, callable $set) {
+                    $total = collect($state)->sum('subtotal');
+                    $set('total', $total);
+                }),
 
             Section::make('Informasi Total')
                 ->schema([
@@ -132,12 +138,7 @@ class TransactionsResource extends Resource
                         ->dehydrated()
                         ->required()
                         ->reactive()
-                        ->default(0)
-                        ->afterStateHydrated(function (callable $set, callable $get) {
-                            $details = $get('details') ?? [];
-                            $total = collect($details)->sum('subtotal');
-                            $set('total', $total);
-                        }),
+                        ->default(0),
 
                     TextInput::make('paid_amount')
                         ->label('Uang Pembeli')
