@@ -12,7 +12,6 @@ class Debt extends Model
         'transaction_id',
         'amount',
         'paid',
-        'note',
         'due_date',
     ];
 

@@ -13,7 +13,6 @@ return new class extends Migration {
             $table->foreignId('transaction_id')->nullable()->constrained()->onDelete('set null');
             $table->decimal('amount', 12, 2); // Jumlah hutang
             $table->decimal('paid', 12, 2)->default(0); // Jumlah yang sudah dibayar
-            $table->text('note')->nullable(); // Catatan opsional
             $table->date('due_date')->nullable(); // Tanggal jatuh tempo (opsional)
             $table->timestamps();
         });
