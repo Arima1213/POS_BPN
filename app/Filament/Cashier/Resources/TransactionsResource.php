@@ -6,7 +6,6 @@ use App\Filament\Cashier\Resources\TransactionsResource\Pages;
 use App\Models\Customer;
 use Filament\Forms\Get;
 use App\Models\Product;
-use App\Models\Service;
 use App\Models\Services;
 use App\Models\Transactions;
 use Filament\Forms;
@@ -14,17 +13,16 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Hidden;
-use App\Models\Unit;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Set;
 
 class TransactionsResource extends Resource
 {
@@ -65,17 +63,13 @@ class TransactionsResource extends Resource
                                 $product = Product::find($state);
                                 if ($product) {
                                     $set('price', $product->price);
-                                    $set('quantity', 1);
                                     $set('qty_label', 'qty');
-                                    $set('subtotal', $product->price);
                                 }
                             } elseif ($type === 'service') {
                                 $service = Services::with('unit')->find($state);
                                 if ($service) {
                                     $set('price', $service->price);
-                                    $set('quantity', 1);
-                                    $set('qty_label', $service->unit->short_name ?? 'unit');
-                                    $set('subtotal', $service->price);
+                                    $set('qty_label', $service->unit->short ?? 'unit');
                                 }
                             }
                         })
@@ -97,16 +91,16 @@ class TransactionsResource extends Resource
                     TextInput::make('quantity')
                         ->label(fn(callable $get) => 'Jumlah (' . ($get('qty_label') ?? 'qty') . ')')
                         ->numeric()
-                        ->default(1)
                         ->reactive()
-                        ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                        ->afterStateUpdated(function (Set $set, $state, Get $get) {
                             $price = $get('price') ?? 0;
-                            $set('subtotal', $price * (int) $state);
+                            $set('subtotal', intval($price * $state));
                         })
                         ->required(),
 
                     TextInput::make('subtotal')
                         ->label('Subtotal')
+                        ->numeric()
                         ->disabled()
                         ->dehydrated()
                         ->required(),
@@ -115,12 +109,7 @@ class TransactionsResource extends Resource
                 ->createItemButtonLabel('Tambah Item')
                 ->defaultItems(1)
                 ->required()
-                ->reactive()
-                ->live()
-                ->afterStateUpdated(function ($state, callable $set) {
-                    $total = collect($state)->sum('subtotal');
-                    $set('total', $total);
-                }),
+                ->reactive(),
 
             Section::make('Informasi Total')
                 ->schema([
@@ -136,9 +125,16 @@ class TransactionsResource extends Resource
                         ->numeric()
                         ->disabled()
                         ->dehydrated()
-                        ->required()
+                        ->default(0)
                         ->reactive()
-                        ->default(0),
+                        ->placeholder(function (Set $set, Get $get) {
+                            $total = collect($get('details'))->pluck('subtotal')->sum();
+                            if ($total == null) {
+                                $set('total', 0);
+                            } else {
+                                $set('total', $total);
+                            }
+                        }),
 
                     TextInput::make('paid_amount')
                         ->label('Uang Pembeli')
@@ -147,8 +143,7 @@ class TransactionsResource extends Resource
                         ->live()
                         ->afterStateUpdated(function ($state, callable $set, callable $get) {
                             $total = $get('total') ?? 0;
-                            $change = $state - $total;
-                            $set('change_amount', $change);
+                            $set('change_amount', $state - $total);
                         }),
 
                     TextInput::make('change_amount')
@@ -156,21 +151,17 @@ class TransactionsResource extends Resource
                         ->numeric()
                         ->disabled()
                         ->dehydrated()
-                        ->required()
                         ->default(0)
                         ->hint(fn(Get $get) => ($get('change_amount') ?? 0) < 0 ? '⚠️ Uang kurang, akan dicatat sebagai hutang.' : null)
                         ->hintColor(fn(Get $get) => ($get('change_amount') ?? 0) < 0 ? 'danger' : 'success'),
                 ]),
 
-
             Section::make('Informasi Customer')
                 ->schema([
-                    // Tombol toggle untuk menampilkan form input customer baru
                     Toggle::make('add_new_customer')
                         ->label('Tambah Customer Baru?')
                         ->reactive(),
 
-                    // Jika TIDAK menambah customer, tampilkan dropdown seperti biasa
                     Select::make('customer_id')
                         ->label('Customer')
                         ->searchable()
@@ -179,7 +170,6 @@ class TransactionsResource extends Resource
                         ->visible(fn(Get $get) => $get('add_new_customer') === false)
                         ->required(),
 
-                    // Jika tambah customer, munculkan field input baru
                     Group::make([
                         TextInput::make('new_customer_name')
                             ->label('Nama Customer')
@@ -192,7 +182,6 @@ class TransactionsResource extends Resource
                     ])
                         ->visible(fn(Get $get) => $get('add_new_customer') === true),
 
-                    // Hidden field untuk memanipulasi customer_id setelah dibuat
                     Hidden::make('customer_id')
                         ->dehydrated(fn(Get $get) => $get('add_new_customer') === true),
                 ]),
