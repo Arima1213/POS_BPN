@@ -4,8 +4,10 @@ namespace App\Filament\Cashier\Resources;
 
 use App\Filament\Cashier\Resources\TransactionsResource\Pages;
 use App\Models\Customer;
+use Filament\Forms\Get;
 use App\Models\Product;
 use App\Models\Service;
+use App\Models\Services;
 use App\Models\Transactions;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -20,6 +22,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Hidden;
 use App\Models\Unit;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Toggle;
 
 class TransactionsResource extends Resource
 {
@@ -30,36 +35,8 @@ class TransactionsResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            TextInput::make('code')
-                ->label('Kode Transaksi')
-                ->default(fn() => 'TRX-' . strtoupper(Str::random(8)))
-                ->disabled()
-                ->dehydrated(true)
-                ->required(),
-
-            Select::make('customer_id')
-                ->label('Customer')
-                ->searchable()
-                ->preload()
-                ->options(fn() => Customer::pluck('name', 'id'))
-                ->required(),
-
-            TextInput::make('total')
-                ->label('Total')
-                ->numeric()
-                ->required(),
-
-            TextInput::make('paid_amount')
-                ->label('Uang Pembeli')
-                ->numeric()
-                ->required(),
-
-            TextInput::make('change_amount')
-                ->label('Kembalian')
-                ->numeric()
-                ->required(),
-
             Repeater::make('details')
+                ->columnSpan(2)
                 ->label('Detail Transaksi')
                 ->relationship('details')
                 ->schema([
@@ -70,6 +47,7 @@ class TransactionsResource extends Resource
                             'service' => 'Service',
                         ])
                         ->live()
+                        ->default('product')
                         ->afterStateUpdated(fn($state, callable $set) => $set('item_id', null))
                         ->required(),
 
@@ -77,7 +55,7 @@ class TransactionsResource extends Resource
                         ->label('Produk / Jasa')
                         ->options(function (callable $get) {
                             return $get('item_type') === 'service'
-                                ? Service::pluck('name', 'id')
+                                ? Services::pluck('name', 'id')
                                 : Product::pluck('name', 'id');
                         })
                         ->reactive()
@@ -92,7 +70,7 @@ class TransactionsResource extends Resource
                                     $set('subtotal', $product->price);
                                 }
                             } elseif ($type === 'service') {
-                                $service = Service::with('unit')->find($state);
+                                $service = Services::with('unit')->find($state);
                                 if ($service) {
                                     $set('price', $service->price);
                                     $set('quantity', 1);
@@ -137,6 +115,67 @@ class TransactionsResource extends Resource
                 ->createItemButtonLabel('Tambah Item')
                 ->defaultItems(1)
                 ->required(),
+
+            Section::make('Informasi Total')
+                ->schema([
+
+                    TextInput::make('code')
+                        ->label('Kode Transaksi')
+                        ->default(fn() => 'TRX-' . strtoupper(Str::random(8)))
+                        ->disabled()
+                        ->dehydrated(true)
+                        ->required(),
+
+                    TextInput::make('total')
+                        ->label('Total')
+                        ->numeric()
+                        ->required(),
+
+                    TextInput::make('paid_amount')
+                        ->label('Uang Pembeli')
+                        ->numeric()
+                        ->required(),
+
+                    TextInput::make('change_amount')
+                        ->label('Kembalian')
+                        ->numeric()
+                        ->required(),
+
+                ]),
+
+            Section::make('Informasi Customer')
+                ->schema([
+                    // Tombol toggle untuk menampilkan form input customer baru
+                    Toggle::make('add_new_customer')
+                        ->label('Tambah Customer Baru?')
+                        ->reactive(),
+
+                    // Jika TIDAK menambah customer, tampilkan dropdown seperti biasa
+                    Select::make('customer_id')
+                        ->label('Customer')
+                        ->searchable()
+                        ->preload()
+                        ->options(fn() => Customer::pluck('name', 'id'))
+                        ->visible(fn(Get $get) => $get('add_new_customer') === false)
+                        ->required(),
+
+                    // Jika tambah customer, munculkan field input baru
+                    Group::make([
+                        TextInput::make('new_customer_name')
+                            ->label('Nama Customer')
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('new_customer_phone')
+                            ->label('Nomor Telepon')
+                            ->required()
+                            ->maxLength(15),
+                    ])
+                        ->visible(fn(Get $get) => $get('add_new_customer') === true),
+
+                    // Hidden field untuk memanipulasi customer_id setelah dibuat
+                    Hidden::make('customer_id')
+                        ->dehydrated(fn(Get $get) => $get('add_new_customer') === true),
+                ]),
         ]);
     }
 
@@ -174,5 +213,19 @@ class TransactionsResource extends Resource
             'create' => Pages\CreateTransactions::route('/create'),
             'edit' => Pages\EditTransactions::route('/{record}/edit'),
         ];
+    }
+
+    public static function mutateFormDataBeforeCreate(array $data): array
+    {
+        if (!empty($data['add_new_customer'])) {
+            $customer = Customer::create([
+                'name' => $data['new_customer_name'],
+                'phone' => $data['new_customer_phone'],
+            ]);
+
+            $data['customer_id'] = $customer->id;
+        }
+
+        return $data;
     }
 }
