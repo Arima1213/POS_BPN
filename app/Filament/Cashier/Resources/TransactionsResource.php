@@ -118,7 +118,6 @@ class TransactionsResource extends Resource
 
             Section::make('Informasi Total')
                 ->schema([
-
                     TextInput::make('code')
                         ->label('Kode Transaksi')
                         ->default(fn() => 'TRX-' . strtoupper(Str::random(8)))
@@ -129,19 +128,39 @@ class TransactionsResource extends Resource
                     TextInput::make('total')
                         ->label('Total')
                         ->numeric()
-                        ->required(),
+                        ->disabled()
+                        ->dehydrated()
+                        ->required()
+                        ->reactive()
+                        ->default(0)
+                        ->afterStateHydrated(function (callable $set, callable $get) {
+                            $details = $get('details') ?? [];
+                            $total = collect($details)->sum('subtotal');
+                            $set('total', $total);
+                        }),
 
                     TextInput::make('paid_amount')
                         ->label('Uang Pembeli')
                         ->numeric()
-                        ->required(),
+                        ->required()
+                        ->live()
+                        ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                            $total = $get('total') ?? 0;
+                            $change = $state - $total;
+                            $set('change_amount', $change);
+                        }),
 
                     TextInput::make('change_amount')
                         ->label('Kembalian')
                         ->numeric()
-                        ->required(),
-
+                        ->disabled()
+                        ->dehydrated()
+                        ->required()
+                        ->default(0)
+                        ->hint(fn(Get $get) => ($get('change_amount') ?? 0) < 0 ? '⚠️ Uang kurang, akan dicatat sebagai hutang.' : null)
+                        ->hintColor(fn(Get $get) => ($get('change_amount') ?? 0) < 0 ? 'danger' : 'success'),
                 ]),
+
 
             Section::make('Informasi Customer')
                 ->schema([
