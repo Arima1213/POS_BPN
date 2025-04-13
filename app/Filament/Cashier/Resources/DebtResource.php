@@ -4,9 +4,20 @@ namespace App\Filament\Cashier\Resources;
 
 use App\Filament\Cashier\Resources\DebtResource\Pages;
 use App\Models\Debt;
+use App\Models\DebtPayment;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Forms;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Grid;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ViewAction;
+use Illuminate\Support\HtmlString;
+
+use Filament\Notifications\Notification;
 
 class DebtResource extends Resource
 {
@@ -23,17 +34,18 @@ class DebtResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('transaction.id')
-                    ->label('Transaction')
-                    ->sortable()
-                    ->toggleable(),
-
-                Tables\Columns\TextColumn::make('amount')
+                Tables\Columns\TextColumn::make('remaining')
+                    ->label('Remaining Payment')
                     ->money('IDR')
+                    ->getStateUsing(fn(Debt $record) => max(0, $record->amount - $record->paid))
+                    ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.'))
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('amount')
+                    ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('paid')
-                    ->money('IDR')
+                    ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('due_date')
@@ -47,7 +59,63 @@ class DebtResource extends Resource
                     ->sortable(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Action::make('bayar')
+                    ->label('Bayar')
+                    ->icon('heroicon-m-banknotes')
+                    ->form(fn(Debt $record) => [
+                        Hidden::make('debt_id')->default($record->id),
+
+                        TextInput::make('amount')
+                            ->label('Nominal Pembayaran')
+                            ->numeric()
+                            ->required()
+                            ->live()
+                            ->afterStateUpdated(function ($state, callable $set) use ($record) {
+                                if ($state > ($record->amount - $record->paid)) {
+                                    $set('amount', $record->amount - $record->paid);
+                                }
+                            }),
+
+                        DatePicker::make('payment_date')
+                            ->label('Tanggal Pembayaran')
+                            ->required(),
+                    ])
+                    ->action(function (array $data, Debt $record): void {
+                        DebtPayment::create($data);
+                        $record->paid += $data['amount'];
+                        $record->save();
+
+                        Notification::make()
+                            ->title('Pembayaran berhasil')
+                            ->success()
+                            ->send();
+                    })
+                    ->modalHeading('Form Pembayaran Hutang'),
+
+                Action::make('riwayat')
+                    ->color('white')
+                    ->label('Riwayat')
+                    ->icon('heroicon-m-eye')
+                    ->modalHeading('Riwayat Cicilan')
+                    ->modalContent(function (Debt $record) {
+                        $payments = $record->payments()->orderBy('payment_date', 'desc')->get();
+
+                        if ($payments->isEmpty()) {
+                            return new HtmlString('<p>Belum ada cicilan.</p>');
+                        }
+
+                        $html = '<ul class="space-y-2">';
+                        foreach ($payments as $payment) {
+                            $tanggal = \Carbon\Carbon::parse($payment->payment_date)->format('d-m-Y');
+                            $html .= "<li><strong>{$tanggal}:</strong> Rp " . number_format($payment->amount, 0, ',', '.') . '</li>';
+                        }
+                        $html .= '</ul>';
+
+                        return new HtmlString($html);
+                    })
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Tutup'),
+
             ])
             ->bulkActions([]);
     }

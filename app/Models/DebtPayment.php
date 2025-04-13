@@ -20,4 +20,8 @@ class DebtPayment extends Model
     {
         return $this->belongsTo(Debt::class);
     }
+
+    protected $casts = [
+        'payment_date' => 'date',
+    ];
 }

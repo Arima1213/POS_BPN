@@ -190,11 +190,21 @@ class TransactionsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('code')->label('Kode'),
-                Tables\Columns\TextColumn::make('customer.name')->label('Customer'),
-                Tables\Columns\TextColumn::make('total')->money('IDR'),
-                Tables\Columns\TextColumn::make('paid_amount')->label('Uang Pembeli')->money('IDR'),
-                Tables\Columns\TextColumn::make('change_amount')->label('Kembalian')->money('IDR'),
+                Tables\Columns\TextColumn::make('code')
+                    ->label('Kode'),
+                Tables\Columns\TextColumn::make('customer.name')
+                    ->label('Customer'),
+                Tables\Columns\TextColumn::make('total')
+                    ->money('IDR')
+                    ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.')),
+                Tables\Columns\TextColumn::make('paid_amount')
+                    ->label('Uang Pembeli')
+                    ->money('IDR')
+                    ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.')),
+                Tables\Columns\TextColumn::make('change_amount')
+                    ->label('Kembalian')
+                    ->money('IDR')
+                    ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.')),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Tanggal'),
             ])
             ->filters([])
