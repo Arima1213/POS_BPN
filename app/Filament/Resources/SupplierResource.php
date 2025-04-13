@@ -100,9 +100,15 @@ class SupplierResource extends Resource
                 // Tambahkan filter jika dibutuhkan
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label('Detail')
+                    ->modalHeading(fn(Supplier $record) => 'Detail Supplier: ' . $record->name)
+                    ->modalWidth('xl'),
 
+                Tables\Actions\EditAction::make(),
             ])
+
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
