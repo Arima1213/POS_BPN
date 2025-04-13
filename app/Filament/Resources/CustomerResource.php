@@ -52,15 +52,25 @@ class CustomerResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label('Nama')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('email')->label('Email')->searchable(),
-                Tables\Columns\TextColumn::make('phone')->label('Telepon')->searchable(),
-                Tables\Columns\TextColumn::make('address')->label('Alamat')->limit(30)->wrap(),
-                Tables\Columns\TextColumn::make('created_at')->label('Dibuat')->dateTime('d M Y'),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->label('Email')
+                    ->searchable()
+                    ->default('No Email'),
+                Tables\Columns\TextColumn::make('phone')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('address')
+                    ->limit(30)
+                    ->wrap()
+                    ->default('No Address'),
+                Tables\Columns\TextColumn::make('created_at')->dateTime('d M Y'),
             ])
             ->filters([])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->color('warning'),
+                Tables\Actions\DeleteAction::make()->color('danger'),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

@@ -70,15 +70,10 @@ class ServicesResource extends Resource
 
                 Tables\Columns\TextColumn::make('price')
                     ->label('Harga')
-                    ->money('IDR', true),
+                    ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.')),
 
                 Tables\Columns\TextColumn::make('unit.name')
                     ->label('Satuan'),
-
-                Tables\Columns\TextColumn::make('description')
-                    ->label('Deskripsi')
-                    ->limit(50)
-                    ->wrap(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dibuat')
@@ -89,6 +84,7 @@ class ServicesResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

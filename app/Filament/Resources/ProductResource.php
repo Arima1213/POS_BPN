@@ -88,8 +88,9 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('name')->searchable(),
                 Tables\Columns\TextColumn::make('brand'),
                 Tables\Columns\TextColumn::make('category.name')->label('Category')->sortable(),
-                Tables\Columns\TextColumn::make('itemweight')->label('Weight')->suffix(' gr'),
-                Tables\Columns\TextColumn::make('price')->money('IDR', true),
+                Tables\Columns\TextColumn::make('itemweight')->label('Weight')->suffix(' Kg'),
+                Tables\Columns\TextColumn::make('price')
+                    ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.')),
                 Tables\Columns\TextColumn::make('created_at')->dateTime('d M Y')->label('Created'),
             ])
             ->filters([
