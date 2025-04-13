@@ -178,9 +178,8 @@ class TransactionsResource extends Resource
                             ->maxLength(15),
                     ])
                         ->visible(fn(Get $get) => $get('add_new_customer') === true),
+                    Hidden::make('customer_id'),
 
-                    Hidden::make('customer_id')
-                        ->dehydrated(), // <- diperbaiki: selalu ikut dikirim
                 ]),
         ]);
     }
@@ -219,32 +218,5 @@ class TransactionsResource extends Resource
             'create' => Pages\CreateTransactions::route('/create'),
             'edit' => Pages\EditTransactions::route('/{record}/edit'),
         ];
-    }
-
-    public static function mutateFormDataBeforeCreate(array $data): array
-    {
-        if (!empty($data['add_new_customer']) && $data['add_new_customer'] === true) {
-            $customer = Customer::create([
-                'name' => $data['new_customer_name'],
-                'phone' => $data['new_customer_phone'],
-            ]);
-
-            $data['customer_id'] = $customer->id;
-        }
-
-        return $data;
-    }
-
-    public static function mutateRecordAfterCreate($record): void
-    {
-        if ($record->paid_amount < $record->total) {
-            Debt::create([
-                'customer_id'     => $record->customer_id,
-                'transaction_id'  => $record->id,
-                'amount'          => $record->total,
-                'paid'            => $record->paid_amount,
-                'due_date'        => now()->addDays(30), // default jatuh tempo 30 hari ke depan (bisa diubah)
-            ]);
-        }
     }
 }
