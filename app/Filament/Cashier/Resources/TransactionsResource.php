@@ -93,6 +93,7 @@ class TransactionsResource extends Resource
                         ->label(fn(callable $get) => 'Jumlah (' . ($get('qty_label') ?? 'qty') . ')')
                         ->numeric()
                         ->reactive()
+                        ->debounce(1000)
                         ->afterStateUpdated(function (Set $set, $state, Get $get) {
                             $price = $get('price') ?? 0;
                             $set('subtotal', intval($price * $state));
@@ -137,6 +138,7 @@ class TransactionsResource extends Resource
                         ->label('Uang Pembeli')
                         ->numeric()
                         ->required()
+                        ->debounce(1000)
                         ->live()
                         ->afterStateUpdated(function ($state, Set $set, Get $get) {
                             $total = $get('total') ?? 0;
