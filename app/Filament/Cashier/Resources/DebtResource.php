@@ -90,6 +90,7 @@ class DebtResource extends Resource
                             ->success()
                             ->send();
                     })
+                    ->disabled(fn(Debt $record) => $record->paid >= $record->amount)
                     ->modalHeading('Form Pembayaran Hutang'),
 
                 Action::make('riwayat')
@@ -115,6 +116,31 @@ class DebtResource extends Resource
                     })
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Tutup'),
+
+                Action::make('detail_pelanggan')
+                    ->label('Pelanggan')
+                    ->icon('heroicon-m-user-circle')
+                    ->color('info')
+                    ->modalHeading('Detail Pelanggan')
+                    ->modalContent(function (Debt $record) {
+                        $customer = $record->customer;
+
+                        if (!$customer) {
+                            return new HtmlString('<p>Data pelanggan tidak tersedia.</p>');
+                        }
+
+                        $html = '<div class="space-y-2">';
+                        $html .= "<p><strong>Nama:</strong> {$customer->name}</p>";
+                        $html .= "<p><strong>Email:</strong> {$customer->email}</p>";
+                        $html .= "<p><strong>No. Telepon:</strong> {$customer->phone}</p>";
+                        $html .= "<p><strong>Alamat:</strong> {$customer->address}</p>";
+                        $html .= '</div>';
+
+                        return new HtmlString($html);
+                    })
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Tutup'),
+
 
             ])
             ->bulkActions([]);
