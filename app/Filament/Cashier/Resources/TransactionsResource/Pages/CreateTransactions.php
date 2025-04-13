@@ -5,7 +5,7 @@ namespace App\Filament\Cashier\Resources\TransactionsResource\Pages;
 use App\Filament\Cashier\Resources\TransactionsResource;
 use App\Models\Customer;
 use App\Models\Debt;
-use Filament\Actions;
+use App\Models\Transactions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateTransactions extends CreateRecord
@@ -14,28 +14,31 @@ class CreateTransactions extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        // Jika user memilih "Tambah Customer Baru"
-        if (!empty($data['add_new_customer']) && $data['add_new_customer'] === true) {
+        // Cek apakah user tambah customer baru
+        if ($data['add_new_customer'] ?? false) {
             $customer = Customer::create([
-                'name' => $data['new_customer_name'],
+                'name'  => $data['new_customer_name'],
                 'phone' => $data['new_customer_phone'],
             ]);
-
             $data['customer_id'] = $customer->id;
         }
 
         return $data;
     }
 
-    public static function mutateRecordAfterCreate($record): void
+    protected function afterCreate(): void
     {
+        /** @var Transactions $record */
+        $record = $this->record;
+
+        // Jika uang pembeli kurang dari total, maka buatkan hutang
         if ($record->paid_amount < $record->total) {
             Debt::create([
-                'customer_id'     => $record->customer_id,
-                'transaction_id'  => $record->id,
-                'amount'          => $record->total,
-                'paid'            => $record->paid_amount,
-                'due_date'        => now()->addDays(30), // default jatuh tempo 30 hari ke depan (bisa diubah)
+                'customer_id'    => $record->customer_id,
+                'transaction_id' => $record->id,
+                'amount'         => $record->total,
+                'paid'           => $record->paid_amount,
+                'due_date'       => now()->addDays(30),
             ]);
         }
     }
