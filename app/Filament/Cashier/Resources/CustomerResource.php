@@ -17,13 +17,37 @@ class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->label('Nama')
+                    ->placeholder('Masukkan nama pelanggan')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\TextInput::make('email')
+                    ->label('Email')
+                    ->placeholder('Masukkan email')
+                    ->email()
+                    ->maxLength(255),
+
+                Forms\Components\TextInput::make('phone')
+                    ->label('Nomor Telepon')
+                    ->placeholder('Masukkan nomor telepon')
+                    ->numeric()
+                    ->tel()
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(20),
+
+                Forms\Components\Textarea::make('address')
+                    ->label('Alamat')
+                    ->placeholder('Masukkan alamat')
+                    ->rows(3),
             ]);
     }
 
@@ -31,26 +55,33 @@ class CustomerResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->label('Email')
+                    ->searchable()
+                    ->default('No Email'),
+                Tables\Columns\TextColumn::make('phone')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('address')
+                    ->limit(30)
+                    ->wrap()
+                    ->default('No Address'),
+                Tables\Columns\TextColumn::make('created_at')->dateTime('d M Y'),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

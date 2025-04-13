@@ -198,14 +198,12 @@ class TransactionsResource extends Resource
                     ->money('IDR')
                     ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.')),
                 Tables\Columns\TextColumn::make('paid_amount')
-                    ->label('Uang Pembeli')
                     ->money('IDR')
                     ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.')),
                 Tables\Columns\TextColumn::make('change_amount')
-                    ->label('Kembalian')
                     ->money('IDR')
                     ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.')),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Tanggal'),
+                Tables\Columns\TextColumn::make('created_at')->dateTime('d M Y'),
             ])
             ->filters([])
             ->actions([
