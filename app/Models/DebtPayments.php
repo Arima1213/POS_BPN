@@ -2,9 +2,22 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DebtPayments extends Model
+class DebtPayment extends Model
 {
-    //
+    use HasFactory;
+
+    protected $fillable = [
+        'debt_id',
+        'amount',
+        'payment_date',
+        'note',
+    ];
+
+    public function debt()
+    {
+        return $this->belongsTo(Debt::class);
+    }
 }

@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Services;
 use App\Models\Transactions;
+use App\Models\Debt;
 use Filament\Forms;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
@@ -232,5 +233,18 @@ class TransactionsResource extends Resource
         }
 
         return $data;
+    }
+
+    public static function mutateRecordAfterCreate($record): void
+    {
+        if ($record->paid_amount < $record->total) {
+            Debt::create([
+                'customer_id'     => $record->customer_id,
+                'transaction_id'  => $record->id,
+                'amount'          => $record->total,
+                'paid'            => $record->paid_amount,
+                'due_date'        => now()->addDays(30), // default jatuh tempo 30 hari ke depan (bisa diubah)
+            ]);
+        }
     }
 }

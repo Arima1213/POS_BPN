@@ -34,4 +34,9 @@ class Debt extends Model
     {
         return $this->remaining <= 0;
     }
+
+    public function payments()
+    {
+        return $this->hasMany(DebtPayment::class);
+    }
 }
