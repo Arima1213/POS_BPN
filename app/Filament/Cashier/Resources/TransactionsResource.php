@@ -31,6 +31,11 @@ class TransactionsResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getNavigationSort(): int
+    {
+        return 1;
+    }
+
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -207,7 +212,7 @@ class TransactionsResource extends Resource
             ])
             ->filters([])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->color('warning'),
                 Tables\Actions\Action::make('download_pdf')
                     ->label('Download PDF')
                     ->icon('heroicon-o-document-arrow-down')

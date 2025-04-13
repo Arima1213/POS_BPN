@@ -23,6 +23,8 @@ class CashierPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->brandName('Berkah Padi Nusantara')
+
             ->spa()
             ->login()
             ->id('cashier')
@@ -33,8 +35,9 @@ class CashierPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Cashier/Resources'), for: 'App\\Filament\\Cashier\\Resources')
             ->discoverPages(in: app_path('Filament/Cashier/Pages'), for: 'App\\Filament\\Cashier\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                // Pages\Dashboard::class,
             ])
+            ->topNavigation()
             ->discoverWidgets(in: app_path('Filament/Cashier/Widgets'), for: 'App\\Filament\\Cashier\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,

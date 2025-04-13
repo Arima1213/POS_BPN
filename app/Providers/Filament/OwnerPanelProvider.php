@@ -23,6 +23,8 @@ class OwnerPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->brandName('Berkah Padi Nusantara')
+
             ->id('owner')
             ->spa()
             ->path('owner')

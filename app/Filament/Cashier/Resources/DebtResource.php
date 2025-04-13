@@ -25,6 +25,11 @@ class DebtResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getNavigationSort(): int
+    {
+        return 2;
+    }
+
     public static function table(Table $table): Table
     {
         return $table

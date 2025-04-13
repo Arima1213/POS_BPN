@@ -19,6 +19,11 @@ class CustomerResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
+    public static function getNavigationSort(): int
+    {
+        return 3; // angka kecil muncul lebih awal
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -72,7 +77,8 @@ class CustomerResource extends Resource
             ])
             ->filters([])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->color('warning'),
+                Tables\Actions\DeleteAction::make()->color('danger'),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

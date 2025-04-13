@@ -23,6 +23,7 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->brandName('Berkah Padi Nusantara')
             ->default()
             ->spa()
             ->id('admin')
