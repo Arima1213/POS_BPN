@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('procurements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->string('supplier_id')->constrained()->onDelete('cascade');;
+            $table->foreignId('supplier_id')->constrained()->onDelete('cascade');;
             $table->integer('quantity');
             $table->integer('price');
             $table->date('procurement_date');
