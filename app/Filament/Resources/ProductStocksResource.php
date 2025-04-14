@@ -24,6 +24,33 @@ class ProductStocksResource extends Resource
     protected static ?string $navigationLabel = 'Product Stocks';
     protected static ?string $navigationGroup = 'Inventory Management';
 
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Select::make('product_id')
+                    ->label('Product')
+                    ->options(Product::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->required(),
+
+                TextInput::make('current_stock')
+                    ->label('Current Stock')
+                    ->numeric()
+                    ->minValue(0)
+                    ->required()
+                    ->hint(fn(string $context): ?string => $context === 'edit'
+                        ? 'Stok akan otomatis bertambah jika ada pengadaan barang.'
+                        : null),
+
+                TextInput::make('minimum_stock')
+                    ->label('Minimum Stock')
+                    ->numeric()
+                    ->minValue(0)
+                    ->required(),
+            ]);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
