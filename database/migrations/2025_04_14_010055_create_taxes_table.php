@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('tax_type'); // PPN, PPh 21, PBB, dll
             $table->string('tax_period'); // Format: YYYY-MM
             $table->string('npwp')->nullable();
-            $table->decimal('amount_due', 18, 2);
+            $table->integer('amount_due'); // julah pajak
+            $table->integer('amount_paid'); // jumlah yang sudah dibayar
             $table->enum('status', ['Belum Dibayar', 'Sebagian Dibayar', 'Lunas', 'Nunggak'])->default('Belum Dibayar');
             $table->date('due_date')->nullable(); // Tanggal jatuh tempo
             $table->text('description')->nullable();

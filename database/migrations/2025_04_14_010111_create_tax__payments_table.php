@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('tax_payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tax_id')->constrained('taxes')->onDelete('cascade');
-            $table->decimal('amount_paid', 18, 2);
+            $table->integer('amount');
+            $table->string('tax_invoice_img'); // Bukti bayar atau ID billing
             $table->date('payment_date')->nullable();
             $table->string('tax_invoice_number')->nullable(); // Bukti bayar atau ID billing
             $table->string('payment_method')->nullable(); // Transfer, VA, dll
