@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('taxes', function (Blueprint $table) {
             $table->id();
+            $table->string('tax_type'); // PPN, PPh 21, PBB, dll
+            $table->string('tax_period'); // Format: YYYY-MM
+            $table->string('npwp')->nullable();
+            $table->decimal('amount_due', 18, 2);
+            $table->enum('status', ['Belum Dibayar', 'Sebagian Dibayar', 'Lunas', 'Nunggak'])->default('Belum Dibayar');
+            $table->date('due_date')->nullable(); // Tanggal jatuh tempo
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
