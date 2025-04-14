@@ -22,7 +22,7 @@ class Tax extends Model
 
     public function payments()
     {
-        return $this->hasMany(Tax_Payments::class);
+        return $this->hasMany(TaxPayment::class);
     }
 
     public function getTotalPaidAttribute(): float
