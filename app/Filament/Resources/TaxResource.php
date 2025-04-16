@@ -21,8 +21,9 @@ class TaxResource extends Resource
 {
     protected static ?string $model = Tax::class;
     protected static ?string $navigationIcon = 'heroicon-o-calculator';
-    protected static ?string $navigationLabel = 'Kalkulator Pajak UMKM';
-    protected static ?string $modelLabel = 'Pajak UMKM';
+    protected static ?string $navigationLabel = 'Pajak';
+    protected static ?string $navigationGroup = 'Keuangan';
+
 
     public static function form(Form $form): Form
     {

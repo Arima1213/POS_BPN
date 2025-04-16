@@ -20,9 +20,10 @@ class ProductStocksResource extends Resource
 {
     protected static ?string $model = ProductStock::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-cube-transparent';
-    protected static ?string $navigationLabel = 'Product Stocks';
-    protected static ?string $navigationGroup = 'Inventory Management';
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+    protected static ?string $navigationLabel = 'Stok Produk';
+    protected static ?string $navigationGroup = 'Inventaris';
+
 
     public static function form(Form $form): Form
     {

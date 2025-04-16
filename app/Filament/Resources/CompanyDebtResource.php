@@ -16,8 +16,9 @@ class CompanyDebtResource extends Resource
     protected static ?string $model = CompanyDebt::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-    protected static ?string $navigationLabel = 'Company Debts';
-    protected static ?string $navigationGroup = 'Finance';
+    protected static ?string $navigationLabel = 'Utang Perusahaan';
+    protected static ?string $navigationGroup = 'Keuangan';
+
 
     public static function form(Form $form): Form
     {

@@ -20,9 +20,9 @@ class ProcurementResource extends Resource
 {
     protected static ?string $model = Procurement::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
-    protected static ?string $navigationLabel = 'Procurements';
-    protected static ?string $navigationGroup = 'Inventory Management';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static ?string $navigationLabel = 'Pengadaan';
+    protected static ?string $navigationGroup = 'Inventaris';
 
     public static function form(Form $form): Form
     {
