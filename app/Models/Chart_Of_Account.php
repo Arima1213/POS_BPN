@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Chart_Of_Account extends Model
 {
-
     use HasFactory;
 
     protected $fillable = [
