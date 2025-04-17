@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('chart_of_account_id')->constrained()->onDelete('restrict');
             $table->enum('tipe', ['debit', 'kredit']);
             $table->decimal('jumlah', 15, 2);
+            $table->string('lampiran')->nullable();
             $table->text('deskripsi')->nullable();
             $table->timestamps();
         });

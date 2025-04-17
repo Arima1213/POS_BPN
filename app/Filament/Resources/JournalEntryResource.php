@@ -3,22 +3,24 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\JournalEntryResource\Pages;
-use App\Models\JournalEntry;
 use App\Models\ChartOfAccount;
+use App\Models\JournalEntry;
 use Filament\Forms;
+use Filament\Forms\Form;
 use Filament\Forms\Components\{
+    DatePicker,
     Grid,
     Select,
-    DatePicker,
-    TextInput,
     Textarea,
-    Repeater
+    Repeater,
+    TextInput,
+    FileUpload
 };
 use Filament\Tables;
-use Filament\Tables\Columns\{TextColumn, BadgeColumn};
-use Filament\Resources\Resource;
-use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\{TextColumn, BadgeColumn};
+
+use Filament\Resources\Resource;
 
 class JournalEntryResource extends Resource
 {
@@ -34,8 +36,10 @@ class JournalEntryResource extends Resource
                 Grid::make(2)->schema([
                     TextInput::make('kode')
                         ->label('Kode Jurnal')
-                        ->required()
-                        ->unique(ignoreRecord: true),
+                        ->default(fn() => self::generateKodeJurnal())
+                        ->disabled()
+                        ->dehydrated()
+                        ->required(),
 
                     DatePicker::make('tanggal')
                         ->label('Tanggal')
@@ -81,15 +85,20 @@ class JournalEntryResource extends Resource
                             ->numeric()
                             ->required(),
 
+                        FileUpload::make('lampiran')
+                            ->label('Lampiran')
+                            ->directory('lampiran-jurnal')
+                            ->maxSize(1024)
+                            ->nullable(),
+
                         Textarea::make('deskripsi')
                             ->label('Deskripsi')
                             ->rows(2)
                             ->nullable(),
                     ])
-                    ->columns(4)
-                    ->minItems(2)
-                    ->required()
-                    ->columnSpanFull(),
+                    ->columns(5)
+                    ->columnSpanFull()
+                    ->required(),
             ]);
     }
 
@@ -126,5 +135,12 @@ class JournalEntryResource extends Resource
             'create' => Pages\CreateJournalEntry::route('/create'),
             'edit' => Pages\EditJournalEntry::route('/{record}/edit'),
         ];
+    }
+
+    private static function generateKodeJurnal(): string
+    {
+        $tanggal = now()->format('Ymd');
+        $countToday = JournalEntry::whereDate('created_at', now())->count() + 1;
+        return 'JU-' . $tanggal . '-' . str_pad($countToday, 3, '0', STR_PAD_LEFT);
     }
 }
