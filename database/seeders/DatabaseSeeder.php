@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Roles;
-use ChartOfAccountsSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -19,7 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UnitSeeder::class,
             RoleSeeder::class,
-            ChartOfAccountsSeeder::class,
+            ChartOfAccounts::class,
         ]);
 
         $ownerRole = Roles::where('name', 'Owner')->first();

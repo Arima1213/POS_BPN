@@ -1,9 +1,12 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Models\ChartOfAccount;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ChartOfAccountsSeeder extends Seeder
+class ChartOfAccounts extends Seeder
 {
     public function run(): void
     {
