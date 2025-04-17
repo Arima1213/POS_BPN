@@ -3,7 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ChartOfAccountResource\Pages;
-use App\Models\Chart_Of_Account;
+use App\Models\ChartOfAccount;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ChartOfAccountResource extends Resource
 {
-    protected static ?string $model = Chart_Of_Account::class;
+    protected static ?string $model = ChartOfAccount::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Master Akun';

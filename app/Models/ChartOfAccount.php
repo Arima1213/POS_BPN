@@ -5,10 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Chart_Of_Account extends Model
+class ChartOfAccount extends Model
 {
     use HasFactory;
-
     protected $fillable = [
         'kode',
         'nama',
