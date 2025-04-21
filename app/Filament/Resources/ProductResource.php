@@ -37,8 +37,9 @@ class ProductResource extends Resource
                 Forms\Components\TextInput::make('itemcode')
                     ->label('Item Code')
                     ->required()
-                    ->unique(ignoreRecord: true)
-                    ->placeholder('Enter item code'),
+                    ->disabled()
+                    ->default(fn() => 'PRD-' . strtoupper(uniqid()))
+                    ->placeholder('Generated automatically'),
 
                 Forms\Components\FileUpload::make('image')
                     ->label('Product Image')
