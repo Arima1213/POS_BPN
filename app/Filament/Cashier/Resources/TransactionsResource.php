@@ -107,9 +107,9 @@ class TransactionsResource extends Resource
                 ->schema([
                     Repeater::make('details')
                         ->schema([
-                            TextInput::make('name')->label('Nama')->disabled(),
-                            TextInput::make('unit')->label('Satuan')->disabled(),
-                            TextInput::make('price')->label('Harga')->numeric()->disabled(),
+                            TextInput::make('name')->label('Nama')->disabled()->dehydrated(),
+                            TextInput::make('unit')->label('Satuan')->disabled()->dehydrated(),
+                            TextInput::make('price')->label('Harga')->numeric()->disabled()->dehydrated(),
                             TextInput::make('quantity')
                                 ->label('Jumlah')
                                 ->numeric()
@@ -128,13 +128,24 @@ class TransactionsResource extends Resource
                                     }
                                 }),
 
-                            TextInput::make('subtotal')->label('Subtotal')->disabled()
+                            TextInput::make('subtotal')->label('Subtotal')->disabled()->dehydrated()
                         ])
                         ->columns(6)
                         ->reorderable(false)
                         ->addable(false)
                         ->deletable(true)
-                        ->default([]),
+                        ->default(fn($record) => $record?->details?->map(function ($detail) {
+                            return [
+                                'item_type' => $detail->item_type,
+                                'item_id' => $detail->item_id,
+                                'name' => $detail->item?->name ?? '',
+                                'image' => $detail->item?->image ?? '',
+                                'price' => $detail->price,
+                                'quantity' => $detail->quantity,
+                                'unit' => $detail->item_type === 'product' ? 'pcs' : ($detail->item?->unit?->short ?? 'unit'),
+                                'subtotal' => $detail->subtotal,
+                            ];
+                        })?->toArray() ?? []),
                 ]),
 
             Section::make('Informasi Total')

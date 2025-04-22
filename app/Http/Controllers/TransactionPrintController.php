@@ -38,12 +38,12 @@ class TransactionPrintController extends Controller
         $printer->text("------------------------------\n");
 
         // Item
-        foreach ($transaksi->details as $item) {
-            $printer->text(str_pad($item->name, 16));
-            $printer->text(str_pad($item->quantity, 3, ' ', STR_PAD_LEFT) . "x");
-            $printer->text(str_pad(number_format($item->price, 0, '', '.'), 7, ' ', STR_PAD_LEFT) . "\n");
+        foreach ($transaksi->details as $items) {
+            $printer->text(str_pad($items->product->name, 16));
+            $printer->text(str_pad($items->quantity, 3, ' ', STR_PAD_LEFT) . "x");
+            $printer->text(str_pad(number_format($items->product->price, 0, '', '.'), 7, ' ', STR_PAD_LEFT) . "\n");
 
-            $subtotal = number_format($item->subtotal, 0, '', '.');
+            $subtotal = number_format($items->product->subtotal, 0, '', '.');
             $printer->text("      Rp" . str_pad($subtotal, 10, ' ', STR_PAD_LEFT) . "\n");
         }
 

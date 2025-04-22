@@ -12,6 +12,8 @@ use App\Models\ChartOfAccount;
 use App\Models\JournalEntryDetail;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Cashier\Resources\TransactionsResource;
+use App\Models\Transactions_Details;
+use Filament\Forms\Form;
 
 class CreateTransactions extends CreateRecord
 {
@@ -33,8 +35,22 @@ class CreateTransactions extends CreateRecord
 
     protected function afterCreate(): void
     {
+
+
         /** @var Transactions $record */
         $record = $this->record;
+        $details = $this->form->getState()['details'] ?? [];
+
+        foreach ($details as $detail) {
+            Transactions_Details::create([
+                'transaction_id' => $record->id,
+                'item_type' => $detail['item_type'],
+                'item_id' => $detail['item_id'],
+                'price' => $detail['price'],
+                'quantity' => $detail['quantity'],
+                'subtotal' => $detail['subtotal'],
+            ]);
+        }
 
         // Jika uang pembeli kurang dari total, maka buatkan hutang
         if ($record->paid_amount < $record->total) {

@@ -9,6 +9,8 @@ class Transactions_Details extends Model
 {
     use HasFactory;
 
+    protected $table = 'transactions_details';
+
     protected $fillable = [
         'transaction_id',
         'item_type',
