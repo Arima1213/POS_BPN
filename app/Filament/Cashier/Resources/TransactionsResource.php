@@ -113,12 +113,20 @@ class TransactionsResource extends Resource
                                 ->label('Jumlah')
                                 ->numeric()
                                 ->reactive()
-                                ->afterStateUpdated(function ($state, $set, $get, $context) {
+                                ->afterStateUpdated(function ($state, $set, $get) {
                                     $details = collect($get('details'));
-                                    $details[$context['index']]['subtotal'] = $details[$context['index']]['price'] * $state;
-                                    $set('details', $details->toArray());
-                                    $set('total', $details->sum('subtotal'));
+                                    $index = $get('details')->search(fn($item) => $item['name'] === $get('name'));
+
+                                    if ($index !== false) {
+                                        $details[$index]['quantity'] = $state;
+                                        $details[$index]['subtotal'] = $details[$index]['price'] * $state;
+                                        $set('details', $details->toArray());
+
+                                        $total = $details->sum('subtotal');
+                                        $set('total', $total);
+                                    }
                                 }),
+
                             TextInput::make('subtotal')->label('Subtotal')->disabled()
                         ])
                         ->columns(6)
