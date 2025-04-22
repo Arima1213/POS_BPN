@@ -47,12 +47,12 @@ class TransactionPrintController extends Controller
                 $name = $items->product->name;
                 $price = $items->price;
                 $subtotal = $items->subtotal;
-                $label = '/pcs';
+                $label = ' pcs';
             } elseif ($items->item_type === 'service' && $items->service) {
                 $name = $items->service->name;
                 $price = $items->price;
                 $subtotal = $items->subtotal;
-                $label = '/' . ($items->service->unit->short ?? 'unit');
+                $label = ' ' . ($items->service->unit->short ?? 'unit');
             }
 
             // Baris nama barang/jasa
@@ -60,7 +60,7 @@ class TransactionPrintController extends Controller
 
             // Baris 2: qty x harga | subtotal
             $left = str_pad($items->quantity, 2, ' ', STR_PAD_LEFT) .  $label . ' x ' . number_format($price, 0, '', '.');
-            $right = number_format($subtotal, 0, '', '.');
+            $right = 'Rp ' . number_format($subtotal, 0, '', '.');
             $printer->text(str_pad($left, 20) . str_pad($right, 12, ' ', STR_PAD_LEFT) . "\n");
         }
 
@@ -68,9 +68,17 @@ class TransactionPrintController extends Controller
         $printer->text("------------------------------\n");
 
         // Total, bayar, kembali
-        $printer->text("Total   : Rp " . number_format($transaksi->total, 0, ',', '.') . "\n");
-        $printer->text("Bayar   : Rp " . number_format($transaksi->paid_amount, 0, ',', '.') . "\n");
-        $printer->text("Kembali : Rp " . number_format($transaksi->change_amount, 0, ',', '.') . "\n");
+        $left = "Total";
+        $right = 'Rp ' . number_format($transaksi->total, 0, ',', '.');
+        $printer->text(str_pad($left, 20) . str_pad($right, 12, ' ', STR_PAD_LEFT) . "\n");
+
+        $left = "Bayar";
+        $right = 'Rp ' . number_format($transaksi->paid_amount, 0, ',', '.');
+        $printer->text(str_pad($left, 20) . str_pad($right, 12, ' ', STR_PAD_LEFT) . "\n");
+
+        $left = "Kembali";
+        $right = 'Rp ' . number_format($transaksi->change_amount, 0, ',', '.');
+        $printer->text(str_pad($left, 20) . str_pad($right, 12, ' ', STR_PAD_LEFT) . "\n");
 
         // Footer
         $printer->text("==============================\n");

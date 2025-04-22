@@ -15,6 +15,7 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Split;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
@@ -40,155 +41,160 @@ class TransactionsResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Repeater::make('details')
-                ->columnSpan(2)
-                ->label('Detail Transaksi')
-                ->relationship('details')
+            Section::make()
                 ->schema([
-                    Radio::make('item_type')
-                        ->label('Tipe')
-                        ->options([
-                            'product' => 'Product',
-                            'service' => 'Service',
-                        ])
-                        ->live()
-                        ->default('product')
-                        ->afterStateUpdated(fn($state, callable $set) => $set('item_id', null))
-                        ->required(),
+                    Split::make([
+                        Group::make([
+                            Section::make('Informasi Total')
+                                ->schema([
+                                    TextInput::make('code')
+                                        ->label('Kode Transaksi')
+                                        ->default(fn() => 'TRX-' . strtoupper(Str::random(8)))
+                                        ->disabled()
+                                        ->dehydrated(true)
+                                        ->required(),
 
-                    Select::make('item_id')
-                        ->label('Produk / Jasa')
-                        ->options(function (callable $get) {
-                            return $get('item_type') === 'service'
-                                ? Services::pluck('name', 'id')
-                                : Product::pluck('name', 'id');
-                        })
-                        ->reactive()
-                        ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                            $type = $get('item_type');
-                            if ($type === 'product') {
-                                $product = Product::find($state);
-                                if ($product) {
-                                    $set('price', $product->price);
-                                    $set('qty_label', 'qty');
-                                }
-                            } elseif ($type === 'service') {
-                                $service = Services::with('unit')->find($state);
-                                if ($service) {
-                                    $set('price', $service->price);
-                                    $set('qty_label', $service->unit->short ?? 'unit');
-                                }
-                            }
-                        })
-                        ->required(),
+                                    TextInput::make('total')
+                                        ->label('Total')
+                                        ->numeric()
+                                        ->disabled()
+                                        ->dehydrated()
+                                        ->default(0)
+                                        ->reactive()
+                                        ->placeholder(function (Set $set, Get $get) {
+                                            $total = collect($get('details'))->pluck('subtotal')->sum();
+                                            $set('total', $total ?? 0);
+                                        }),
 
-                    TextInput::make('qty_label')
-                        ->default('qty')
-                        ->disabled()
-                        ->visible(false)
-                        ->dehydrated(false),
+                                    TextInput::make('paid_amount')
+                                        ->label('Uang Pembeli')
+                                        ->numeric()
+                                        ->required()
+                                        ->debounce(1000)
+                                        ->live()
+                                        ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                            $total = $get('total') ?? 0;
+                                            $set('change_amount', intval($state - $total));
+                                        }),
 
-                    TextInput::make('price')
-                        ->label('Harga')
-                        ->numeric()
-                        ->disabled()
-                        ->dehydrated()
-                        ->required(),
+                                    TextInput::make('change_amount')
+                                        ->label('Kembalian')
+                                        ->numeric()
+                                        ->disabled()
+                                        ->dehydrated()
+                                        ->default(0)
+                                        ->hint(fn(Get $get) => ($get('change_amount') ?? 0) < 0 ? '⚠️ Uang kurang, akan dicatat sebagai hutang.' : null)
+                                        ->hintColor(fn(Get $get) => ($get('change_amount') ?? 0) < 0 ? 'danger' : 'success'),
+                                ]),
 
-                    TextInput::make('quantity')
-                        ->label(fn(callable $get) => 'Jumlah (' . ($get('qty_label') ?? 'qty') . ')')
-                        ->numeric()
-                        ->reactive()
-                        ->debounce(1000)
-                        ->afterStateUpdated(function (Set $set, $state, Get $get) {
-                            $price = $get('price') ?? 0;
-                            $set('subtotal', intval($price * $state));
-                        })
-                        ->required(),
+                            Section::make('Informasi Customer')
+                                ->schema([
+                                    Toggle::make('add_new_customer')
+                                        ->label('Tambah Customer Baru?')
+                                        ->reactive(),
 
-                    TextInput::make('subtotal')
-                        ->label('Subtotal')
-                        ->numeric()
-                        ->disabled()
-                        ->dehydrated()
-                        ->required(),
-                ])
-                ->columns(2)
-                ->createItemButtonLabel('Tambah Item')
-                ->defaultItems(1)
-                ->required()
-                ->reactive(),
+                                    Select::make('customer_id')
+                                        ->label('Customer')
+                                        ->searchable()
+                                        ->preload()
+                                        ->options(fn() => Customer::pluck('name', 'id'))
+                                        ->visible(fn(Get $get) => $get('add_new_customer') === false)
+                                        ->required(),
 
-            Section::make('Informasi Total')
-                ->schema([
-                    TextInput::make('code')
-                        ->label('Kode Transaksi')
-                        ->default(fn() => 'TRX-' . strtoupper(Str::random(8)))
-                        ->disabled()
-                        ->dehydrated(true)
-                        ->required(),
+                                    Group::make([
+                                        TextInput::make('new_customer_name')
+                                            ->label('Nama Customer')
+                                            ->required()
+                                            ->maxLength(255),
+                                        TextInput::make('new_customer_phone')
+                                            ->label('Nomor Telepon')
+                                            ->required()
+                                            ->maxLength(15),
+                                    ])
+                                        ->visible(fn(Get $get) => $get('add_new_customer') === true),
 
-                    TextInput::make('total')
-                        ->label('Total')
-                        ->numeric()
-                        ->disabled()
-                        ->dehydrated()
-                        ->default(0)
-                        ->reactive()
-                        ->placeholder(function (Set $set, Get $get) {
-                            $total = collect($get('details'))->pluck('subtotal')->sum();
-                            $set('total', $total ?? 0);
-                        }),
+                                ]),
+                        ]),
+                        Repeater::make('details')
+                            ->columnSpan(2)
+                            ->label('Detail Transaksi')
+                            ->relationship('details')
+                            ->schema([
+                                Radio::make('item_type')
+                                    ->label('Tipe')
+                                    ->options([
+                                        'product' => 'Product',
+                                        'service' => 'Service',
+                                    ])
+                                    ->live()
+                                    ->default('product')
+                                    ->afterStateUpdated(fn($state, callable $set) => $set('item_id', null))
+                                    ->required(),
 
-                    TextInput::make('paid_amount')
-                        ->label('Uang Pembeli')
-                        ->numeric()
-                        ->required()
-                        ->debounce(1000)
-                        ->live()
-                        ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                            $total = $get('total') ?? 0;
-                            $set('change_amount', intval($state - $total));
-                        }),
+                                Select::make('item_id')
+                                    ->label('Produk / Jasa')
+                                    ->options(function (callable $get) {
+                                        return $get('item_type') === 'service'
+                                            ? Services::pluck('name', 'id')
+                                            : Product::pluck('name', 'id');
+                                    })
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                        $type = $get('item_type');
+                                        if ($type === 'product') {
+                                            $product = Product::find($state);
+                                            if ($product) {
+                                                $set('price', $product->price);
+                                                $set('qty_label', 'qty');
+                                            }
+                                        } elseif ($type === 'service') {
+                                            $service = Services::with('unit')->find($state);
+                                            if ($service) {
+                                                $set('price', $service->price);
+                                                $set('qty_label', $service->unit->short ?? 'unit');
+                                            }
+                                        }
+                                    })
+                                    ->required(),
 
-                    TextInput::make('change_amount')
-                        ->label('Kembalian')
-                        ->numeric()
-                        ->disabled()
-                        ->dehydrated()
-                        ->default(0)
-                        ->hint(fn(Get $get) => ($get('change_amount') ?? 0) < 0 ? '⚠️ Uang kurang, akan dicatat sebagai hutang.' : null)
-                        ->hintColor(fn(Get $get) => ($get('change_amount') ?? 0) < 0 ? 'danger' : 'success'),
-                ]),
+                                TextInput::make('qty_label')
+                                    ->default('qty')
+                                    ->disabled()
+                                    ->visible(false)
+                                    ->dehydrated(false),
 
-            Section::make('Informasi Customer')
-                ->schema([
-                    Toggle::make('add_new_customer')
-                        ->label('Tambah Customer Baru?')
-                        ->reactive(),
+                                TextInput::make('price')
+                                    ->label('Harga')
+                                    ->numeric()
+                                    ->disabled()
+                                    ->dehydrated()
+                                    ->required(),
 
-                    Select::make('customer_id')
-                        ->label('Customer')
-                        ->searchable()
-                        ->preload()
-                        ->options(fn() => Customer::pluck('name', 'id'))
-                        ->visible(fn(Get $get) => $get('add_new_customer') === false)
-                        ->required(),
+                                TextInput::make('quantity')
+                                    ->label(fn(callable $get) => 'Jumlah (' . ($get('qty_label') ?? 'qty') . ')')
+                                    ->numeric()
+                                    ->reactive()
+                                    ->debounce(1000)
+                                    ->afterStateUpdated(function (Set $set, $state, Get $get) {
+                                        $price = $get('price') ?? 0;
+                                        $set('subtotal', intval($price * $state));
+                                    })
+                                    ->required(),
 
-                    Group::make([
-                        TextInput::make('new_customer_name')
-                            ->label('Nama Customer')
+                                TextInput::make('subtotal')
+                                    ->label('Subtotal')
+                                    ->numeric()
+                                    ->disabled()
+                                    ->dehydrated()
+                                    ->required(),
+                            ])
+                            ->columns(2)
+                            ->createItemButtonLabel('Tambah Item')
+                            ->defaultItems(1)
                             ->required()
-                            ->maxLength(255),
-                        TextInput::make('new_customer_phone')
-                            ->label('Nomor Telepon')
-                            ->required()
-                            ->maxLength(15),
+                            ->reactive(),
                     ])
-                        ->visible(fn(Get $get) => $get('add_new_customer') === true),
-                    Hidden::make('customer_id'),
-
-                ]),
+                ])
         ]);
     }
 
