@@ -147,5 +147,7 @@ class CreateTransactions extends CreateRecord
                 'deskripsi' => 'Pendapatan Jasa dari transaksi ' . $transaction->code,
             ]);
         }
+
+        $this->redirectRoute('transactions.print.receipt', ['transaction' => $record]);
     }
 }
