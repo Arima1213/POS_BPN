@@ -13,4 +13,9 @@ class TransactionPrintController extends Controller
         $pdf = Pdf::loadView('pdf.transaction', ['transaction' => $transaction]);
         return $pdf->download("Invoice_{$transaction->code}.pdf");
     }
+
+    public function printReceipt(Transactions $transaction)
+    {
+        return view('print.receipt', compact('transaction'));
+    }
 }

@@ -218,6 +218,20 @@ class TransactionsResource extends Resource
                     ->icon('heroicon-o-document-arrow-down')
                     ->url(fn($record) => route('transactions.download.pdf', $record))
                     ->openUrlInNewTab(),
+                Tables\Actions\Action::make('print_receipt')
+                    ->label('Print Struk')
+                    ->icon('heroicon-o-printer')
+                    ->action(function ($record) {
+                        // Logika cetak thermal
+                        // Misal gunakan package seperti mike42/escpos-php
+                        // Atau arahkan ke route eksternal (misal window.print dengan HTML khusus)
+
+                        // Contoh redirect ke route untuk struk
+                        return redirect()->route('transactions.print.receipt', $record);
+                    })
+                    ->requiresConfirmation()
+                    ->color('success'),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
