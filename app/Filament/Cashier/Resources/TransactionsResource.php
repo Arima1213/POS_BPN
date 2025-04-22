@@ -24,6 +24,7 @@ use Illuminate\Support\Str;
 use Livewire\Component;
 use Filament\Forms\Form;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Redirect;
 
 class TransactionsResource extends Resource
 {
@@ -222,12 +223,8 @@ class TransactionsResource extends Resource
                     ->label('Print Struk')
                     ->icon('heroicon-o-printer')
                     ->action(function ($record) {
-                        // Logika cetak thermal
-                        // Misal gunakan package seperti mike42/escpos-php
-                        // Atau arahkan ke route eksternal (misal window.print dengan HTML khusus)
-
-                        // Contoh redirect ke route untuk struk
-                        return redirect()->route('transactions.print.receipt', $record);
+                        // Redirect ke route cetak struk thermal
+                        return Redirect::to(route('transactions.print.receipt', $record));
                     })
                     ->requiresConfirmation()
                     ->color('success'),
