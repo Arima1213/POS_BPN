@@ -30,14 +30,13 @@ class Transactions_Details extends Model
         return $this->morphTo(__FUNCTION__, 'item_type', 'item_id');
     }
 
-    // Atau alternatif manual jika tidak menggunakan morph
     public function product()
     {
-        return $this->belongsTo(Product::class, 'item_id')->where('item_type', 'product');
+        return $this->belongsTo(Product::class, 'item_id');
     }
 
     public function service()
     {
-        return $this->belongsTo(Services::class, 'item_id')->where('item_type', 'service');
+        return $this->belongsTo(Services::class, 'item_id');
     }
 }

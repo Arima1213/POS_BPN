@@ -28,7 +28,7 @@ class TransactionPrintController extends Controller
         // Header
         $printer->setJustification(Printer::JUSTIFY_CENTER);
         $printer->text("PT BERKAH PADI NUSANTARA\n");
-        $printer->text("Jl. Contoh No.1\n");
+        $printer->text("Jl. Gajah Mada, Desa Siwalan, Kec. Panceng, Kab. Gresik\n");
         $printer->text("==============================\n");
 
         // Info transaksi
@@ -37,15 +37,33 @@ class TransactionPrintController extends Controller
         $printer->text("Tanggal: " . $transaksi->created_at->format('d M Y H:i') . "\n");
         $printer->text("------------------------------\n");
 
-        // Item
         foreach ($transaksi->details as $items) {
-            $printer->text(str_pad($items->product->name, 16));
-            $printer->text(str_pad($items->quantity, 3, ' ', STR_PAD_LEFT) . "x");
-            $printer->text(str_pad(number_format($items->product->price, 0, '', '.'), 7, ' ', STR_PAD_LEFT) . "\n");
+            $name = '';
+            $price = 0;
+            $subtotal = 0;
+            $label = '';
 
-            $subtotal = number_format($items->product->subtotal, 0, '', '.');
-            $printer->text("      Rp" . str_pad($subtotal, 10, ' ', STR_PAD_LEFT) . "\n");
+            if ($items->item_type === 'product' && $items->product) {
+                $name = $items->product->name;
+                $price = $items->price;
+                $subtotal = $items->subtotal;
+                $label = '/pcs';
+            } elseif ($items->item_type === 'service' && $items->service) {
+                $name = $items->service->name;
+                $price = $items->price;
+                $subtotal = $items->subtotal;
+                $label = '/' . ($items->service->unit->short ?? 'unit');
+            }
+
+            // Baris nama barang/jasa
+            $printer->text(str_pad($name, 16) . "\n");
+
+            // Baris 2: qty x harga | subtotal
+            $left = str_pad($items->quantity, 2, ' ', STR_PAD_LEFT) .  $label . ' x ' . number_format($price, 0, '', '.');
+            $right = number_format($subtotal, 0, '', '.');
+            $printer->text(str_pad($left, 20) . str_pad($right, 12, ' ', STR_PAD_LEFT) . "\n");
         }
+
 
         $printer->text("------------------------------\n");
 

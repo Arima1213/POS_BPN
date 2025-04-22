@@ -38,8 +38,9 @@ class ProductResource extends Resource
                     ->label('Item Code')
                     ->required()
                     ->disabled()
+                    ->dehydrated(true)
                     ->default(fn() => 'PRD-' . strtoupper(uniqid()))
-                    ->placeholder('Generated automatically'),
+                    ->placeholder(fn() => 'PRD-' . strtoupper(uniqid())),
 
                 Forms\Components\FileUpload::make('image')
                     ->label('Product Image')
