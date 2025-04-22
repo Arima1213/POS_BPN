@@ -7,23 +7,23 @@ use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Services;
 use App\Models\Transactions;
-use App\Models\Units;
+use App\Models\Debt;
 use Filament\Forms;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Repeater;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Livewire\Component;
-use Filament\Forms\Form;
-use Illuminate\Support\Collection;
+use Filament\Forms\Set;
 use Illuminate\Support\Facades\Redirect;
 
 class TransactionsResource extends Resource
@@ -39,114 +39,85 @@ class TransactionsResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $products = Product::select(['id', 'name', 'price', 'image'])->get()->mapWithKeys(fn($product) => [
-            'product-' . $product->id => [
-                'label' => $product->name,
-                'image' => $product->image,
-                'price' => $product->price,
-                'type' => 'product'
-            ]
-        ]);
-
-        $services = Services::with('unit')->get()->mapWithKeys(fn($service) => [
-            'service-' . $service->id => [
-                'label' => $service->name,
-                'image' => $service->image,
-                'price' => $service->price,
-                'unit' => $service->unit?->short ?? 'unit',
-                'type' => 'service'
-            ]
-        ]);
-
-        $items = $products->merge($services);
-
         return $form->schema([
-            Select::make('selected_item')
-                ->label('Pilih Barang / Jasa')
-                ->options(
-                    collect($items)->map(fn($item, $key) => $item['label'])->toArray()
-                )
-                ->reactive()
-                ->live()
-                ->afterStateUpdated(function ($state, $set, $get) use ($items) {
-                    if (!$state) return;
-
-                    $data = $items[$state];
-                    $details = collect($get('details'));
-
-                    $existing = $details->firstWhere(fn($item) => $item['item_id'] === explode('-', $state)[1] && $item['item_type'] === $data['type']);
-
-                    if ($existing) {
-                        $details = $details->map(function ($item) use ($state, $data) {
-                            if ($item['item_id'] === explode('-', $state)[1] && $item['item_type'] === $data['type']) {
-                                $item['quantity'] += 1;
-                                $item['subtotal'] = $item['price'] * $item['quantity'];
-                            }
-                            return $item;
-                        });
-                    } else {
-                        $details->push([
-                            'item_type' => $data['type'],
-                            'item_id' => explode('-', $state)[1],
-                            'name' => $data['label'],
-                            'image' => $data['image'],
-                            'price' => $data['price'],
-                            'quantity' => 1,
-                            'unit' => $data['type'] === 'product' ? 'pcs' : ($data['unit'] ?? 'unit'),
-                            'subtotal' => $data['price'] * 1
-                        ]);
-                    }
-
-                    $set('details', $details->toArray());
-
-                    $total = $details->sum('subtotal');
-                    $set('total', $total);
-                }),
-
-            Section::make('Detail Transaksi')
+            Repeater::make('details')
+                ->columnSpan(2)
+                ->label('Detail Transaksi')
+                ->relationship('details')
                 ->schema([
-                    Repeater::make('details')
-                        ->schema([
-                            TextInput::make('name')->label('Nama')->disabled()->dehydrated(),
-                            TextInput::make('unit')->label('Satuan')->disabled()->dehydrated(),
-                            TextInput::make('price')->label('Harga')->numeric()->disabled()->dehydrated(),
-                            TextInput::make('quantity')
-                                ->label('Jumlah')
-                                ->numeric()
-                                ->reactive()
-                                ->afterStateUpdated(function ($state, $set, $get) {
-                                    $details = collect($get('details'));
-                                    $index = $get('details')->search(fn($item) => $item['name'] === $get('name'));
-
-                                    if ($index !== false) {
-                                        $details[$index]['quantity'] = $state;
-                                        $details[$index]['subtotal'] = $details[$index]['price'] * $state;
-                                        $set('details', $details->toArray());
-
-                                        $total = $details->sum('subtotal');
-                                        $set('total', $total);
-                                    }
-                                }),
-
-                            TextInput::make('subtotal')->label('Subtotal')->disabled()->dehydrated()
+                    Radio::make('item_type')
+                        ->label('Tipe')
+                        ->options([
+                            'product' => 'Product',
+                            'service' => 'Service',
                         ])
-                        ->columns(6)
-                        ->reorderable(false)
-                        ->addable(false)
-                        ->deletable(true)
-                        ->default(fn($record) => $record?->details?->map(function ($detail) {
-                            return [
-                                'item_type' => $detail->item_type,
-                                'item_id' => $detail->item_id,
-                                'name' => $detail->item?->name ?? '',
-                                'image' => $detail->item?->image ?? '',
-                                'price' => $detail->price,
-                                'quantity' => $detail->quantity,
-                                'unit' => $detail->item_type === 'product' ? 'pcs' : ($detail->item?->unit?->short ?? 'unit'),
-                                'subtotal' => $detail->subtotal,
-                            ];
-                        })?->toArray() ?? []),
-                ]),
+                        ->live()
+                        ->default('product')
+                        ->afterStateUpdated(fn($state, callable $set) => $set('item_id', null))
+                        ->required(),
+
+                    Select::make('item_id')
+                        ->label('Produk / Jasa')
+                        ->options(function (callable $get) {
+                            return $get('item_type') === 'service'
+                                ? Services::pluck('name', 'id')
+                                : Product::pluck('name', 'id');
+                        })
+                        ->reactive()
+                        ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                            $type = $get('item_type');
+                            if ($type === 'product') {
+                                $product = Product::find($state);
+                                if ($product) {
+                                    $set('price', $product->price);
+                                    $set('qty_label', 'qty');
+                                }
+                            } elseif ($type === 'service') {
+                                $service = Services::with('unit')->find($state);
+                                if ($service) {
+                                    $set('price', $service->price);
+                                    $set('qty_label', $service->unit->short ?? 'unit');
+                                }
+                            }
+                        })
+                        ->required(),
+
+                    TextInput::make('qty_label')
+                        ->default('qty')
+                        ->disabled()
+                        ->visible(false)
+                        ->dehydrated(false),
+
+                    TextInput::make('price')
+                        ->label('Harga')
+                        ->numeric()
+                        ->disabled()
+                        ->dehydrated()
+                        ->required(),
+
+                    TextInput::make('quantity')
+                        ->label(fn(callable $get) => 'Jumlah (' . ($get('qty_label') ?? 'qty') . ')')
+                        ->numeric()
+                        ->reactive()
+                        ->debounce(1000)
+                        ->afterStateUpdated(function (Set $set, $state, Get $get) {
+                            $price = $get('price') ?? 0;
+                            $set('subtotal', intval($price * $state));
+                        })
+                        ->required(),
+
+                    TextInput::make('subtotal')
+                        ->label('Subtotal')
+                        ->numeric()
+                        ->disabled()
+                        ->dehydrated()
+                        ->required(),
+                ])
+                ->columns(2)
+                ->createItemButtonLabel('Tambah Item')
+                ->defaultItems(1)
+                ->required()
+                ->reactive(),
 
             Section::make('Informasi Total')
                 ->schema([
@@ -162,14 +133,20 @@ class TransactionsResource extends Resource
                         ->numeric()
                         ->disabled()
                         ->dehydrated()
-                        ->default(0),
+                        ->default(0)
+                        ->reactive()
+                        ->placeholder(function (Set $set, Get $get) {
+                            $total = collect($get('details'))->pluck('subtotal')->sum();
+                            $set('total', $total ?? 0);
+                        }),
 
                     TextInput::make('paid_amount')
                         ->label('Uang Pembeli')
                         ->numeric()
                         ->required()
+                        ->debounce(1000)
                         ->live()
-                        ->afterStateUpdated(function ($state, $set, $get) {
+                        ->afterStateUpdated(function ($state, Set $set, Get $get) {
                             $total = $get('total') ?? 0;
                             $set('change_amount', intval($state - $total));
                         }),
@@ -179,7 +156,9 @@ class TransactionsResource extends Resource
                         ->numeric()
                         ->disabled()
                         ->dehydrated()
-                        ->default(0),
+                        ->default(0)
+                        ->hint(fn(Get $get) => ($get('change_amount') ?? 0) < 0 ? '⚠️ Uang kurang, akan dicatat sebagai hutang.' : null)
+                        ->hintColor(fn(Get $get) => ($get('change_amount') ?? 0) < 0 ? 'danger' : 'success'),
                 ]),
 
             Section::make('Informasi Customer')
@@ -193,7 +172,7 @@ class TransactionsResource extends Resource
                         ->searchable()
                         ->preload()
                         ->options(fn() => Customer::pluck('name', 'id'))
-                        ->visible(fn(Forms\Get $get) => $get('add_new_customer') === false)
+                        ->visible(fn(Get $get) => $get('add_new_customer') === false)
                         ->required(),
 
                     Group::make([
@@ -206,9 +185,10 @@ class TransactionsResource extends Resource
                             ->required()
                             ->maxLength(15),
                     ])
-                        ->visible(fn(Forms\Get $get) => $get('add_new_customer') === true),
+                        ->visible(fn(Get $get) => $get('add_new_customer') === true),
                     Hidden::make('customer_id'),
-                ])
+
+                ]),
         ]);
     }
 
@@ -216,13 +196,22 @@ class TransactionsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('code')->label('Kode'),
-                Tables\Columns\TextColumn::make('customer.name')->label('Customer'),
-                Tables\Columns\TextColumn::make('total')->money('IDR')->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.')),
-                Tables\Columns\TextColumn::make('paid_amount')->money('IDR')->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.')),
-                Tables\Columns\TextColumn::make('change_amount')->money('IDR')->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.')),
+                Tables\Columns\TextColumn::make('code')
+                    ->label('Kode'),
+                Tables\Columns\TextColumn::make('customer.name')
+                    ->label('Customer'),
+                Tables\Columns\TextColumn::make('total')
+                    ->money('IDR')
+                    ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.')),
+                Tables\Columns\TextColumn::make('paid_amount')
+                    ->money('IDR')
+                    ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.')),
+                Tables\Columns\TextColumn::make('change_amount')
+                    ->money('IDR')
+                    ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.')),
                 Tables\Columns\TextColumn::make('created_at')->dateTime('d M Y'),
             ])
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make()->color('warning'),
                 Tables\Actions\Action::make('download_pdf')
@@ -239,8 +228,8 @@ class TransactionsResource extends Resource
                     })
                     ->requiresConfirmation()
                     ->color('success'),
-
             ])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
