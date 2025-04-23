@@ -13,7 +13,6 @@ use App\Models\JournalEntryDetail;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Cashier\Resources\TransactionsResource;
 use App\Models\Transactions_Details;
-use Filament\Forms\Form;
 
 class CreateTransactions extends CreateRecord
 {
