@@ -1,34 +1,21 @@
 <?php
 
-namespace App\Filament\Cashier\Resources;
+namespace App\Filament\Resources;
 
-use App\Filament\Cashier\Resources\DebtResource\Pages;
+use App\Filament\Resources\CompanyReceivablesResource\Pages;
 use App\Models\Debt;
-use App\Models\DebtPayment;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Forms;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ViewAction;
 use Illuminate\Support\HtmlString;
 
-use Filament\Notifications\Notification;
-
-class DebtResource extends Resource
+class CompanyReceivablesResource extends Resource
 {
     protected static ?string $model = Debt::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
-    public static function getNavigationSort(): int
-    {
-        return 2;
-    }
+    protected static ?string $navigationGroup = 'Keuangan';
+    protected static ?string $navigationLabel = 'Piutang Perusahaan';
 
     public static function table(Table $table): Table
     {
@@ -40,69 +27,48 @@ class DebtResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('remaining')
-                    ->label('Remaining Payment')
+                    ->label('Sisa Piutang')
                     ->money('IDR')
                     ->getStateUsing(fn(Debt $record) => max(0, $record->amount - $record->paid))
                     ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.'))
                     ->sortable(),
+
                 Tables\Columns\TextColumn::make('amount')
+                    ->label('Total Piutang')
                     ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('paid')
+                    ->label('Telah Dibayar')
                     ->formatStateUsing(fn($state) => 'IDR ' . number_format($state, 0, ',', '.'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('due_date')
+                    ->label('Jatuh Tempo')
                     ->date()
-                    ->label('Due Date')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Tanggal Dibuat')
                     ->dateTime()
-                    ->label('Created At')
                     ->sortable(),
+
+                Tables\Columns\BadgeColumn::make('status')
+                    ->label('Status')
+                    ->getStateUsing(function (Debt $record) {
+                        return ($record->amount - $record->paid) > 0 ? 'Belum Lunas' : 'Lunas';
+                    })
+                    ->colors([
+                        'danger' => 'Belum Lunas',
+                        'success' => 'Lunas',
+                    ]),
             ])
             ->actions([
-                Action::make('bayar')
-                    ->label('Bayar')
-                    ->icon('heroicon-m-banknotes')
-                    ->form(fn(Debt $record) => [
-                        Hidden::make('debt_id')->default($record->id),
-
-                        TextInput::make('amount')
-                            ->label('Nominal Pembayaran')
-                            ->numeric()
-                            ->required()
-                            ->live()
-                            ->afterStateUpdated(function ($state, callable $set) use ($record) {
-                                if ($state > ($record->amount - $record->paid)) {
-                                    $set('amount', $record->amount - $record->paid);
-                                }
-                            }),
-
-                        DatePicker::make('payment_date')
-                            ->label('Tanggal Pembayaran')
-                            ->required(),
-                    ])
-                    ->action(function (array $data, Debt $record): void {
-                        DebtPayment::create($data);
-                        $record->paid += $data['amount'];
-                        $record->save();
-
-                        Notification::make()
-                            ->title('Pembayaran berhasil')
-                            ->success()
-                            ->send();
-                    })
-                    ->disabled(fn(Debt $record) => $record->paid >= $record->amount)
-                    ->modalHeading('Form Pembayaran Hutang'),
-
                 Action::make('riwayat')
-                    ->color('white')
+                    ->color('gray')
                     ->label('Riwayat')
                     ->icon('heroicon-m-eye')
-                    ->modalHeading('Riwayat Cicilan')
+                    ->modalHeading('Riwayat Pembayaran')
                     ->modalContent(function (Debt $record) {
                         $payments = $record->payments()->orderBy('payment_date', 'desc')->get();
 
@@ -123,10 +89,10 @@ class DebtResource extends Resource
                     ->modalCancelActionLabel('Tutup'),
 
                 Action::make('detail_pelanggan')
-                    ->label('Pelanggan')
+                    ->label('Detail')
                     ->icon('heroicon-m-user-circle')
                     ->color('info')
-                    ->modalHeading('Detail Pelanggan')
+                    ->modalHeading('Data Pelanggan')
                     ->modalContent(function (Debt $record) {
                         $customer = $record->customer;
 
@@ -145,8 +111,6 @@ class DebtResource extends Resource
                     })
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Tutup'),
-
-
             ])
             ->bulkActions([]);
     }
@@ -154,7 +118,7 @@ class DebtResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListDebts::route('/'),
+            'index' => Pages\ListCompanyReceivables::route('/'),
         ];
     }
 }
