@@ -1,21 +1,11 @@
 <x-filament::page>
-    <form wire:submit.prevent="getIncomeStatementData">
+    <form wire:submit.prevent="tampilkan">
         <div class="flex gap-4 mb-4">
             <x-filament::input type="date" wire:model.defer="from" label="Tanggal Awal" />
             <x-filament::input type="date" wire:model.defer="until" label="Tanggal Akhir" />
             <x-filament::button type="submit">Tampilkan</x-filament::button>
         </div>
     </form>
-
-    @php
-        $data = $this->getIncomeStatementData();
-        $pendapatan = $data['pendapatan'] ?? collect();
-        $biaya = $data['biaya'] ?? collect();
-
-        $totalPendapatan = $pendapatan->sum('total');
-        $totalBiaya = $biaya->sum('total');
-        $labaBersih = $totalPendapatan - $totalBiaya;
-    @endphp
 
     <div class="grid md:grid-cols-2 gap-6">
         <div>

@@ -3,12 +3,14 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\IncomeStatementResource\Pages;
+use App\Models\JournalEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 
 class IncomeStatementResource extends Resource
 {
+    protected static ?string $model = JournalEntry::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $label = 'Laba Rugi';
@@ -46,7 +48,7 @@ class IncomeStatementResource extends Resource
     public static function getPages(): array
     {
         return [
-            // 'index' => Pages\IncomeStatemnt::route('/'),
+            'index' => Pages\IncomeStatement::route('/'),
         ];
     }
 }
