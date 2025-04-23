@@ -11,7 +11,7 @@ class BalanceSheets extends Page
 {
     protected static string $resource = BalanceSheetResource::class;
 
-    protected static string $view = 'balance-sheets.balance-sheets';
+    protected static string $view = 'balance-sheet.balance-sheet';
 
     public $tanggal;
 
