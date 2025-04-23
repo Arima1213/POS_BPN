@@ -62,20 +62,19 @@ class CreateTransactions extends CreateRecord
             ]);
         }
 
-        $transaction = $this->record;
+        $transaction = $record;
 
-        // Buat entri jurnal baru
+        // Buat entri jurnal utama
         $journal = JournalEntry::create([
-            'tanggal' => Carbon::now(),
+            'tanggal' => now(),
             'kode' => 'JE-' . strtoupper(Str::random(6)),
             'keterangan' => 'Transaksi Penjualan: ' . $transaction->code,
             'kategori' => 'aset',
         ]);
 
-        // Total pendapatan produk & jasa
+        // Hitung total produk dan jasa
         $totalProduk = 0;
         $totalJasa = 0;
-
         foreach ($transaction->details as $detail) {
             if ($detail->item_type === 'product') {
                 $totalProduk += $detail->subtotal;
@@ -88,21 +87,23 @@ class CreateTransactions extends CreateRecord
         $paid = $transaction->paid_amount;
         $change = $transaction->change_amount;
 
-        // 1. Debit Kas Kecil (uang yang diterima)
+        // === JURNAL ENTRIES ===
+
+        // 1. Debit: Kas Kecil untuk jumlah yang dibayar tunai
         if ($paid > 0) {
             JournalEntryDetail::create([
                 'journal_entry_id' => $journal->id,
                 'chart_of_account_id' => ChartOfAccount::where('kode', '1000')->value('id'),
                 'tipe' => 'debit',
-                'jumlah' => $paid - max(0, -$change), // Hanya yang dibayar tunai
-                'deskripsi' => 'Pembayaran tunai transaksi ' . $transaction->code,
+                'jumlah' => $paid - max(0, -$change),
+                'deskripsi' => 'Penerimaan kas dari transaksi ' . $transaction->code,
             ]);
         }
 
-        // 2. Jika terdapat kekurangan bayar, masukkan ke Piutang (Produk atau Jasa)
+        // 2. Jika ada kekurangan bayar, Debit ke Piutang Produk dan/atau Jasa
         if ($change < 0) {
-            $hutangProduk = $totalProduk / $total * abs($change);
-            $hutangJasa = $totalJasa / $total * abs($change);
+            $hutangProduk = ($totalProduk / $total) * abs($change);
+            $hutangJasa = ($totalJasa / $total) * abs($change);
 
             if ($hutangProduk > 0) {
                 JournalEntryDetail::create([
@@ -110,7 +111,7 @@ class CreateTransactions extends CreateRecord
                     'chart_of_account_id' => ChartOfAccount::where('kode', '1020')->value('id'),
                     'tipe' => 'debit',
                     'jumlah' => round($hutangProduk, 2),
-                    'deskripsi' => 'Piutang Produk transaksi ' . $transaction->code,
+                    'deskripsi' => 'Piutang Produk - Transaksi ' . $transaction->code,
                 ]);
             }
 
@@ -120,30 +121,30 @@ class CreateTransactions extends CreateRecord
                     'chart_of_account_id' => ChartOfAccount::where('kode', '1021')->value('id'),
                     'tipe' => 'debit',
                     'jumlah' => round($hutangJasa, 2),
-                    'deskripsi' => 'Piutang Jasa transaksi ' . $transaction->code,
+                    'deskripsi' => 'Piutang Jasa - Transaksi ' . $transaction->code,
                 ]);
             }
         }
 
-        // 3. Kredit Pendapatan Penjualan Produk
+        // 3. Kredit: Pendapatan Produk
         if ($totalProduk > 0) {
             JournalEntryDetail::create([
                 'journal_entry_id' => $journal->id,
                 'chart_of_account_id' => ChartOfAccount::where('kode', '4000')->value('id'),
                 'tipe' => 'kredit',
                 'jumlah' => round($totalProduk, 2),
-                'deskripsi' => 'Pendapatan Produk dari transaksi ' . $transaction->code,
+                'deskripsi' => 'Pendapatan Produk - Transaksi ' . $transaction->code,
             ]);
         }
 
-        // 4. Kredit Pendapatan Jasa Giling
+        // 4. Kredit: Pendapatan Jasa
         if ($totalJasa > 0) {
             JournalEntryDetail::create([
                 'journal_entry_id' => $journal->id,
                 'chart_of_account_id' => ChartOfAccount::where('kode', '4010')->value('id'),
                 'tipe' => 'kredit',
                 'jumlah' => round($totalJasa, 2),
-                'deskripsi' => 'Pendapatan Jasa dari transaksi ' . $transaction->code,
+                'deskripsi' => 'Pendapatan Jasa - Transaksi ' . $transaction->code,
             ]);
         }
 
