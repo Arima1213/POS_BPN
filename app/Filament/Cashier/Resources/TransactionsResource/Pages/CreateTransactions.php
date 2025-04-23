@@ -2,7 +2,6 @@
 
 namespace App\Filament\Cashier\Resources\TransactionsResource\Pages;
 
-use Carbon\Carbon;
 use App\Models\Debt;
 use App\Models\Customer;
 use Illuminate\Support\Str;
@@ -12,7 +11,6 @@ use App\Models\ChartOfAccount;
 use App\Models\JournalEntryDetail;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Cashier\Resources\TransactionsResource;
-use App\Models\Transactions_Details;
 
 class CreateTransactions extends CreateRecord
 {
@@ -38,18 +36,6 @@ class CreateTransactions extends CreateRecord
 
         /** @var Transactions $record */
         $record = $this->record;
-        $details = $this->form->getState()['details'] ?? [];
-
-        foreach ($details as $detail) {
-            Transactions_Details::create([
-                'transaction_id' => $record->id,
-                'item_type' => $detail['item_type'],
-                'item_id' => $detail['item_id'],
-                'price' => $detail['price'],
-                'quantity' => $detail['quantity'],
-                'subtotal' => $detail['subtotal'],
-            ]);
-        }
 
         // Jika uang pembeli kurang dari total, maka buatkan hutang
         if ($record->paid_amount < $record->total) {
@@ -75,6 +61,7 @@ class CreateTransactions extends CreateRecord
         // Hitung total produk dan jasa
         $totalProduk = 0;
         $totalJasa = 0;
+
         foreach ($transaction->details as $detail) {
             if ($detail->item_type === 'product') {
                 $totalProduk += $detail->subtotal;
@@ -91,13 +78,34 @@ class CreateTransactions extends CreateRecord
 
         // 1. Debit: Kas Kecil untuk jumlah yang dibayar tunai
         if ($paid > 0) {
-            JournalEntryDetail::create([
-                'journal_entry_id' => $journal->id,
-                'chart_of_account_id' => ChartOfAccount::where('kode', '1000')->value('id'),
-                'tipe' => 'debit',
-                'jumlah' => $paid - max(0, -$change),
-                'deskripsi' => 'Penerimaan kas dari transaksi ' . $transaction->code,
-            ]);
+            if ($paid > $total) {
+                // Debit: Kas Kecil untuk jumlah yang dibayar tunai
+                JournalEntryDetail::create([
+                    'journal_entry_id' => $journal->id,
+                    'chart_of_account_id' => ChartOfAccount::where('kode', '1000')->value('id'),
+                    'tipe' => 'debit',
+                    'jumlah' => $paid,
+                    'deskripsi' => 'Penerimaan kas dari transaksi ' . $transaction->code,
+                ]);
+
+                // Kredit: Kembalian
+                JournalEntryDetail::create([
+                    'journal_entry_id' => $journal->id,
+                    'chart_of_account_id' => ChartOfAccount::where('kode', '1040')->value('id'),
+                    'tipe' => 'kredit',
+                    'jumlah' => $change,
+                    'deskripsi' => 'Kembalian untuk transaksi ' . $transaction->code,
+                ]);
+            } else {
+                // Debit: Kas Kecil untuk jumlah yang dibayar tunai
+                JournalEntryDetail::create([
+                    'journal_entry_id' => $journal->id,
+                    'chart_of_account_id' => ChartOfAccount::where('kode', '1000')->value('id'),
+                    'tipe' => 'debit',
+                    'jumlah' => $paid,
+                    'deskripsi' => 'Penerimaan kas dari transaksi ' . $transaction->code,
+                ]);
+            }
         }
 
         // 2. Jika ada kekurangan bayar, Debit ke Piutang Produk dan/atau Jasa

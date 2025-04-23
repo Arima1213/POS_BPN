@@ -106,18 +106,19 @@ class JournalEntryResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('kode')->label('Kode Jurnal')->searchable(),
-                TextColumn::make('tanggal')->date()->label('Tanggal'),
+                TextColumn::make('kode')->label('Kode Jurnal')->searchable()->sortable(),
+                TextColumn::make('tanggal')->date()->label('Tanggal')->sortable(),
                 BadgeColumn::make('kategori')->label('Kategori')->colors([
                     'primary' => 'aset',
                     'success' => 'beban_operasional',
                     'warning' => 'penyesuaian',
                     'gray' => 'lainnya',
-                ]),
+                ])->sortable(),
                 TextColumn::make('keterangan')->label('Keterangan')->limit(30),
                 TextColumn::make('details_count')->counts('details')->label('Jumlah Detail'),
             ])
             ->defaultSort('tanggal', 'desc')
+            ->defaultSort('created_at', 'desc')
             ->filters([])
             ->actions([
                 Tables\Actions\ViewAction::make(),

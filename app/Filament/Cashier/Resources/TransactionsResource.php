@@ -220,7 +220,7 @@ class TransactionsResource extends Resource
             ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make()->color('warning'),
-                Tables\Actions\Action::make('download_pdf')
+                Tables\Actions\Action::make('faktur')
                     ->label('Download PDF')
                     ->icon('heroicon-o-document-arrow-down')
                     ->url(fn($record) => route('transactions.download.pdf', $record))
