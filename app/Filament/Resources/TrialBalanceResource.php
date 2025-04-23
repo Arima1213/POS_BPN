@@ -15,15 +15,12 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TrialBalanceResource extends Resource
 {
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                //
-            ]);
-    }
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $label = 'Neraca Saldo';
+    protected static ?string $pluralLabel = 'Neraca Saldo';
+    protected static ?string $slug = 'trial-balance';
+    protected static ?string $navigationLabel = 'Neraca Saldo';
+    protected static ?string $navigationGroup = 'Akuntansi';
 
     public static function table(Table $table): Table
     {
@@ -54,9 +51,7 @@ class TrialBalanceResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTrialBalances::route('/'),
-            'create' => Pages\CreateTrialBalance::route('/create'),
-            'edit' => Pages\EditTrialBalance::route('/{record}/edit'),
+            'index' => Pages\TrialBalance::route('/'),
         ];
     }
 }
