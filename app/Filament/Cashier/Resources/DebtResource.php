@@ -3,8 +3,12 @@
 namespace App\Filament\Cashier\Resources;
 
 use App\Filament\Cashier\Resources\DebtResource\Pages;
+use App\Models\ChartOfAccount;
 use App\Models\Debt;
+use Illuminate\Support\Str;
 use App\Models\DebtPayment;
+use App\Models\JournalEntry;
+use App\Models\JournalEntryDetail;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -89,6 +93,32 @@ class DebtResource extends Resource
                         DebtPayment::create($data);
                         $record->paid += $data['amount'];
                         $record->save();
+
+                        // Buat entri jurnal utama
+                        $journal = JournalEntry::create([
+                            'tanggal' => now(),
+                            'kode' => 'JE-' . strtoupper(Str::random(6)),
+                            'keterangan' => 'Pembayaran Piutang: ' . $record->id,
+                            'kategori' => 'aset',
+                        ]);
+
+                        // Debit: Pembayaran Piutang (kode akun 1022)
+                        JournalEntryDetail::create([
+                            'journal_entry_id' => $journal->id,
+                            'chart_of_account_id' => ChartOfAccount::where('kode', '1022')->value('id'),
+                            'tipe' => 'debit',
+                            'jumlah' => $data['amount'],
+                            'deskripsi' => 'Pembayaran piutang untuk Debt ID ' . $record->id,
+                        ]);
+
+                        // Kredit: Kas Kecil (kode akun 1000)
+                        JournalEntryDetail::create([
+                            'journal_entry_id' => $journal->id,
+                            'chart_of_account_id' => ChartOfAccount::where('kode', '1000')->value('id'),
+                            'tipe' => 'kredit',
+                            'jumlah' => $data['amount'],
+                            'deskripsi' => 'Pemasukan kas oleh pembayaran hutang Debt ID ' . $record->id,
+                        ]);
 
                         Notification::make()
                             ->title('Pembayaran berhasil')
