@@ -1,24 +1,25 @@
 <?php
 
+// App\Filament\Resources\GeneralLedgerResource\Pages\GeneralLedger.php
+
 namespace App\Filament\Resources\GeneralLedgerResource\Pages;
 
 use App\Filament\Resources\GeneralLedgerResource;
 use App\Models\ChartOfAccount;
 use App\Models\JournalEntryDetail;
-use Filament\Resources\Pages\ViewRecord;
+use Filament\Resources\Pages\Page;
 
-class GeneralLedger extends ViewRecord
+class GeneralLedger extends Page
 {
     protected static string $resource = GeneralLedgerResource::class;
 
-    protected static string $view = 'filament.resources.general-ledger.pages.general-ledger';
+    protected static string $view = 'general-ledger.general-ledger';
 
     public $from;
     public $until;
 
-    public function mount($record = null): void
+    public function mount(): void
     {
-        parent::mount($record); // wajib panggil parent mount
         $this->from = now()->startOfMonth()->toDateString();
         $this->until = now()->endOfMonth()->toDateString();
     }
@@ -29,9 +30,10 @@ class GeneralLedger extends ViewRecord
             ->whereHas('jurnal', function ($query) {
                 $query->whereBetween('tanggal', [$this->from, $this->until]);
             })
-            ->orderBy('chart_of_account_id')
-            ->orderBy('jurnal.tanggal')
             ->get()
+            ->sortBy(function ($detail) {
+                return $detail->jurnal->tanggal;
+            })
             ->groupBy('chart_of_account_id');
 
         $ledger = [];

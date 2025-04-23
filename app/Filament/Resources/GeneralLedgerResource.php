@@ -30,11 +30,10 @@ class GeneralLedgerResource extends Resource
     {
         return [];
     }
-
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListGeneralLedgers::route('/'),
+            'index' => Pages\GeneralLedger::route('/'),
         ];
     }
 }

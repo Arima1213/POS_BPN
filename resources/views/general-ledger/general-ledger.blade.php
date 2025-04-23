@@ -1,5 +1,5 @@
 <x-filament::page>
-    <form wire:submit.prevent="mount">
+    <form wire:submit.prevent="show">
         <div class="flex gap-4 mb-4">
             <x-filament::input type="date" wire:model.defer="from" label="Tanggal Awal" />
             <x-filament::input type="date" wire:model.defer="until" label="Tanggal Akhir" />
@@ -8,12 +8,12 @@
     </form>
 
     @foreach ($this->getGeneralLedgerData() as $akun)
-        <div class="mb-8 border rounded shadow p-4 bg-white">
+        <div class="mb-8 border rounded shadow p-4 ">
             <h3 class="font-bold text-lg mb-2">
                 ({{ $akun['akun']->kode }}) {{ $akun['akun']->nama }}
             </h3>
             <table class="w-full text-sm border">
-                <thead class="bg-gray-100">
+                <thead class="">
                     <tr>
                         <th class="border px-2 py-1">Tanggal</th>
                         <th class="border px-2 py-1">Transaksi</th>
@@ -36,7 +36,7 @@
                             <td class="border px-2 py-1 text-right">{{ number_format($row['saldo'], 2, ',', '.') }}</td>
                         </tr>
                     @endforeach
-                    <tr class="font-bold bg-gray-50">
+                    <tr class="font-bold ">
                         <td colspan="6" class="text-right px-2 py-1">Saldo Akhir</td>
                         <td class="text-right px-2 py-1">{{ number_format($akun['saldo_akhir'], 2, ',', '.') }}</td>
                     </tr>
