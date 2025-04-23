@@ -15,8 +15,9 @@ class ChartOfAccounts extends Seeder
             // ===== ASET LANCAR =====
             ['kode' => '1000', 'nama' => 'Kas Kecil', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Kas tunai usaha'],
             ['kode' => '1010', 'nama' => 'Rekening Bank', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Saldo bank perusahaan'],
-            ['kode' => '1020', 'nama' => 'Piutang Usaha Produk', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Piutang dari pelanggan produk'],
-            ['kode' => '1021', 'nama' => 'Piutang Jasa Giling', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Piutang jasa penggilingan padi'],
+            ['kode' => '1020', 'nama' => 'Piutang Produk', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Piutang dari produk'],
+            ['kode' => '1021', 'nama' => 'Piutang Jasa', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Piutang jasa'],
+            ['kode' => '1022', 'nama' => 'Pembayaran Piutang', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Pembayaran Piutang perusahaan'],
             ['kode' => '1030', 'nama' => 'Persediaan Pupuk dan Benih', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Persediaan barang dagang pertanian'],
             ['kode' => '1031', 'nama' => 'Persediaan Produk Jadi (Beras)', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Stok hasil penggilingan padi'],
             ['kode' => '1040', 'nama' => 'Uang Kembalian', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Uang tunai untuk kembalian transaksi'],
