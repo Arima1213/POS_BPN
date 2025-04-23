@@ -15,12 +15,17 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ChangesInEquityResource extends Resource
 {
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $label = 'Perubahan Ekuitas';
+    protected static ?string $pluralLabel = 'Perubahan Ekuitas';
+    protected static ?string $slug = 'changes-in-equity';
+    protected static ?string $navigationLabel = 'Perubahan Ekuitas';
+    protected static ?string $navigationGroup = 'Akuntansi';
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListChangesInEquities::route('/'),
+            'index' => Pages\ChangesInEquity::route('/'),
         ];
     }
 }

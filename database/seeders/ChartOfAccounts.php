@@ -34,6 +34,7 @@ class ChartOfAccounts extends Seeder
             // ===== EKUITAS =====
             ['kode' => '3000', 'nama' => 'Modal Pemilik', 'kelompok' => 'ekuitas', 'tipe' => 'modal', 'deskripsi' => 'Investasi pemilik usaha'],
             ['kode' => '3010', 'nama' => 'Prive Pemilik', 'kelompok' => 'ekuitas', 'tipe' => 'modal', 'deskripsi' => 'Pengambilan pribadi'],
+            ['kode' => '3020', 'nama' => 'Laba Ditahan', 'kelompok' => 'ekuitas', 'tipe' => 'modal', 'deskripsi' => 'Laba yang tidak dibagikan'],
 
             // ===== PENDAPATAN =====
             ['kode' => '4000', 'nama' => 'Pendapatan Penjualan Produk', 'kelompok' => 'pendapatan', 'tipe' => 'operasional', 'deskripsi' => 'Pendapatan dari pupuk, benih, alat pertanian'],
