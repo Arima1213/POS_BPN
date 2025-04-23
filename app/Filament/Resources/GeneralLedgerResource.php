@@ -1,73 +1,40 @@
 <?php
 
-namespace App\Filament\Resources\GeneralLedgerResource\Pages;
+namespace App\Filament\Resources;
 
-use App\Filament\Resources\GeneralLedgerResource;
+use App\Filament\Resources\GeneralLedgerResource\Pages;
 use App\Models\ChartOfAccount;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryDetail;
-use Filament\Pages\Page;
-use Illuminate\Support\Facades\DB;
+use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Grid;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Support\Carbon;
 
-class ListGeneralLedgers extends Page
+class GeneralLedgerResource extends Resource
 {
-    protected static string $resource = JournalEntry::class;
+    protected static ?string $model = JournalEntry::class;
 
-    protected static string $view = 'filament.resources.general-ledger-resource.pages.general-ledger';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $label = 'Buku Besar';
+    protected static ?string $pluralLabel = 'Buku Besar';
+    protected static ?string $slug = 'general-ledger';
+    protected static ?string $navigationLabel = 'Buku Besar';
+    protected static ?string $navigationGroup = 'Akuntansi';
 
-    public $from;
-    public $until;
-
-    public function mount(): void
+    public static function getRelations(): array
     {
-        $this->from = now()->startOfMonth()->toDateString();
-        $this->until = now()->endOfMonth()->toDateString();
+        return [];
     }
 
-    public function getGeneralLedgerData()
+    public static function getPages(): array
     {
-        $details = JournalEntryDetail::with(['jurnal', 'akun'])
-            ->whereHas('jurnal', function ($query) {
-                $query->whereBetween('tanggal', [$this->from, $this->until]);
-            })
-            ->orderBy('chart_of_account_id')
-            ->orderBy('jurnal.tanggal')
-            ->get()
-            ->groupBy('chart_of_account_id');
-
-        $ledger = [];
-
-        foreach ($details as $akunId => $entries) {
-            $akun = ChartOfAccount::find($akunId);
-            $runningSaldo = 0;
-            $rows = [];
-
-            foreach ($entries as $entry) {
-                $jumlah = $entry->jumlah;
-                $debit = $entry->tipe === 'debit' ? $jumlah : 0;
-                $kredit = $entry->tipe === 'kredit' ? $jumlah : 0;
-
-                $runningSaldo += $debit;
-                $runningSaldo -= $kredit;
-
-                $rows[] = [
-                    'tanggal' => $entry->jurnal->tanggal,
-                    'transaksi' => $entry->jurnal->kategori,
-                    'nomor' => $entry->jurnal->kode,
-                    'keterangan' => $entry->deskripsi,
-                    'debit' => $debit,
-                    'kredit' => $kredit,
-                    'saldo' => $runningSaldo,
-                ];
-            }
-
-            $ledger[] = [
-                'akun' => $akun,
-                'rows' => $rows,
-                'saldo_akhir' => $runningSaldo,
-            ];
-        }
-
-        return $ledger;
+        return [
+            'index' => Pages\ListGeneralLedgers::route('/'),
+        ];
     }
 }
