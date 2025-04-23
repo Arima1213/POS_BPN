@@ -3,15 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\IncomeStatementResource\Pages;
-use App\Filament\Resources\IncomeStatementResource\RelationManagers;
-use App\Models\IncomeStatement;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class IncomeStatementResource extends Resource
 {
@@ -23,11 +17,36 @@ class IncomeStatementResource extends Resource
     protected static ?string $navigationLabel = 'Laba Rugi';
     protected static ?string $navigationGroup = 'Akuntansi';
 
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                //
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListIncomeStatements::route('/'),
+            // 'index' => Pages\IncomeStatemnt::route('/'),
         ];
     }
 }

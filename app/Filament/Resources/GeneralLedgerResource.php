@@ -3,17 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\GeneralLedgerResource\Pages;
-use App\Models\ChartOfAccount;
 use App\Models\JournalEntry;
-use App\Models\JournalEntryDetail;
-use Filament\Forms;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Grid;
 use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Support\Carbon;
 
 class GeneralLedgerResource extends Resource
 {
