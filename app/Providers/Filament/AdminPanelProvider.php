@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Resources\CategoryResource\Widgets\SalesByCategory;
 use App\Filament\Resources\CompanyReceivablesResource\Widgets\DueDebtsChart;
 use App\Filament\Resources\DebtResource\Widgets\DebtTrendChart;
+use App\Filament\Resources\MyStatsResource\Widgets\MyStats;
 use App\Filament\Resources\ProductResource\Widgets\AverageDailySales;
 use App\Filament\Resources\ProductResource\Widgets\BestSellingProductsThisWeek;
 use App\Filament\Resources\ProductResource\Widgets\RevenueGrowth;
@@ -47,12 +48,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                BestSellingProductsThisWeek::class,
-                AverageDailySales::class,
+                MyStats::class,
                 SalesByCategory::class,
                 DebtTrendChart::class,
-                LowStockAlert::class,
                 DueDebtsChart::class,
+                LowStockAlert::class,
+                BestSellingProductsThisWeek::class,
             ])
             ->middleware([
                 EncryptCookies::class,

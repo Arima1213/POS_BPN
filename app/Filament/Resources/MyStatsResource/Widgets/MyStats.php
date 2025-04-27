@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Filament\Resources\ProductResource\Widgets;
+namespace App\Filament\Resources\MyStatsResource\Widgets;
 
 use App\Models\Transactions;
-use Filament\Widgets\StatsOverviewWidget;
+use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Carbon;
 
-class AverageDailySales extends StatsOverviewWidget
+class MyStats extends BaseWidget
 {
-    protected function getCards(): array
+    protected function getStats(): array
     {
         $startOfMonth = Carbon::now()->startOfMonth();
         $today = Carbon::now();
 
         $totalSales = Transactions::whereBetween('created_at', [$startOfMonth, $today])->sum('total');
-        $daysPassed = $today->diffInDays($startOfMonth) ?: 1; // jangan sampai 0
+        $daysPassed = $today->diffInDays($startOfMonth) ?: 1; // Jangan sampai 0
 
         $average = $totalSales / $daysPassed;
 
@@ -34,15 +34,17 @@ class AverageDailySales extends StatsOverviewWidget
         return [
             Stat::make('Rata-rata Penjualan Harian', number_format($average, 0))
                 ->description('Sejak awal bulan')
-                ->icon('heroicon-o-calculator')
+                ->icon('heroicon-o-calculator') // ✅ ini benar
                 ->color('info'),
+
             Stat::make('Pertumbuhan Pendapatan', number_format($growth, 2) . '%')
                 ->description('vs Bulan Lalu')
                 ->color($growth >= 0 ? 'success' : 'danger')
-                ->icon('heroicon-o-trending-up'),
+                ->icon('heroicon-o-arrow-trending-up'), // ✅ ini sudah diperbaiki
+
             Stat::make('Penjualan Hari Ini', number_format($salesToday, 0))
                 ->description('Update harian')
-                ->icon('heroicon-o-currency-dollar')
+                ->icon('heroicon-o-currency-dollar') // ✅ ini benar
                 ->color('success'),
         ];
     }
