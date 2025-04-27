@@ -49,8 +49,6 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 BestSellingProductsThisWeek::class,
                 AverageDailySales::class,
-                TodaySales::class,
-                RevenueGrowth::class,
                 SalesByCategory::class,
                 DebtTrendChart::class,
                 LowStockAlert::class,
