@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Resources\ProductResource\Widgets;
 
 use App\Models\Transactions;
 use Filament\Widgets\StatsOverviewWidget\Card;
