@@ -7,10 +7,11 @@ use App\Models\Transactions;
 use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Exports\TransactionLogExporter;
+use Filament\Tables\Actions\ExportAction;
 
 class TransactionLogResource extends Resource
 {
@@ -63,12 +64,10 @@ class TransactionLogResource extends Resource
                     }),
             ])
             ->headerActions([
-                ExportAction::make('export')
-                    ->label('Export Data')
-                    ->color('primary')
-                    ->visible(true),
+                ExportAction::make()
+                    ->exporter(TransactionLogExporter::class)
             ])
-            ->actions([]) // Tidak ada edit/delete di admin
+            ->actions([])
             ->bulkActions([]);
     }
 
