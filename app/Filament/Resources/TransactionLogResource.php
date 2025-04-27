@@ -3,19 +3,14 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TransactionLogResource\Pages;
-use App\Filament\Resources\TransactionLogResource\RelationManagers;
-use App\Models\TransactionLog;
 use App\Models\Transactions;
-use Filament\Actions\ExportAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\ExportAction as ActionsExportAction;
+use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TransactionLogResource extends Resource
 {
@@ -70,7 +65,7 @@ class TransactionLogResource extends Resource
             ->headerActions([
                 ExportAction::make()
                     ->label('Export Data')
-                    ->exporter(ActionsExportAction::class)
+                    ->exporter(ExportAction::class)
                     ->color('primary'),
             ])
             ->actions([]) // Tidak ada edit/delete di admin
