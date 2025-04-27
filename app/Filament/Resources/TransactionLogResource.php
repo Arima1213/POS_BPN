@@ -63,10 +63,10 @@ class TransactionLogResource extends Resource
                     }),
             ])
             ->headerActions([
-                ExportAction::make()
+                ExportAction::make('export')
                     ->label('Export Data')
-                    ->exporter(ExportAction::class)
-                    ->color('primary'),
+                    ->color('primary')
+                    ->visible(true),
             ])
             ->actions([]) // Tidak ada edit/delete di admin
             ->bulkActions([]);
