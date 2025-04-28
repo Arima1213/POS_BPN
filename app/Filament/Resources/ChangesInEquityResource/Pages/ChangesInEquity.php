@@ -32,17 +32,19 @@ class ChangesInEquity extends Page
 
     public function getEquityReport(): array
     {
-        $akunModal = ChartOfAccount::where('nama', 'Modal')->first();
-        $akunPrive = ChartOfAccount::where('nama', 'Prive')->first();
+        $akunModal = ChartOfAccount::where('kode', '3000')->first();
+        $akunPrive = ChartOfAccount::where('kode', '3010')->first();
 
         $modalAwal = $this->getSaldoAkun($akunModal?->id, '<', $this->from);
+        $penambahanModal = $this->getMutasi($akunModal?->id); // TAMBAHKAN
         $totalPrive = $this->getMutasi($akunPrive?->id);
         $labaBersih = $this->getLabaBersih();
 
-        $modalAkhir = $modalAwal + $labaBersih - $totalPrive;
+        $modalAkhir = $modalAwal + $penambahanModal + $labaBersih - $totalPrive;
 
         return [
             'modal_awal' => $modalAwal,
+            'penambahan_modal' => $penambahanModal, // BISA DITAMPILKAN JUGA
             'laba_bersih' => $labaBersih,
             'prive' => $totalPrive,
             'modal_akhir' => $modalAkhir,

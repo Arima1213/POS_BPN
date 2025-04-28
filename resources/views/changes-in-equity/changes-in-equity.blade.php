@@ -15,6 +15,10 @@
                 <td class="border px-2 py-1 text-right">{{ number_format($reportData['modal_awal'] ?? 0, 2, ',', '.') }}</td>
             </tr>
             <tr>
+                <td class="border px-2 py-1">Penambahan Modal</td>
+                <td class="border px-2 py-1 text-right">{{ number_format($reportData['penambahan_modal'] ?? 0, 2, ',', '.') }}</td>
+            </tr>
+            <tr>
                 <td class="border px-2 py-1">Laba Bersih</td>
                 <td class="border px-2 py-1 text-right">{{ number_format($reportData['laba_bersih'] ?? 0, 2, ',', '.') }}</td>
             </tr>
