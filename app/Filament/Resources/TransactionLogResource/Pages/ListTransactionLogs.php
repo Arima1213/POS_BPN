@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\TransactionLogResource\Pages;
 
+use App\Filament\Exports\TransactionLogExporter;
 use App\Filament\Resources\TransactionLogResource;
 use Filament\Actions;
+use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Resources\Pages\ListRecords;
 
 class ListTransactionLogs extends ListRecords
@@ -14,6 +16,8 @@ class ListTransactionLogs extends ListRecords
     {
         return [
             // Actions\CreateAction::make(),
+            Actions\ExportAction::make()
+                ->exporter(TransactionLogExporter::class)
         ];
     }
 }

@@ -11,7 +11,9 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Exports\TransactionLogExporter;
+use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
 
 class TransactionLogResource extends Resource
 {
@@ -63,12 +65,19 @@ class TransactionLogResource extends Resource
                             ->when($data['until'], fn($q) => $q->whereDate('created_at', '<=', $data['until']));
                     }),
             ])
-            ->headerActions([
-                ExportAction::make()
-                    ->exporter(TransactionLogExporter::class)
-            ])
+            // ->headerActions([
+            //     ExportAction::make()
+            //         ->exporter(TransactionLogExporter::class)
+            //         ->formats([
+            //             ExportFormat::Xlsx,
+            //             ExportFormat::Csv,
+            //         ])
+            // ])
             ->actions([])
-            ->bulkActions([]);
+            ->bulkActions([
+                ExportBulkAction::make()
+                    ->exporter(TransactionLogExporter::class)
+            ]);
     }
 
     public static function getPages(): array
