@@ -20,4 +20,9 @@ class Procurement extends Model
     {
         return $this->belongsTo(Supplier::class);
     }
+
+    public function stock()
+    {
+        return $this->belongsTo(Stock::class, 'product_id', 'product_id');
+    }
 }
