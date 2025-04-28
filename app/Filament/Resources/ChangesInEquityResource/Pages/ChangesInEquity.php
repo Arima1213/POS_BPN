@@ -16,22 +16,28 @@ class ChangesInEquity extends Page
     public $from;
     public $until;
 
+    public $reportData = [];
+
     public function mount(): void
     {
         $this->from = now()->startOfMonth()->toDateString();
         $this->until = now()->endOfMonth()->toDateString();
+        $this->loadReport();
     }
 
-    public function getEquityReport()
+    public function loadReport(): void
     {
-        // Ambil akun modal, prive, dan laba ditahan
+        $this->reportData = $this->getEquityReport();
+    }
+
+    public function getEquityReport(): array
+    {
         $akunModal = ChartOfAccount::where('nama', 'Modal')->first();
         $akunPrive = ChartOfAccount::where('nama', 'Prive')->first();
-        $akunLaba = ChartOfAccount::where('nama', 'Laba Ditahan')->first();
 
         $modalAwal = $this->getSaldoAkun($akunModal?->id, '<', $this->from);
         $totalPrive = $this->getMutasi($akunPrive?->id);
-        $labaBersih = $this->getMutasi($akunLaba?->id);
+        $labaBersih = $this->getLabaBersih();
 
         $modalAkhir = $modalAwal + $labaBersih - $totalPrive;
 
@@ -63,5 +69,28 @@ class ChangesInEquity extends Page
             ->whereHas('jurnal', fn($q) => $q->where('tanggal', $operator, $date ?? $this->from))
             ->get()
             ->sum(fn($d) => $d->tipe === 'debit' ? -$d->jumlah : $d->jumlah);
+    }
+
+    protected function getLabaBersih(): float
+    {
+        $pendapatan = JournalEntryDetail::whereHas('akun', function ($q) {
+            $q->where('kelompok', 'pendapatan');
+        })
+            ->whereHas('jurnal', function ($q) {
+                $q->whereBetween('tanggal', [$this->from, $this->until]);
+            })
+            ->get()
+            ->sum(fn($d) => $d->tipe === 'kredit' ? $d->jumlah : -$d->jumlah);
+
+        $beban = JournalEntryDetail::whereHas('akun', function ($q) {
+            $q->where('kelompok', 'beban');
+        })
+            ->whereHas('jurnal', function ($q) {
+                $q->whereBetween('tanggal', [$this->from, $this->until]);
+            })
+            ->get()
+            ->sum(fn($d) => $d->tipe === 'debit' ? $d->jumlah : -$d->jumlah);
+
+        return $pendapatan - $beban;
     }
 }
