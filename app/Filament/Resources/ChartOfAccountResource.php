@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Exports\TransactionLogExporter;
+use App\Filament\Exports\ChartOfAccountExporter;
 use App\Filament\Resources\ChartOfAccountResource\Pages;
 use App\Models\ChartOfAccount;
 use Filament\Forms;
@@ -112,7 +112,7 @@ class ChartOfAccountResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(TransactionLogExporter::class),
+                    ->exporter(ChartOfAccountExporter::class),
             ]);
     }
 

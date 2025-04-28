@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\JournalEntryExporter;
 use App\Filament\Resources\JournalEntryResource\Pages;
 use App\Models\ChartOfAccount;
 use App\Models\JournalEntry;
@@ -21,6 +22,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\{TextColumn, BadgeColumn};
 
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\ExportBulkAction;
 
 class JournalEntryResource extends Resource
 {
@@ -132,6 +134,8 @@ class JournalEntryResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                ExportBulkAction::make()
+                    ->exporter(JournalEntryExporter::class),
             ]);
     }
 
