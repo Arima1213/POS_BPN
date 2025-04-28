@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ProductStocksResource\Widgets;
 
+use App\Models\ProductStock;
 use App\Models\Stock;
 use Filament\Widgets\ChartWidget;
 
@@ -17,6 +18,6 @@ class LowStockAlert extends ChartWidget
 
     public function getStocks()
     {
-        return Stock::with('product')->whereColumn('quantity', '<=', 'minimum_stock')->get();
+        return ProductStock::with('product')->whereColumn('current_stock', '<=', 'minimum_stock')->get();
     }
 }

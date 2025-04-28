@@ -3,6 +3,10 @@
 namespace App\Filament\Resources\ProcurementResource\Pages;
 
 use App\Filament\Resources\ProcurementResource;
+use App\Models\ChartOfAccount;
+use App\Models\JournalEntry;
+use App\Models\JournalEntryDetail;
+use App\Models\ProductStock;
 use App\Models\Stock;
 use App\Models\StockHistory;
 use Filament\Resources\Pages\CreateRecord;
@@ -16,12 +20,13 @@ class CreateProcurement extends CreateRecord
         $procurement = $this->record;
 
         // --- Update stock
-        $stock = Stock::firstOrCreate(
+        $stock = ProductStock::firstOrCreate(
             ['product_id' => $procurement->product_id],
-            ['quantity' => 0, 'minimum_stock' => 0]
+            ['current_stock' => 0, 'minimum_stock' => 0]
         );
 
-        $stock->increment('quantity', $procurement->quantity);
+        $stock->current_stock += $procurement->quantity;
+        $stock->save();
 
         // --- Simpan ke stock history
         StockHistory::create([
@@ -35,27 +40,27 @@ class CreateProcurement extends CreateRecord
         $totalAmount = $procurement->price * $procurement->quantity;
 
         // Cari akun persediaan
-        $inventoryAccount = \App\Models\ChartOfAccount::where('nama', 'Persediaan Pupuk dan Benih')->first();
+        $inventoryAccount = ChartOfAccount::where('nama', 'Persediaan Pupuk dan Benih')->first();
         if (!$inventoryAccount) {
             throw new \Exception('Akun Persediaan belum ada, silakan tambah ke Chart of Accounts.');
         }
 
         // Cari akun kas kecil
-        $cashAccount = \App\Models\ChartOfAccount::where('nama', 'Kas Kecil')->first();
+        $cashAccount = ChartOfAccount::where('nama', 'Kas Kecil')->first();
         if (!$cashAccount) {
             throw new \Exception('Akun Kas Kecil belum ada, silakan tambah ke Chart of Accounts.');
         }
 
         // Buat entri jurnal
-        $journal = \App\Models\JournalEntry::create([
+        $journal = JournalEntry::create([
             'tanggal' => now(),
             'kode' => 'PRC-' . now()->format('Ymd') . '-' . $procurement->id,
             'keterangan' => 'Pengadaan Barang #' . $procurement->id,
-            'kategori' => 'pengadaan',
+            'kategori' => 'aset',
         ]);
 
         // Buat detail debit (nambah aset persediaan)
-        \App\Models\JournalEntryDetail::create([
+        JournalEntryDetail::create([
             'journal_entry_id' => $journal->id,
             'chart_of_account_id' => $inventoryAccount->id,
             'tipe' => 'debit',
