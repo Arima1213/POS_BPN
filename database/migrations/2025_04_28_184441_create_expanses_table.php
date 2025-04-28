@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('tanggal');
             $table->string('deskripsi');
-            $table->foreignId('akun_beban_id')->constrained('accounts'); // akun biaya
+            $table->foreignId('akun_beban_id')->constrained('chart_of_accounts')->onDelete('restrict');
             $table->decimal('jumlah', 20, 2);
             $table->timestamps();
         });

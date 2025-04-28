@@ -17,13 +17,28 @@ class ExpanseResource extends Resource
 {
     protected static ?string $model = Expanse::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    // protected static ?string $navigationIcon = 'heroicon-o-cash';
+    protected static ?string $navigationLabel = 'Beban Operasional';
+    protected static ?string $pluralLabel = 'Beban Operasional';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Forms\Components\DatePicker::make('tanggal')
+                    ->required(),
+                Forms\Components\TextInput::make('deskripsi')
+                    ->required(),
+                Forms\Components\Select::make('akun_beban_id')
+                    ->label('Akun Beban')
+                    ->options(
+                        \App\Models\ChartOfAccount::where('kelompok', 'beban')->orderBy('kode')->pluck('nama', 'id')
+                    )
+                    ->required()
+                    ->native(false),
+                Forms\Components\TextInput::make('jumlah')
+                    ->numeric()
+                    ->required(),
             ]);
     }
 
@@ -31,26 +46,43 @@ class ExpanseResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('tanggal')
+                    ->label('Tanggal')
+                    ->date()
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('deskripsi')
+                    ->label('Deskripsi')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('akunBeban.nama')
+                    ->label('Akun Beban')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('jumlah')
+                    ->label('Jumlah')
+                    ->money('IDR')
+                    ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('tanggal')
+                    ->form([
+                        Forms\Components\DatePicker::make('from')->label('Dari'),
+                        Forms\Components\DatePicker::make('to')->label('Sampai'),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        return $query
+                            ->when($data['from'], fn(Builder $query, $date) => $query->whereDate('tanggal', '>=', $date))
+                            ->when($data['to'], fn(Builder $query, $date) => $query->whereDate('tanggal', '<=', $date));
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
+                Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->defaultSort('tanggal', 'desc');
     }
 
     public static function getPages(): array
