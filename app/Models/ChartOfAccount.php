@@ -19,4 +19,9 @@ class ChartOfAccount extends Model
         'jenis_beban',
         'deskripsi',
     ];
+
+    public function journalEntryDetails()
+    {
+        return $this->hasMany(JournalEntryDetail::class, 'chart_of_account_id');
+    }
 }

@@ -50,7 +50,9 @@ class IncomeStatement extends Page
             ->groupBy('akun.id')
             ->map(function ($items) {
                 $akun = $items->first()->akun;
-                $total = $items->sum(fn($i) => $i->kredit - $i->debit);
+                $total = $items->sum(function ($i) {
+                    return $i->tipe === 'kredit' ? $i->jumlah : -$i->jumlah;
+                });
                 return compact('akun', 'total');
             });
 
@@ -58,7 +60,9 @@ class IncomeStatement extends Page
             ->groupBy('akun.id')
             ->map(function ($items) {
                 $akun = $items->first()->akun;
-                $total = $items->sum(fn($i) => $i->debit - $i->kredit);
+                $total = $items->sum(function ($i) {
+                    return $i->tipe === 'debit' ? $i->jumlah : -$i->jumlah;
+                });
                 return compact('akun', 'total');
             });
 
