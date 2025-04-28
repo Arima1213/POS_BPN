@@ -25,9 +25,15 @@ use Filament\Resources\Resource;
 class JournalEntryResource extends Resource
 {
     protected static ?string $model = JournalEntry::class;
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+
+    protected static ?string $navigationIcon = 'heroicon-o-pencil-square';
+    protected static ?string $label = 'Pencatatan Jurnal';
+    protected static ?string $pluralLabel = 'Pencatatan Jurnal';
+    protected static ?string $slug = 'pencatatan-jurnal';
     protected static ?string $navigationLabel = 'Pencatatan Jurnal';
     protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?int $navigationSort = 1;
+
 
     public static function form(Form $form): Form
     {

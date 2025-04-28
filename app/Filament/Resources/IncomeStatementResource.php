@@ -12,12 +12,14 @@ class IncomeStatementResource extends Resource
 {
     protected static ?string $model = JournalEntry::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-line';
     protected static ?string $label = 'Laba Rugi';
     protected static ?string $pluralLabel = 'Laba Rugi';
-    protected static ?string $slug = 'income-statement';
+    protected static ?string $slug = 'laba-rugi';
     protected static ?string $navigationLabel = 'Laba Rugi';
     protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?int $navigationSort = 6;
+
 
     public static function table(Table $table): Table
     {

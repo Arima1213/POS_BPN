@@ -15,12 +15,14 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class BalanceSheetResource extends Resource
 {
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
     protected static ?string $label = 'Posisi Keuangan';
     protected static ?string $pluralLabel = 'Posisi Keuangan';
-    protected static ?string $slug = 'balance-sheet';
+    protected static ?string $slug = 'posisi-keuangan';
     protected static ?string $navigationLabel = 'Posisi Keuangan';
     protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?int $navigationSort = 4;
+
 
     public static function getPages(): array
     {

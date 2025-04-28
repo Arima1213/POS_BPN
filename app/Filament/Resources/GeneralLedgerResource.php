@@ -10,12 +10,14 @@ class GeneralLedgerResource extends Resource
 {
     protected static ?string $model = JournalEntry::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
     protected static ?string $label = 'Buku Besar';
     protected static ?string $pluralLabel = 'Buku Besar';
-    protected static ?string $slug = 'general-ledger';
+    protected static ?string $slug = 'buku-besar';
     protected static ?string $navigationLabel = 'Buku Besar';
     protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?int $navigationSort = 2;
+
 
     public static function getRelations(): array
     {
