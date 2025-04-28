@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\ExpanseExporter;
 use App\Filament\Resources\ExpanseResource\Pages;
 use App\Filament\Resources\ExpanseResource\RelationManagers;
 use App\Models\Expanse;
@@ -9,6 +10,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ExportBulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -81,6 +83,9 @@ class ExpanseResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                ExportBulkAction::make()
+                    ->exporter(ExpanseExporter::class)
+
             ])
             ->defaultSort('tanggal', 'desc');
     }
