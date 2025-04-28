@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ProductStocksResource\Pages;
 
 use App\Filament\Resources\ProductStocksResource;
+use App\Models\StockHistory;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 

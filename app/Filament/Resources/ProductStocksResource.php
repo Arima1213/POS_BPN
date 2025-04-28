@@ -5,16 +5,13 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProductStocksResource\Pages;
 use App\Models\ProductStock;
 use App\Models\Product;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Placeholder;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Support\Str;
 
 class ProductStocksResource extends Resource
 {
@@ -33,7 +30,8 @@ class ProductStocksResource extends Resource
                     ->label('Product')
                     ->options(Product::all()->pluck('name', 'id'))
                     ->searchable()
-                    ->required(),
+                    ->required()
+                    ->hidden(),
 
                 TextInput::make('current_stock')
                     ->label('Current Stock')
@@ -83,14 +81,25 @@ class ProductStocksResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->tooltip('Edit stock information'),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('view_history')
+                    ->label('Stock History')
+                    ->icon('heroicon-o-clock')
+                    ->modalHeading('Stock Change History')
+                    ->modalSubmitAction(false) // tidak perlu tombol submit
+                    ->modalCancelActionLabel('Close') // tombol close saja
+                    ->modalContent(function ($record) {
+                        return view('product-stock-history-modal', [
+                            'histories' => $record->stockHistories()->latest()->get(),
+                        ]);
+                    })
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Tutup'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
