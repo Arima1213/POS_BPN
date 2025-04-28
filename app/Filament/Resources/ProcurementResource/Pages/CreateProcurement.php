@@ -15,7 +15,7 @@ class CreateProcurement extends CreateRecord
     {
         $procurement = $this->record;
 
-        // Update stock
+        // --- Update stock
         $stock = Stock::firstOrCreate(
             ['product_id' => $procurement->product_id],
             ['quantity' => 0, 'minimum_stock' => 0]
@@ -23,12 +23,53 @@ class CreateProcurement extends CreateRecord
 
         $stock->increment('quantity', $procurement->quantity);
 
-        // Simpan ke stock history
+        // --- Simpan ke stock history
         StockHistory::create([
             'product_id' => $procurement->product_id,
             'type' => 'in', // masuk
             'quantity' => $procurement->quantity,
             'note' => 'Pengadaan Barang #' . $procurement->id,
+        ]);
+
+        // --- Catat ke jurnal akuntansi
+        $totalAmount = $procurement->price * $procurement->quantity;
+
+        // Cari akun persediaan
+        $inventoryAccount = \App\Models\ChartOfAccount::where('nama', 'Persediaan Pupuk dan Benih')->first();
+        if (!$inventoryAccount) {
+            throw new \Exception('Akun Persediaan belum ada, silakan tambah ke Chart of Accounts.');
+        }
+
+        // Cari akun kas kecil
+        $cashAccount = \App\Models\ChartOfAccount::where('nama', 'Kas Kecil')->first();
+        if (!$cashAccount) {
+            throw new \Exception('Akun Kas Kecil belum ada, silakan tambah ke Chart of Accounts.');
+        }
+
+        // Buat entri jurnal
+        $journal = \App\Models\JournalEntry::create([
+            'tanggal' => now(),
+            'kode' => 'PRC-' . now()->format('Ymd') . '-' . $procurement->id,
+            'keterangan' => 'Pengadaan Barang #' . $procurement->id,
+            'kategori' => 'pengadaan',
+        ]);
+
+        // Buat detail debit (nambah aset persediaan)
+        \App\Models\JournalEntryDetail::create([
+            'journal_entry_id' => $journal->id,
+            'chart_of_account_id' => $inventoryAccount->id,
+            'tipe' => 'debit',
+            'jumlah' => $totalAmount,
+            'deskripsi' => 'Penambahan stok produk ID #' . $procurement->product_id,
+        ]);
+
+        // Buat detail kredit (mengurangi kas kecil)
+        \App\Models\JournalEntryDetail::create([
+            'journal_entry_id' => $journal->id,
+            'chart_of_account_id' => $cashAccount->id,
+            'tipe' => 'kredit',
+            'jumlah' => $totalAmount,
+            'deskripsi' => 'Pembayaran pengadaan produk ID #' . $procurement->product_id,
         ]);
     }
 }
