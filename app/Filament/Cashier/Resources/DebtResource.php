@@ -105,19 +105,19 @@ class DebtResource extends Resource
                         // Debit: Pembayaran Piutang (kode akun 1022)
                         JournalEntryDetail::create([
                             'journal_entry_id' => $journal->id,
-                            'chart_of_account_id' => ChartOfAccount::where('kode', '1000')->value('id'),
-                            'tipe' => 'kredit',
+                            'chart_of_account_id' => ChartOfAccount::where('kode', '1022')->value('id'),
+                            'tipe' => 'debit',
                             'jumlah' => $data['amount'],
-                            'deskripsi' => 'Pemasukan kas oleh pembayaran piutang Debt ID ' . $record->id,
+                            'deskripsi' => 'Pembayaran piutang untuk Debt ID ' . $record->id,
                         ]);
 
                         // Kredit: Kas Kecil (kode akun 1000)
                         JournalEntryDetail::create([
                             'journal_entry_id' => $journal->id,
-                            'chart_of_account_id' => ChartOfAccount::where('kode', '1022')->value('id'),
-                            'tipe' => 'debit',
+                            'chart_of_account_id' => ChartOfAccount::where('kode', '1000')->value('id'),
+                            'tipe' => 'kredit',
                             'jumlah' => $data['amount'],
-                            'deskripsi' => 'Pembayaran piutang untuk Debt ID ' . $record->id,
+                            'deskripsi' => 'Pemasukan kas oleh pembayaran piutang Debt ID ' . $record->id,
                         ]);
 
                         Notification::make()
