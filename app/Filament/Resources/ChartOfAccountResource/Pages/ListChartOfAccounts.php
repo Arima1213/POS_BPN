@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ChartOfAccountResource\Pages;
 
+use App\Filament\Exports\ChartOfAccountExporter;
 use App\Filament\Resources\ChartOfAccountResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
@@ -14,6 +15,8 @@ class ListChartOfAccounts extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+            Actions\ExportAction::make()
+                ->exporter(ChartOfAccountExporter::class),
         ];
     }
 }
