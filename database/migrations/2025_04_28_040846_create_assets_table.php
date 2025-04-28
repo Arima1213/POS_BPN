@@ -15,14 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('asset_name');
             $table->string('asset_code')->unique();
-            $table->string('category');
             $table->text('description')->nullable();
             $table->decimal('purchase_price', 20, 2);
             $table->date('purchase_date');
             $table->integer('useful_life_years');
             $table->decimal('residual_value', 20, 2)->default(0);
             $table->string('location')->nullable();
-            $table->string('status')->default('active');
+            $table->enum('category', ['vehicle', 'office_equipment', 'building', 'land', 'others']);
+            $table->enum('status', ['active', 'sold', 'damaged', 'lost', 'retired'])->default('active');
             $table->unsignedBigInteger('journal_entry_id')->nullable(); // Relasi ke Journal Entry
             $table->timestamps();
         });
