@@ -22,12 +22,13 @@ class BalanceSheets extends Page
 
     public function getBalanceSheetData()
     {
-        $accounts = ChartOfAccount::all()->groupBy('kategori');
+        // Group by kelompok (aset, kewajiban, ekuitas, pendapatan, beban)
+        $accounts = ChartOfAccount::orderBy('kode')->get()->groupBy('kelompok');
 
         $data = [];
 
-        foreach ($accounts as $kategori => $akunList) {
-            $kategoriTotal = 0;
+        foreach ($accounts as $kelompok => $akunList) {
+            $kelompokTotal = 0;
             $rows = [];
 
             foreach ($akunList as $akun) {
@@ -40,9 +41,14 @@ class BalanceSheets extends Page
                 $debit = $details->where('tipe', 'debit')->sum('jumlah');
                 $kredit = $details->where('tipe', 'kredit')->sum('jumlah');
 
-                $saldo = $akun->jenis_saldo === 'debit' ? $debit - $kredit : $kredit - $debit;
+                // Saldo normal: debit untuk aset/beban, kredit untuk kewajiban/ekuitas/pendapatan
+                if (in_array($akun->kelompok, ['aset', 'beban'])) {
+                    $saldo = $debit - $kredit;
+                } else {
+                    $saldo = $kredit - $debit;
+                }
 
-                $kategoriTotal += $saldo;
+                $kelompokTotal += $saldo;
 
                 $rows[] = [
                     'akun' => $akun,
@@ -51,9 +57,9 @@ class BalanceSheets extends Page
             }
 
             $data[] = [
-                'kategori' => $kategori,
+                'kelompok' => $kelompok,
                 'rows' => $rows,
-                'total' => $kategoriTotal,
+                'total' => $kelompokTotal,
             ];
         }
 

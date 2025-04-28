@@ -6,9 +6,9 @@
         </div>
     </form>
 
-    @foreach ($this->getBalanceSheetData() as $kategori)
+    @foreach ($this->getBalanceSheetData() as $kelompok)
         <div class="mb-6 border rounded p-4 shadow">
-            <h2 class="font-bold text-lg mb-3">{{ strtoupper($kategori['kategori']) }}</h2>
+            <h2 class="font-bold text-lg mb-3">{{ strtoupper($kelompok['kelompok']) }}</h2>
             <table class="w-full text-sm border">
                 <thead>
                     <tr>
@@ -17,15 +17,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($kategori['rows'] as $row)
+                    @foreach ($kelompok['rows'] as $row)
                         <tr>
                             <td class="border px-2 py-1">{{ $row['akun']->kode }} - {{ $row['akun']->nama }}</td>
                             <td class="border px-2 py-1 text-right">{{ number_format($row['saldo'], 2, ',', '.') }}</td>
                         </tr>
                     @endforeach
-                    <tr class="font-bold ">
-                        <td class="border px-2 py-1 text-right">Total {{ $kategori['kategori'] }}</td>
-                        <td class="border px-2 py-1 text-right">{{ number_format($kategori['total'], 2, ',', '.') }}</td>
+                    <tr class="font-bold">
+                        <td class="border px-2 py-1 text-right">Total {{ ucfirst($kelompok['kelompok']) }}</td>
+                        <td class="border px-2 py-1 text-right">{{ number_format($kelompok['total'], 2, ',', '.') }}</td>
                     </tr>
                 </tbody>
             </table>
