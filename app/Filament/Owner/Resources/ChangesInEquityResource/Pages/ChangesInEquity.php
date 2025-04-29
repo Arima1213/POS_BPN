@@ -10,7 +10,6 @@ use Filament\Resources\Pages\Page;
 class ChangesInEquity extends Page
 {
     protected static string $resource = ChangesInEquityResource::class;
-
     protected static string $view = 'changes-in-equity.changes-in-equity';
 
     public $from;
@@ -36,31 +35,19 @@ class ChangesInEquity extends Page
         $akunPrive = ChartOfAccount::where('kode', '3010')->first();
 
         $modalAwal = $this->getSaldoAkun($akunModal?->id, '<', $this->from);
-        $penambahanModal = $this->getMutasi($akunModal?->id); // TAMBAHKAN
-        $totalPrive = $this->getMutasi($akunPrive?->id);
+        $penambahanModal = $this->getMutasiModal($akunModal?->id); // Mutasi selama periode
+        $totalPrive = $this->getTotalPrive($akunPrive?->id);
         $labaBersih = $this->getLabaBersih();
 
         $modalAkhir = $modalAwal + $penambahanModal + $labaBersih - $totalPrive;
 
         return [
             'modal_awal' => $modalAwal,
-            'penambahan_modal' => $penambahanModal, // BISA DITAMPILKAN JUGA
+            'penambahan_modal' => $penambahanModal,
             'laba_bersih' => $labaBersih,
             'prive' => $totalPrive,
             'modal_akhir' => $modalAkhir,
         ];
-    }
-
-    protected function getMutasi($akunId)
-    {
-        if (!$akunId) return 0;
-
-        return JournalEntryDetail::where('chart_of_account_id', $akunId)
-            ->whereHas('jurnal', function ($q) {
-                $q->whereBetween('tanggal', [$this->from, $this->until]);
-            })
-            ->get()
-            ->sum(fn($d) => $d->tipe === 'debit' ? -$d->jumlah : $d->jumlah);
     }
 
     protected function getSaldoAkun($akunId, $operator = '<', $date = null)
@@ -71,6 +58,27 @@ class ChangesInEquity extends Page
             ->whereHas('jurnal', fn($q) => $q->where('tanggal', $operator, $date ?? $this->from))
             ->get()
             ->sum(fn($d) => $d->tipe === 'debit' ? -$d->jumlah : $d->jumlah);
+    }
+
+    protected function getMutasiModal($akunId)
+    {
+        if (!$akunId) return 0;
+
+        return JournalEntryDetail::where('chart_of_account_id', $akunId)
+            ->whereHas('jurnal', fn($q) => $q->whereBetween('tanggal', [$this->from, $this->until]))
+            ->get()
+            ->sum(fn($d) => $d->tipe === 'debit' ? -$d->jumlah : $d->jumlah);
+    }
+
+    protected function getTotalPrive($akunId)
+    {
+        if (!$akunId) return 0;
+
+        // Karena prive normalnya bertipe debit, kita ambil semua yang bertipe debit (penarikan prive)
+        return JournalEntryDetail::where('chart_of_account_id', $akunId)
+            ->where('tipe', 'debit')
+            ->whereHas('jurnal', fn($q) => $q->whereBetween('tanggal', [$this->from, $this->until]))
+            ->sum('jumlah');
     }
 
     protected function getLabaBersih(): float
