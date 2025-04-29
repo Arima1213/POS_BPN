@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Filament\Resources\OwnerTransactionResource\Pages;
+namespace App\Filament\Owner\Resources\TransactionResource\Pages;
 
-use App\Filament\Resources\OwnerTransactionResource;
+use App\Filament\Owner\Resources\TransactionResource;
+use Filament\Actions;
 use App\Models\ChartOfAccount;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryDetail;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreateOwnerTransaction extends CreateRecord
+class CreateTransaction extends CreateRecord
 {
-    protected static string $resource = OwnerTransactionResource::class;
+    protected static string $resource = TransactionResource::class;
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         return $data;

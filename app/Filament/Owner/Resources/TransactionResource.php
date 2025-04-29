@@ -1,19 +1,16 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Owner\Resources;
 
-use App\Filament\Resources\OwnerTransactionResource\Pages;
-use App\Filament\Resources\OwnerTransactionResource\RelationManagers;
+use App\Filament\Owner\Resources\TransactionResource\Pages;
 use App\Models\OwnerTransaction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class OwnerTransactionResource extends Resource
+class TransactionResource extends Resource
 {
     protected static ?string $model = OwnerTransaction::class;
     protected static ?string $navigationIcon = 'heroicon-o-hand-raised';
@@ -81,9 +78,9 @@ class OwnerTransactionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListOwnerTransactions::route('/'),
-            'create' => Pages\CreateOwnerTransaction::route('/create'),
-            'edit' => Pages\EditOwnerTransaction::route('/{record}/edit'),
+            'index' => Pages\ListTransactions::route('/'),
+            'create' => Pages\CreateTransaction::route('/create'),
+            'edit' => Pages\EditTransaction::route('/{record}/edit'),
         ];
     }
 }
