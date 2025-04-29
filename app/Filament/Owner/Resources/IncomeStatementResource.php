@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Owner\Resources;
 
-use App\Filament\Resources\IncomeStatementResource\Pages;
+use App\Filament\Owner\Resources\IncomeStatementResource\Pages;
 use App\Models\JournalEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;

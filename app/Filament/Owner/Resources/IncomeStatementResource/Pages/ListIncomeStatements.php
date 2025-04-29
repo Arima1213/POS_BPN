@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\IncomeStatementResource\Pages;
+namespace App\Filament\Owner\Resources\IncomeStatementResource\Pages;
 
-use App\Filament\Resources\IncomeStatementResource;
+use App\Filament\Owner\Resources\IncomeStatementResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -13,7 +13,7 @@ class ListIncomeStatements extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            // Actions\CreateAction::make(),
+            Actions\CreateAction::make(),
         ];
     }
 }

@@ -24,7 +24,7 @@
             </tr>
             <tr>
                 <td class="border px-2 py-1">Prive</td>
-                <td class="border px-2 py-1 text-right">({{ number_format($reportData['prive'] ?? 0, 2, ',', '.') }})</td>
+                <td class="border px-2 py-1 text-right">{{ number_format($reportData['totalPrive'] ?? 0, 2, ',', '.') }}</td>
             </tr>
             <tr class="font-bold">
                 <td class="border px-2 py-1">Modal Akhir</td>

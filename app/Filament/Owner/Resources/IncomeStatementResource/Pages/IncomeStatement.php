@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\IncomeStatementResource\Pages;
+namespace App\Filament\Owner\Resources\IncomeStatementResource\Pages;
 
-use App\Filament\Resources\IncomeStatementResource;
+use App\Filament\Owner\Resources\IncomeStatementResource;
 use App\Models\JournalEntryDetail;
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Collection;
