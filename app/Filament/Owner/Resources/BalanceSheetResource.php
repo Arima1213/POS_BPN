@@ -20,7 +20,7 @@ class BalanceSheetResource extends Resource
     protected static ?string $pluralLabel = 'Posisi Keuangan';
     protected static ?string $slug = 'posisi-keuangan';
     protected static ?string $navigationLabel = 'Posisi Keuangan';
-    protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?string $navigationGroup = 'Laporan Keuangan';
     protected static ?int $navigationSort = 4;
 
 

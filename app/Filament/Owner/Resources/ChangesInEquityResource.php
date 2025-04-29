@@ -12,7 +12,7 @@ class ChangesInEquityResource extends Resource
     protected static ?string $pluralLabel = 'Perubahan Ekuitas';
     protected static ?string $slug = 'perubahan-ekuitas';
     protected static ?string $navigationLabel = 'Perubahan Ekuitas';
-    protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?string $navigationGroup = 'Laporan Keuangan';
     protected static ?int $navigationSort = 5;
 
 
