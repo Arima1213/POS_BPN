@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Owner\Resources\TransactionLogResource\Widgets\TotalBiayaOperasional;
 use App\Filament\Owner\Resources\TransactionLogResource\Widgets\TotalPendapatanBulanIni;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -41,6 +42,7 @@ class OwnerPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Owner/Widgets'), for: 'App\\Filament\\Owner\\Widgets')
             ->widgets([
                 TotalPendapatanBulanIni::class,
+                TotalBiayaOperasional::class,
             ])
             ->middleware([
                 EncryptCookies::class,
