@@ -22,6 +22,8 @@ class ExpanseResource extends Resource
     // protected static ?string $navigationIcon = 'heroicon-o-cash';
     protected static ?string $navigationLabel = 'Beban Operasional';
     protected static ?string $pluralLabel = 'Beban Operasional';
+    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
+    protected static ?string $navigationGroup = 'Inventaris';
 
     public static function form(Form $form): Form
     {

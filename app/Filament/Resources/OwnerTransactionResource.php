@@ -21,7 +21,7 @@ class OwnerTransactionResource extends Resource
     protected static ?string $pluralLabel = 'Transaksi Pemilik';
     protected static ?string $slug = 'transaksi-pemilik';
     protected static ?string $navigationLabel = 'Transaksi Pemilik';
-    protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?string $navigationGroup = 'Inventaris';
 
 
     public static function form(Form $form): Form
