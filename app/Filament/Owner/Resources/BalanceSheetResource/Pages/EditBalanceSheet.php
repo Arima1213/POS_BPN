@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\BalanceSheetResource\Pages;
+namespace App\Filament\Owner\Resources\BalanceSheetResource\Pages;
 
-use App\Filament\Resources\BalanceSheetResource;
+use App\Filament\Owner\Resources\BalanceSheetResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Owner\Resources;
 
-use App\Filament\Resources\BalanceSheetResource\Pages;
-use App\Filament\Resources\BalanceSheetResource\RelationManagers;
+use App\Filament\Owner\Resources\BalanceSheetResource\Pages;
+use App\Filament\Owner\Resources\BalanceSheetResource\RelationManagers;
 use App\Models\BalanceSheet;
 use Filament\Forms;
 use Filament\Forms\Form;
