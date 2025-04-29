@@ -3,15 +3,7 @@
 namespace App\Filament\Owner\Resources;
 
 use App\Filament\Owner\Resources\TrialBalanceResource\Pages;
-use App\Filament\Owner\Resources\TrialBalanceResource\RelationManagers;
-use App\Models\TrialBalance;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TrialBalanceResource extends Resource
 {
