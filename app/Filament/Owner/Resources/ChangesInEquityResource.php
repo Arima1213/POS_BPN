@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Owner\Resources;
 
 use App\Filament\Resources\ChangesInEquityResource\Pages;
 use App\Filament\Resources\ChangesInEquityResource\RelationManagers;

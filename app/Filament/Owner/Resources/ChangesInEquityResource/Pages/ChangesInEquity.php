@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\ChangesInEquityResource\Pages;
+namespace App\Filament\Cashier\Resources\ChangesInEquityResource\Pages;
 
-use App\Filament\Resources\ChangesInEquityResource;
+use App\Filament\Owner\Resources\ChangesInEquityResource;
 use App\Models\ChartOfAccount;
 use App\Models\JournalEntryDetail;
 use Filament\Resources\Pages\Page;

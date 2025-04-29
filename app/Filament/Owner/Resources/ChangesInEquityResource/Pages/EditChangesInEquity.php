@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\ChangesInEquityResource\Pages;
+namespace App\Filament\Cashier\Resources\ChangesInEquityResource\Pages;
 
-use App\Filament\Resources\ChangesInEquityResource;
+use App\Filament\Owner\Resources\ChangesInEquityResource;
+
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
