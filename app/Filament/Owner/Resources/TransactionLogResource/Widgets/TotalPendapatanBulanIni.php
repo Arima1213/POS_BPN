@@ -12,7 +12,7 @@ class TotalPendapatanBulanIni extends Widget
 
     public function mount(): void
     {
-        $this->totalPendapatan = JournalEntryDetail::whereHas('akun', function ($query) {
+        $entries = JournalEntryDetail::whereHas('akun', function ($query) {
             $query->where('kelompok', 'pendapatan');
         })
             ->whereHas('jurnal', function ($query) {
@@ -21,6 +21,10 @@ class TotalPendapatanBulanIni extends Widget
                     now()->endOfMonth()->toDateString()
                 ]);
             })
-            ->sum(fn($d) => $d->tipe === 'kredit' ? $d->jumlah : -$d->jumlah);
+            ->get(); // penting: ambil semua data dulu
+
+        $this->totalPendapatan = $entries->sum(function ($d) {
+            return $d->tipe === 'kredit' ? $d->jumlah : -$d->jumlah;
+        });
     }
 }
