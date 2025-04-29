@@ -11,25 +11,41 @@ use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class TransactionLogResource extends Resource
 {
     protected static ?string $model = Transactions::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $label = 'Log Transaksi';
+    protected static ?string $pluralLabel = 'Log Transaksi';
+    protected static ?string $slug = 'log-transaksi';
+    protected static ?string $navigationLabel = 'Log Transaksi';
+    protected static ?string $navigationGroup = 'Laporan Transaksi';
 
     public static function table(Table $table): Table
     {
         return $table
             ->query(function () {
                 return Transactions::query()
-                    ->selectRaw('MIN(id) as id, DATE(created_at) as transaction_date, SUM(total) as total_sales, SUM(paid_amount) as total_paid')
-                    ->groupBy('transaction_date')
-                    ->orderBy('transaction_date', 'desc');
+                    ->select([
+                        DB::raw('MIN(id) as id'),
+                        DB::raw('DATE(created_at) as transaction_date'),
+                        DB::raw('COUNT(*) as transaction_count'), // Tambahan untuk hitung jumlah transaksi
+                        DB::raw('SUM(total) as total_sales'),
+                        DB::raw('SUM(paid_amount) as total_paid')
+                    ])
+                    ->groupBy(DB::raw('DATE(created_at)'))
+                    ->orderByDesc(DB::raw('DATE(created_at)'));
             })
             ->columns([
                 Tables\Columns\TextColumn::make('transaction_date')
                     ->label('Tanggal')
                     ->date()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('transaction_count')
+                    ->label('Jumlah Transaksi')
+                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_sales')
                     ->label('Total Penjualan')
@@ -62,7 +78,10 @@ class TransactionLogResource extends Resource
             ])
             ->actions([])
             ->bulkActions([
-                // Tidak perlu bulk delete
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\ExportBulkAction::make()
+                //         ->exporter(TransactionLogOwnerExporter::class)
+                // ]),
             ]);
     }
 

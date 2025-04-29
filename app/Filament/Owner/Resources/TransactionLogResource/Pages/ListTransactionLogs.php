@@ -2,8 +2,9 @@
 
 namespace App\Filament\Owner\Resources\TransactionLogResource\Pages;
 
+use App\Filament\Exports\TransactionLogOwnerExporter;
 use App\Filament\Owner\Resources\TransactionLogResource;
-use Filament\Actions;
+use Filament\Actions\ExportAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListTransactionLogs extends ListRecords
@@ -13,7 +14,8 @@ class ListTransactionLogs extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            // Actions\CreateAction::make(),
+            // ExportAction::make()
+            //     ->exporter(TransactionLogOwnerExporter::class),
         ];
     }
 }
