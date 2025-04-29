@@ -17,7 +17,8 @@ class IncomeStatementResource extends Resource
     protected static ?string $pluralLabel = 'Laba Rugi';
     protected static ?string $slug = 'laba-rugi';
     protected static ?string $navigationLabel = 'Laba Rugi';
-    protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?string $navigationGroup = 'Laporan Keuangan';
+
     protected static ?int $navigationSort = 6;
 
 
