@@ -2,9 +2,11 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Owner\Resources\IncomeStatementResource\Widgets\LabaRugiTren;
 use App\Filament\Owner\Resources\TransactionLogResource\Widgets\TotalBiayaOperasional;
 use App\Filament\Owner\Resources\TransactionLogResource\Widgets\TotalPendapatanBulanIni;
 use App\Filament\Owner\Resources\TransactionResource\Widgets\TotalPriveBulanIni;
+use App\Filament\Owner\Resources\WidgetForLifeResource\Widgets\PendapatanBiayaPriveBulanIni;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -42,9 +44,8 @@ class OwnerPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Owner/Widgets'), for: 'App\\Filament\\Owner\\Widgets')
             ->widgets([
-                TotalPendapatanBulanIni::class,
-                TotalBiayaOperasional::class,
-                TotalPriveBulanIni::class,
+                PendapatanBiayaPriveBulanIni::class,
+                LabaRugiTren::class,
             ])
             ->middleware([
                 EncryptCookies::class,
