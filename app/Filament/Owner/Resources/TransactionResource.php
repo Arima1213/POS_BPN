@@ -68,6 +68,7 @@ class TransactionResource extends Resource
             ])
             ->defaultSort('tanggal', 'desc')
             ->actions([
+                Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
