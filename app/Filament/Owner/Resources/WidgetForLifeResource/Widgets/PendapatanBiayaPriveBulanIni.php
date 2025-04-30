@@ -13,16 +13,13 @@ class PendapatanBiayaPriveBulanIni extends BaseWidget
     protected function getStats(): array
     {
         $now = now();
-        $labels = collect();
         $pendapatanChart = collect();
         $biayaChart = collect();
         $priveChart = collect();
 
-        // Loop 6 bulan terakhir
         for ($i = 5; $i >= 0; $i--) {
-            $start = $now->copy()->subMonths($i)->startOfMonth()->toDateString();
-            $end = $now->copy()->subMonths($i)->endOfMonth()->toDateString();
-            $labels->push($now->copy()->subMonths($i)->format('M'));
+            $start = $now->copy()->subMonths($i)->startOfMonth();
+            $end = $now->copy()->subMonths($i)->endOfMonth();
 
             $pendapatan = JournalEntryDetail::whereHas(
                 'akun',
@@ -65,29 +62,47 @@ class PendapatanBiayaPriveBulanIni extends BaseWidget
             $priveChart->push($prive);
         }
 
-        // Data bulan ini dan bulan lalu
-        $thisMonth = $pendapatanChart->last();
-        $lastMonth = $pendapatanChart->count() >= 2 ? $pendapatanChart[$pendapatanChart->count() - 2] : 0;
-        $diff = $lastMonth > 0 ? (($thisMonth - $lastMonth) / $lastMonth) * 100 : 0;
-        $icon = $diff >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
-        $color = $diff >= 0 ? 'success' : 'danger';
+        // Helper fungsi
+        $calcChange = function ($data) {
+            $thisMonth = $data->last();
+            $lastMonth = $data->count() >= 2 ? $data[$data->count() - 2] : 0;
+            $diff = $lastMonth > 0 ? (($thisMonth - $lastMonth) / $lastMonth) * 100 : 0;
+            $icon = $diff >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
+            $color = $diff >= 0 ? 'success' : 'danger';
+            return [
+                'value' => $thisMonth,
+                'diff' => $diff,
+                'icon' => $icon,
+                'color' => $color,
+                'last' => $lastMonth,
+            ];
+        };
+
+        $pendapatan = $calcChange($pendapatanChart);
+        $biaya = $calcChange($biayaChart);
+        $prive = $calcChange($priveChart);
 
         return [
-            Stat::make('Pendapatan Bulan Ini', 'Rp ' . number_format($thisMonth, 0, ',', '.'))
-                ->description(round($diff, 1) . '% dari bulan lalu')
-                ->descriptionIcon($icon, IconPosition::Before)
+            Stat::make('Pendapatan Bulan Ini', 'Rp ' . number_format($pendapatan['value'], 0, ',', '.'))
+                ->description(number_format($pendapatan['diff'], 1) . '% dari bulan lalu')
+                ->descriptionIcon($pendapatan['icon'], IconPosition::Before)
                 ->chart($pendapatanChart->toArray())
-                ->color($color),
+                ->chartColor('primary') // Warna chart untuk pendapatan
+                ->color($pendapatan['color']),
 
-            Stat::make('Biaya Operasional', 'Rp ' . number_format($biayaChart->last(), 0, ',', '.'))
-                ->description('Biaya 6 bulan terakhir')
+            Stat::make('Biaya Operasional', 'Rp ' . number_format($biaya['value'], 0, ',', '.'))
+                ->description(number_format($biaya['diff'], 1) . '% dari bulan lalu')
+                ->descriptionIcon($biaya['icon'], IconPosition::Before)
                 ->chart($biayaChart->toArray())
-                ->color('warning'),
+                ->chartColor('warning') // Warna chart untuk biaya
+                ->color($biaya['color']),
 
-            Stat::make('Prive Bulan Ini', 'Rp ' . number_format($priveChart->last(), 0, ',', '.'))
-                ->description('Total Prive')
+            Stat::make('Prive Bulan Ini', 'Rp ' . number_format($prive['value'], 0, ',', '.'))
+                ->description(number_format($prive['diff'], 1) . '% dari bulan lalu')
+                ->descriptionIcon($prive['icon'], IconPosition::Before)
                 ->chart($priveChart->toArray())
-                ->color('danger'),
+                ->chartColor('danger') // Warna chart untuk prive
+                ->color($prive['color']),
         ];
     }
 }
