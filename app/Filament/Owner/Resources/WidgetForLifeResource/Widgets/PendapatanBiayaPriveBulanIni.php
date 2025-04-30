@@ -66,7 +66,10 @@ class PendapatanBiayaPriveBulanIni extends BaseWidget
         $calcChange = function ($data) {
             $thisMonth = $data->last();
             $lastMonth = $data->count() >= 2 ? $data[$data->count() - 2] : 0;
-            $diff = $lastMonth > 0 ? (($thisMonth - $lastMonth) / $lastMonth) * 100 : 0;
+            $diff = $lastMonth > 0
+                ? round((($thisMonth - $lastMonth) / $lastMonth) * 100, 1)
+                : ($thisMonth > 0 ? 100 : 0); // anggap 100% naik dari 0 ke nilai
+
             $icon = $diff >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
             $color = $diff >= 0 ? 'success' : 'danger';
             return [
