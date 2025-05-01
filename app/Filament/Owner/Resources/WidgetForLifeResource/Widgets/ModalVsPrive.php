@@ -8,7 +8,7 @@ use Filament\Widgets\ChartWidget;
 
 class ModalVsPrive extends ChartWidget
 {
-    protected static ?string $heading = 'Modal vs Prive Bulan Ini';
+    protected static ?string $heading = 'Modal vs Prive (Bulan Ini)';
 
     protected function getType(): string
     {
@@ -31,6 +31,7 @@ class ModalVsPrive extends ChartWidget
                 ->whereHas('jurnal', function ($q) use ($from, $until) {
                     $q->whereBetween('tanggal', [$from, $until]);
                 })
+                ->get()
                 ->sum(fn($d) => $d->tipe === 'kredit' ? $d->jumlah : -$d->jumlah);
         }
 
@@ -44,12 +45,14 @@ class ModalVsPrive extends ChartWidget
         }
 
         return [
-            'labels' => ['Penambahan Modal', 'Prive'],
+            'labels' => ['Modal Masuk', 'Prive Keluar'],
             'datasets' => [
                 [
                     'label' => 'Jumlah (Rp)',
                     'data' => [$penambahanModal, $totalPrive],
-                    'backgroundColor' => ['#3b82f6', '#ef4444'], // biru dan merah
+                    'backgroundColor' => ['#3b82f6', '#ef4444'],
+                    'borderRadius' => 8,
+                    'barThickness' => 50,
                 ],
             ],
         ];
