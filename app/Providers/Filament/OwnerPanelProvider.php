@@ -6,6 +6,7 @@ use App\Filament\Owner\Resources\IncomeStatementResource\Widgets\LabaRugiTren;
 use App\Filament\Owner\Resources\TransactionLogResource\Widgets\TotalBiayaOperasional;
 use App\Filament\Owner\Resources\TransactionLogResource\Widgets\TotalPendapatanBulanIni;
 use App\Filament\Owner\Resources\TransactionResource\Widgets\TotalPriveBulanIni;
+use App\Filament\Owner\Resources\WidgetForLifeResource\Widgets\ModalVsPrive;
 use App\Filament\Owner\Resources\WidgetForLifeResource\Widgets\PendapatanBiayaPriveBulanIni;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -15,6 +16,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\View\Components\Modal;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -46,6 +48,7 @@ class OwnerPanelProvider extends PanelProvider
             ->widgets([
                 PendapatanBiayaPriveBulanIni::class,
                 LabaRugiTren::class,
+                ModalVsPrive::class,
             ])
             ->middleware([
                 EncryptCookies::class,
