@@ -4,6 +4,7 @@ namespace App\Filament\Owner\Resources\GeneralLedgerResource\Pages;
 
 use App\Filament\Owner\Resources\GeneralLedgerResource;
 use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
 
 class ListGeneralLedgers extends ListRecords
@@ -14,6 +15,14 @@ class ListGeneralLedgers extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+            Action::make('exportPdf')
+                ->label('Export PDF')
+                ->icon('heroicon-o-document-arrow-down')
+                ->url(fn() => route('general-ledger.download.pdf', [
+                    'from' => $this->from,
+                    'until' => $this->until,
+                ]))
+                ->openUrlInNewTab(),
         ];
     }
 }
