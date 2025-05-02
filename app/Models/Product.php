@@ -29,4 +29,10 @@ class Product extends Model
     {
         return $this->hasMany(StockHistory::class);
     }
+
+    // Relasi ke Transactions_Details
+    public function transactionDetails()
+    {
+        return $this->hasMany(Transactions_Details::class, 'item_id')->where('item_type', self::class);
+    }
 }

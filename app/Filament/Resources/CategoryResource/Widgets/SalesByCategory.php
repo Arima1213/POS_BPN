@@ -4,34 +4,44 @@ namespace App\Filament\Resources\CategoryResource\Widgets;
 
 use App\Models\Category;
 use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Facades\DB;
 
 class SalesByCategory extends ChartWidget
 {
-    protected static ?string $heading = 'Penjualan Berdasarkan Kategori';
-    protected static string $color = 'primary';
-
-    protected function getData(): array
-    {
-        $categories = Category::withCount(['products as sales' => function ($query) {
-            $query->join('transactions_details', 'products.id', '=', 'transactions_details.item_id')
-                ->where('transactions_details.item_type', 'App\Models\Product')
-                ->select(DB::raw('SUM(transactions_details.quantity)'));
-        }])->get();
-
-        return [
-            'datasets' => [
-                [
-                    'label' => 'Penjualan',
-                    'data' => $categories->pluck('sales'),
-                ],
-            ],
-            'labels' => $categories->pluck('name'),
-        ];
-    }
+    protected static ?string $heading = 'Penjualan Produk per Kategori';
+    protected static ?string $maxHeight = '300px';
 
     protected function getType(): string
     {
-        return 'bar'; // atau 'pie', 'doughnut', bebas
+        return 'bar';
+    }
+
+    protected function getData(): array
+    {
+        $categories = Category::with(['products.transactionDetails'])->get();
+
+        $labels = [];
+        $data = [];
+
+        foreach ($categories as $category) {
+            $labels[] = $category->name;
+
+            $total = 0;
+            foreach ($category->products as $product) {
+                $total += $product->transactionDetails->sum('subtotal');
+            }
+
+            $data[] = $total;
+        }
+
+        return [
+            'labels' => $labels,
+            'datasets' => [
+                [
+                    'label' => 'Total Penjualan (Rp)',
+                    'data' => $data,
+                    'backgroundColor' => '#4f46e5',
+                ],
+            ],
+        ];
     }
 }
