@@ -19,7 +19,7 @@ class ChartOfAccounts extends Seeder
             ['kode' => '1021', 'nama' => 'Piutang Jasa', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Piutang jasa'],
             ['kode' => '1022', 'nama' => 'Pembayaran Piutang', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Pembayaran Piutang perusahaan'],
             ['kode' => '1030', 'nama' => 'Persediaan Pupuk dan Benih', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Persediaan barang dagang pertanian'],
-            ['kode' => '1031', 'nama' => 'Persediaan Produk Jadi (Beras)', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Stok hasil penggilingan padi'],
+            ['kode' => '1031', 'nama' => 'Persediaan Produk', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Stok hasil penggilingan padi'],
             ['kode' => '1040', 'nama' => 'Uang Kembalian', 'kelompok' => 'aset', 'tipe' => 'lancar', 'deskripsi' => 'Uang tunai untuk kembalian transaksi'],
 
             // ===== ASET TETAP =====
