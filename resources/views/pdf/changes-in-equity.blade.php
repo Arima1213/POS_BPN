@@ -13,8 +13,11 @@
     </style>
 </head>
 <body>
-    <h2>Laporan Perubahan Ekuitas</h2>
-    <p>Periode: {{ $from }} s/d {{ $until }}</p>
+    <h2 style="text-align: center; font-size: 18px; margin-bottom: 5px;">Laporan Perubahan Ekuitas</h2>
+    <h2 style="text-align: center; font-size: 16px; margin-bottom: 20px;">PT Berkah Padi Nusantara</h2>
+    <p style="text-align: center; font-size: 14px; margin-bottom: 30px;">
+        Periode: {{ \Carbon\Carbon::parse($from)->format('d M Y') }} - {{ \Carbon\Carbon::parse($until)->format('d M Y') }}
+    </p>
     <table>
         <tr>
             <td>Modal Awal</td>

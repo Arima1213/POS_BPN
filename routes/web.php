@@ -3,6 +3,7 @@
 use App\Http\Controllers\BalanceSheetExportController;
 use App\Http\Controllers\EquityReportController;
 use App\Http\Controllers\GeneralLedgerPrintController;
+use App\Http\Controllers\Owner\IncomeStatementExportController;
 use App\Http\Controllers\TransactionPrintController;
 use App\Http\Controllers\TrialBalanceExportController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,8 @@ Route::get('/trial-balance/export-pdf', [TrialBalanceExportController::class, 'd
 Route::get('/balance-sheet/export-pdf', [BalanceSheetExportController::class, 'download'])->name('balance-sheet.export.pdf');
 
 Route::get('/owner/reports/equity/download', [EquityReportController::class, 'download'])->name('owner.equity.download.pdf');
+
+Route::get('/owner/reports/income-statement/download', [IncomeStatementExportController::class, 'download'])->name('owner.income-statement.download.pdf');
 
 Route::get('/', function () {
     return view('welcome');
