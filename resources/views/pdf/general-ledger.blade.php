@@ -11,8 +11,11 @@
     </style>
 </head>
 <body>
-    <h2>Buku Besar</h2>
-    <p>Periode: {{ \Carbon\Carbon::parse($from)->format('d M Y') }} - {{ \Carbon\Carbon::parse($until)->format('d M Y') }}</p>
+    <h2 style="text-align: center; font-size: 18px; margin-bottom: 5px;">Buku Besar</h2>
+    <h2 style="text-align: center; font-size: 16px; margin-bottom: 20px;">PT Berkah Padi Nusantara</h2>
+    <p style="text-align: center; font-size: 14px; margin-bottom: 30px;">
+        Periode: {{ \Carbon\Carbon::parse($from)->format('d M Y') }} - {{ \Carbon\Carbon::parse($until)->format('d M Y') }}
+    </p>
 
     @foreach ($ledger as $akun)
         <h3>{{ $akun['akun']->kode }} - {{ $akun['akun']->nama }}</h3>
