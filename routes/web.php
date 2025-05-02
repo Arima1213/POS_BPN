@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GeneralLedgerPrintController;
 use App\Http\Controllers\TransactionPrintController;
+use App\Http\Controllers\TrialBalanceExportController;
 use Illuminate\Support\Facades\Route;
 
 // routes/web.php
@@ -10,6 +11,8 @@ Route::get('/transactions/{transaction}/print-receipt', [TransactionPrintControl
 
 Route::get('/general-ledger/download-pdf', [GeneralLedgerPrintController::class, 'download'])
     ->name('general-ledger.download.pdf');
+
+Route::get('/trial-balance/export-pdf', [TrialBalanceExportController::class, 'download'])->name('trial-balance.export.pdf');
 
 
 Route::get('/', function () {

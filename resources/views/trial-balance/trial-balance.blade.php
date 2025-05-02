@@ -4,6 +4,9 @@
             <x-filament::input type="date" wire:model.defer="from" label="Tanggal Awal" />
             <x-filament::input type="date" wire:model.defer="until" label="Tanggal Akhir" />
             <x-filament::button type="submit">Tampilkan</x-filament::button>
+            <x-filament::button tag="a" href="{{ route('trial-balance.export.pdf', ['from' => $this->from, 'until' => $this->until]) }}" target="_blank">
+                PDF
+            </x-filament::button>
         </div>
     </form>
 
