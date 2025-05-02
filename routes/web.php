@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BalanceSheetExportController;
 use App\Http\Controllers\GeneralLedgerPrintController;
 use App\Http\Controllers\TransactionPrintController;
 use App\Http\Controllers\TrialBalanceExportController;
@@ -14,6 +15,7 @@ Route::get('/general-ledger/download-pdf', [GeneralLedgerPrintController::class,
 
 Route::get('/trial-balance/export-pdf', [TrialBalanceExportController::class, 'download'])->name('trial-balance.export.pdf');
 
+Route::get('/balance-sheet/export-pdf', [BalanceSheetExportController::class, 'download'])->name('balance-sheet.export.pdf');
 
 Route::get('/', function () {
     return view('welcome');

@@ -1,5 +1,5 @@
 <x-filament::page>
-    <form wire:submit.prevent="show">
+    <form wire:submit.prevent="getGeneralLedgerData">
         <div class="flex gap-4 mb-4">
             <x-filament::input type="date" wire:model.defer="from" label="Tanggal Awal" />
             <x-filament::input type="date" wire:model.defer="until" label="Tanggal Akhir" />

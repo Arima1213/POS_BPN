@@ -1,8 +1,12 @@
 <x-filament::page>
-    <form wire:submit.prevent="mount">
+    <form wire:submit.prevent="getBalanceSheetData">
         <div class="flex gap-4 mb-4">
-            <x-filament::input type="date" wire:model.defer="tanggal" label="Tanggal Neraca" />
+            <x-filament::input type="date" wire:model.defer="from" label="Tanggal Awal" />
+            <x-filament::input type="date" wire:model.defer="until" label="Tanggal Akhir" />
             <x-filament::button type="submit">Tampilkan</x-filament::button>
+            <x-filament::button tag="a" href="{{ route('balance-sheet.export.pdf', ['from' => $this->from, 'until' => $this->until]) }}" target="_blank">
+            PDF
+            </x-filament::button>
         </div>
     </form>
 

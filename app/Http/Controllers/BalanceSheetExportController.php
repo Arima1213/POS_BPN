@@ -1,33 +1,20 @@
 <?php
 
-namespace App\Filament\Owner\Resources\BalanceSheetResource\Pages;
+namespace App\Http\Controllers;
 
-use App\Filament\Owner\Resources\BalanceSheetResource;
+use Illuminate\Http\Request;
 use App\Models\ChartOfAccount;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\JournalEntryDetail;
-use Filament\Resources\Pages\Page;
 
-class BalanceSheets extends Page
+class BalanceSheetExportController extends Controller
 {
-    protected static string $resource = BalanceSheetResource::class;
-
-    protected static string $view = 'balance-sheet.balance-sheet';
-
-
-    public $from;
-    public $until;
-
-    public function mount(): void
+    public function download(Request $request)
     {
-        $this->from = now()->startOfMonth()->toDateString();
-        $this->until = now()->endOfMonth()->toDateString();
-    }
+        $from = $request->input('from', now()->startOfMonth()->toDateString());
+        $until = $request->input('until', now()->toDateString());
 
-    public function getBalanceSheetData()
-    {
-        // Group by kelompok (aset, kewajiban, ekuitas, pendapatan, beban)
         $accounts = ChartOfAccount::orderBy('kode')->get()->groupBy('kelompok');
-
         $data = [];
 
         foreach ($accounts as $kelompok => $akunList) {
@@ -36,15 +23,14 @@ class BalanceSheets extends Page
 
             foreach ($akunList as $akun) {
                 $details = JournalEntryDetail::where('chart_of_account_id', $akun->id)
-                    ->whereHas('jurnal', function ($query) {
-                        $query->whereBetween('tanggal', [$this->from, $this->until]);
+                    ->whereHas('jurnal', function ($query) use ($from, $until) {
+                        $query->whereBetween('tanggal', [$from, $until]);
                     })
                     ->get();
 
                 $debit = $details->where('tipe', 'debit')->sum('jumlah');
                 $kredit = $details->where('tipe', 'kredit')->sum('jumlah');
 
-                // Saldo normal: debit untuk aset/beban, kredit untuk kewajiban/ekuitas/pendapatan
                 if (in_array($akun->kelompok, ['aset', 'beban'])) {
                     $saldo = $debit - $kredit;
                 } else {
@@ -66,6 +52,12 @@ class BalanceSheets extends Page
             ];
         }
 
-        return $data;
+        $pdf = Pdf::loadView('pdf.balance-sheet', [
+            'from' => $from,
+            'until' => $until,
+            'data' => $data,
+        ]);
+
+        return $pdf->download("Neraca_{$from}_sampai_{$until}.pdf");
     }
 }
