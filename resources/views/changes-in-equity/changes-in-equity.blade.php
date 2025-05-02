@@ -4,6 +4,11 @@
             <x-filament::input type="date" wire:model.defer="from" label="Tanggal Awal" />
             <x-filament::input type="date" wire:model.defer="until" label="Tanggal Akhir" />
             <x-filament::button type="submit">Tampilkan</x-filament::button>
+            <a href="{{ route('owner.equity.download.pdf', ['from' => $from, 'until' => $until]) }}"
+                target="_blank"
+                class="filament-button inline-flex items-center justify-center py-2 px-4 text-sm font-medium text-white bg-primary-600 hover:bg-primary-500 rounded-md shadow">
+                 PDF
+             </a>
         </div>
     </form>
 
