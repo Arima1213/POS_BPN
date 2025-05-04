@@ -49,7 +49,7 @@ class TransactionsResource extends Resource
                                 ->schema([
                                     TextInput::make('code')
                                         ->label('Kode Transaksi')
-                                        ->default(fn() => 'TRX-' . strtoupper(Str::random(8)))
+                                        ->default(fn() => 'TRX-' . now()->format('dmy') . '-' . strtoupper(Str::random(5)))
                                         ->disabled()
                                         ->dehydrated(true)
                                         ->required(),
@@ -221,7 +221,7 @@ class TransactionsResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()->color('warning'),
                 Tables\Actions\Action::make('faktur')
-                    ->label('Download PDF')
+                    ->label('Faktur')
                     ->icon('heroicon-o-document-arrow-down')
                     ->url(fn($record) => route('transactions.download.pdf', $record))
                     ->openUrlInNewTab(),

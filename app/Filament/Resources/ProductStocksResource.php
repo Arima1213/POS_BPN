@@ -67,6 +67,21 @@ class ProductStocksResource extends Resource
                     $record->current_stock <= $record->minimum_stock
                         ? 'danger'
                         : 'success'),
+                TextColumn::make('stock_opname')
+                    ->label('Stock Opname (Last Month)')
+                    ->sortable()
+                    ->getStateUsing(function ($record) {
+                        // Hitung total pengadaan bulan ini
+                        $startOfMonth = now()->startOfMonth();
+                        $endOfMonth = now()->endOfMonth();
+
+                        $procurementThisMonth = \App\Models\Procurement::where('product_id', $record->product_id)
+                            ->whereBetween('procurement_date', [$startOfMonth, $endOfMonth])
+                            ->sum('quantity');
+
+                        // Hitung stok bulan lalu: current_stock - pengadaan bulan ini
+                        return $record->current_stock - $procurementThisMonth;
+                    }),
 
                 TextColumn::make('minimum_stock')
                     ->label('Minimum')
