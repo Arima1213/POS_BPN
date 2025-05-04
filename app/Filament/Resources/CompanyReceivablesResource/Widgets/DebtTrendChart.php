@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\DebtResource\Widgets;
+namespace App\Filament\Resources\CompanyReceivablesResource\Widgets;
 
 use App\Models\Debt;
 use Filament\Widgets\ChartWidget;
