@@ -10,11 +10,10 @@ use App\Models\ChartOfAccount;
 use App\Models\JournalEntryDetail;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\ProductResource;
-use App\Filament\Resources\ProcurementResource;
 
 class CreateProduct extends CreateRecord
 {
-    protected static string $resource = ProcurementResource::class;
+    protected static string $resource = ProductResource::class;
 
     protected function afterCreate(): void
     {
