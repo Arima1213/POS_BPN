@@ -31,6 +31,8 @@ class TransactionsResource extends Resource
 {
     protected static ?string $model = Transactions::class;
 
+    protected static ?string $navigationLabel = 'Transaksi';
+    protected static ?string $pluralLabel = 'Kelola Transaksi';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function getNavigationSort(): int
