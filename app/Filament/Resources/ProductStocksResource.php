@@ -18,8 +18,10 @@ class ProductStocksResource extends Resource
     protected static ?string $model = ProductStock::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
-    protected static ?string $navigationLabel = 'Stok Produk';
+    protected static ?string $navigationLabel = 'Kelola Stok Produk';
     protected static ?string $navigationGroup = 'Inventaris';
+    protected static ?string $pluralLabel = 'Kelola Stok';
+    protected static ?string $slug = 'kelola-stok';
 
 
     public static function form(Form $form): Form

@@ -20,6 +20,8 @@ class TransactionLogResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-clock';
     protected static ?string $navigationLabel = 'Riwayat Transaksi';
     protected static ?string $navigationGroup = 'Laporan';
+    protected static ?string $pluralLabel = 'Riwayat Transaksi';
+    protected static ?string $slug = 'riwayat-transaksi';
 
     public static function table(Table $table): Table
     {
