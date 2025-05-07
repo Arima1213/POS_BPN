@@ -19,6 +19,8 @@ class AssetResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
     protected static ?string $navigationLabel = 'Asset Perusahaan';
     protected static ?string $navigationGroup = 'Inventaris';
+    protected static ?string $pluralLabel = 'Kelola Aset';
+    protected static ?string $slug = 'kelola-aset';
 
     public static function form(Form $form): Form
     {

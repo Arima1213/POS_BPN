@@ -16,6 +16,8 @@ class CompanyReceivablesResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Keuangan';
     protected static ?string $navigationLabel = 'Piutang Perusahaan';
+    protected static ?string $pluralLabel = 'Kelola Piutang Perusahaan';
+    protected static ?string $slug = 'kelola-piutang';
 
     public static function table(Table $table): Table
     {
