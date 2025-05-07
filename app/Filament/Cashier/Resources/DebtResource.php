@@ -27,9 +27,10 @@ class DebtResource extends Resource
 {
     protected static ?string $model = Debt::class;
 
-    protected static ?string $navigationLabel = 'Transaksi';
-    protected static ?string $pluralLabel = 'Kelola Transaksi';
+    protected static ?string $navigationLabel = 'Hutang';
+    protected static ?string $pluralLabel = 'Kelola Hutang';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
 
     public static function getNavigationSort(): int
     {
