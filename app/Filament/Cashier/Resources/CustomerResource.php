@@ -20,6 +20,8 @@ class CustomerResource extends Resource
     protected static ?string $navigationLabel = 'Pelanggan';
     protected static ?string $pluralLabel = 'Kelola Pelanggan';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $slug = 'kelola-pelanggan';
+
 
     public static function getNavigationSort(): int
     {

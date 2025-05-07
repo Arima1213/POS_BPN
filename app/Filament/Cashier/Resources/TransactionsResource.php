@@ -34,6 +34,8 @@ class TransactionsResource extends Resource
     protected static ?string $navigationLabel = 'Transaksi';
     protected static ?string $pluralLabel = 'Kelola Transaksi';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $slug = 'kelola-transaksi';
+
 
     public static function getNavigationSort(): int
     {

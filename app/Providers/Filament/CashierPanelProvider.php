@@ -28,7 +28,7 @@ class CashierPanelProvider extends PanelProvider
             ->spa()
             ->login()
             ->id('cashier')
-            ->path('cashier')
+            ->path('kasir')
             ->colors([
                 'primary' => Color::Red,
             ])

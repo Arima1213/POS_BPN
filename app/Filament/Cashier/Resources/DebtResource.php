@@ -30,6 +30,8 @@ class DebtResource extends Resource
     protected static ?string $navigationLabel = 'Hutang';
     protected static ?string $pluralLabel = 'Kelola Hutang';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $slug = 'kelola-hutang';
+
 
 
     public static function getNavigationSort(): int
