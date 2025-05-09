@@ -19,8 +19,6 @@ class TransactionPrintController extends Controller
     public function printStruk($id)
     {
         $transaksi = Transactions::with('details')->findOrFail($id);
-
-        // Ganti "POS-58" dengan nama printer yang kamu pakai di Windows (lihat di Control Panel > Devices and Printers)
         $connector = new WindowsPrintConnector("POS-58");
 
         $printer = new Printer($connector);
