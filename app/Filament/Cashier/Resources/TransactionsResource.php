@@ -74,12 +74,12 @@ class TransactionsResource extends Resource
                                         ->label('Uang Pembeli')
                                         ->numeric()
                                         ->required()
-                                        ->debounce(1000)
-                                        ->live()
+                                        ->debounce(500) // atau ->lazy() jika ingin tunggu sampai blur
                                         ->afterStateUpdated(function ($state, Set $set, Get $get) {
                                             $total = $get('total') ?? 0;
                                             $set('change_amount', intval($state - $total));
                                         }),
+
 
                                     TextInput::make('change_amount')
                                         ->label('Kembalian')
