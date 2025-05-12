@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ProcurementResource\Pages;
 
+use App\Filament\Resources\HppstatsResource\Widgets\HppStats;
 use App\Filament\Resources\ProcurementResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
@@ -14,6 +15,14 @@ class ListProcurements extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+
+    // Ini untuk menampilkan widget di atas tabel
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            HppStats::class,
         ];
     }
 }

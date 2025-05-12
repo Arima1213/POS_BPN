@@ -4,7 +4,6 @@ namespace App\Providers\Filament;
 
 use App\Filament\Resources\CategoryResource\Widgets\SalesByCategory;
 use App\Filament\Resources\CompanyReceivablesResource\Widgets\DebtTrendChart;
-use App\Filament\Resources\CompanyReceivablesResource\Widgets\DueDebtsChart;
 use App\Filament\Resources\MyStatsResource\Widgets\MyStats;
 use App\Filament\Resources\ProductResource\Widgets\BestSellingProductsThisWeek;
 use App\Filament\Resources\ProductStocksResource\Widgets\LowStockAlert;
