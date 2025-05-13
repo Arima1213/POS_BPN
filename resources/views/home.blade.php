@@ -308,9 +308,9 @@
                         <div class="section-title__tagline-shape">
                             <img src="assets/images/shapes/section-title-tagline-shape.png" alt="">
                         </div>
-                        <span class="section-title__tagline">Services List</span>
+                        <span class="section-title__tagline">Produk List</span>
                     </div>
-                    <h2 class="section-title__title">What We are offering</h2>
+                    <h2 class="section-title__title">Apa Yang Kami Tawarkan</h2>
                 </div>
                 <div class="row">
                     <!--Services One Single Start-->
