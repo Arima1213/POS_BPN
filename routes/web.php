@@ -24,5 +24,5 @@ Route::get('/owner/reports/equity/download', [EquityReportController::class, 'do
 Route::get('/owner/reports/income-statement/download', [IncomeStatementExportController::class, 'download'])->name('owner.income-statement.download.pdf');
 
 Route::get('/', function () {
-    return redirect('/kasir/login');
+    return view('home');
 });
