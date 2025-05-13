@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\HppstatsResource\Widgets;
+namespace App\Filament\Resources\ProcurementResource\Widgets;
 
-use App\Models\Product;
 use App\Models\Procurement;
+use App\Models\Product;
 use App\Models\ProductStock;
+use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Carbon;
 
-class HppStats extends BaseWidget
+class HppWidget extends BaseWidget
 {
     protected function getStats(): array
     {

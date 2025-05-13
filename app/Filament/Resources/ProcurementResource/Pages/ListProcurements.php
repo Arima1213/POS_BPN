@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ProcurementResource\Pages;
 
 use App\Filament\Resources\HppstatsResource\Widgets\HppStats;
 use App\Filament\Resources\ProcurementResource;
+use App\Filament\Resources\ProcurementResource\Widgets\HppWidget;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -22,7 +23,7 @@ class ListProcurements extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            HppStats::class,
+            HppWidget::class,
         ];
     }
 }
