@@ -23,7 +23,11 @@ return new class extends Migration
             $table->string('location')->nullable();
             $table->enum('category', ['vehicle', 'office_equipment', 'building', 'land', 'others']);
             $table->enum('status', ['active', 'sold', 'damaged', 'lost', 'retired'])->default('active');
-            $table->unsignedBigInteger('journal_entry_id')->nullable(); // Relasi ke Journal Entry
+            $table->unsignedBigInteger('journal_entry_id')->nullable();
+            $table->decimal('accumulated_depreciation', 15, 2)->default(0);
+            $table->date('depreciation_start_date')->nullable();
+            $table->boolean('is_fully_depreciated')->default(false);
+            $table->enum('depreciation_method', ['straight_line', 'declining_balance'])->default('straight_line');
             $table->timestamps();
         });
     }
