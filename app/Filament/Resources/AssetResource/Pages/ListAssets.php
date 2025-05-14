@@ -56,7 +56,7 @@ class ListAssets extends ListRecords
                                 'tanggal' => $tanggal,
                                 'kode' => 'DEP-' . $a->asset_code,
                                 'keterangan' => 'Penyusutan bulan ' . $tanggal->format('F Y') . ' untuk ' . $a->asset_name,
-                                'kategori' => 'penyusutan',
+                                'kategori' => 'penyesuaian',
                             ]);
 
                             \App\Models\JournalEntryDetail::create([
@@ -75,8 +75,22 @@ class ListAssets extends ListRecords
                                 'deskripsi' => 'Akumulasi penyusutan ' . $a->asset_name,
                             ]);
 
+                            // Hitung nilai sisa (book value)
+                            $newAccumulated = $a->accumulated_depreciation + $penyusutanPerBulan;
+                            $bookValue = $a->purchase_price - $newAccumulated;
+
+                            // Cek apakah sudah fully depreciated
+                            $isFullyDepreciated = false;
+                            if ($newAccumulated >= ($a->purchase_price - $a->residual_value)) {
+                                $isFullyDepreciated = true;
+                                $bookValue = $a->residual_value;
+                            }
+
                             $a->update([
-                                'accumulated_depreciation' => $a->accumulated_depreciation + $penyusutanPerBulan,
+                                'accumulated_depreciation' => $newAccumulated,
+                                'is_fully_depreciated' => $isFullyDepreciated,
+                                'journal_entry_id' => $journal->id,
+                                // Tambahkan field lain yang ingin diupdate di sini jika perlu
                             ]);
                         });
                     }
