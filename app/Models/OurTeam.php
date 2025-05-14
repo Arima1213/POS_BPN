@@ -10,6 +10,7 @@ class OurTeam extends Model
 
     protected $fillable = [
         'nama',
+        'image',
         'deskripsi',
         'facebook_url',
         'instagram_url',

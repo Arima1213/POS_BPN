@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\OurTeamResource\Pages;
-use App\Filament\Resources\OurTeamResource\RelationManagers;
 use App\Models\OurTeam;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OurTeamResource extends Resource
 {
@@ -27,6 +24,10 @@ class OurTeamResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\FileUpload::make('image')
+                    ->image()
+                    ->required()
+                    ->directory('our-team-images'),
                 Forms\Components\TextInput::make('nama')
                     ->required()
                     ->maxLength(255),
@@ -54,6 +55,7 @@ class OurTeamResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('image')->label('Foto')->circular(),
                 Tables\Columns\TextColumn::make('nama')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('deskripsi')->limit(50),
                 Tables\Columns\TextColumn::make('facebook_url')->label('Facebook')->limit(30),
