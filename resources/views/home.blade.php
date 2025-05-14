@@ -296,117 +296,7 @@
         </section>
         <!--Main Slider End-->
 
-
-
-
-        <!--Services One Start-->
-        <section class="services-one">
-            <h3 class="services-one__big-text">Business</h3>
-            <div class="container">
-                <div class="section-title text-center">
-                    <div class="section-title__tagline-box">
-                        <div class="section-title__tagline-shape">
-                            <img src="assets/images/shapes/section-title-tagline-shape.png" alt="">
-                        </div>
-                        <span class="section-title__tagline">Produk List</span>
-                    </div>
-                    <h2 class="section-title__title">Apa Yang Kami Tawarkan</h2>
-                </div>
-                <div class="row">
-                    <!--Services One Single Start-->
-                    <div class="col-xl-3 col-lg-6 col-md-6 wow fadeInLeft" data-wow-delay="100ms">
-                        <div class="services-one__single">
-                            <div class="services-one__img-box">
-                                <div class="services-one__img">
-                                    <img src="assets/images/services/services-1-1.jpg" alt="">
-                                </div>
-                            </div>
-                            <div class="services-one__content-wrap">
-                                <div class="services-one__icon">
-                                    <span class="icon-coding"></span>
-                                </div>
-                                <div class="services-one__content">
-                                    <h3 class="services-one__title"><a href="website-development.html">Modern Website
-                                            Designing</a></h3>
-                                    <p class="services-one__text">Lorem ipsum dolor sit amet,
-                                        consectetur adipiscing elit,</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Services One Single End-->
-                    <!--Services One Single Start-->
-                    <div class="col-xl-3 col-lg-6 col-md-6 wow fadeInLeft" data-wow-delay="300ms">
-                        <div class="services-one__single">
-                            <div class="services-one__img-box">
-                                <div class="services-one__img">
-                                    <img src="assets/images/services/services-1-2.jpg" alt="">
-                                </div>
-                            </div>
-                            <div class="services-one__content-wrap">
-                                <div class="services-one__icon">
-                                    <span class="icon-curve"></span>
-                                </div>
-                                <div class="services-one__content">
-                                    <h3 class="services-one__title"><a href="seo-content-writting.html">Seo & Content
-                                            Writting</a></h3>
-                                    <p class="services-one__text">Lorem ipsum dolor sit amet,
-                                        consectetur adipiscing elit,</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Services One Single End-->
-                    <!--Services One Single Start-->
-                    <div class="col-xl-3 col-lg-6 col-md-6 wow fadeInRight" data-wow-delay="600ms">
-                        <div class="services-one__single">
-                            <div class="services-one__img-box">
-                                <div class="services-one__img">
-                                    <img src="assets/images/services/services-1-3.jpg" alt="">
-                                </div>
-                            </div>
-                            <div class="services-one__content-wrap">
-                                <div class="services-one__icon">
-                                    <span class="icon-creative"></span>
-                                </div>
-                                <div class="services-one__content">
-                                    <h3 class="services-one__title"><a href="digital-marketing.html">Business Idea &
-                                            Innovation</a></h3>
-                                    <p class="services-one__text">Lorem ipsum dolor sit amet,
-                                        consectetur adipiscing elit,</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Services One Single End-->
-                    <!--Services One Single Start-->
-                    <div class="col-xl-3 col-lg-6 col-md-6 wow fadeInRight" data-wow-delay="900ms">
-                        <div class="services-one__single">
-                            <div class="services-one__img-box">
-                                <div class="services-one__img">
-                                    <img src="assets/images/services/services-1-4.jpg" alt="">
-                                </div>
-                            </div>
-                            <div class="services-one__content-wrap">
-                                <div class="services-one__icon">
-                                    <span class="icon-productivity"></span>
-                                </div>
-                                <div class="services-one__content">
-                                    <h3 class="services-one__title"><a href="digital-marketing.html">Marketing &
-                                            Reporting</a></h3>
-                                    <p class="services-one__text">Lorem ipsum dolor sit amet,
-                                        consectetur adipiscing elit,</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Services One Single End-->
-                </div>
-            </div>
-        </section>
-        <!--Services One End-->
-
-        <!--About One Start-->
+          <!--About One Start-->
         <section class="about-one">
             <div class="container">
                 <div class="row">
@@ -460,6 +350,59 @@
             </div>
         </section>
         <!--About One End-->
+
+        <!--Services One Start-->
+        <section class="services-one">
+            <h3 class="services-one__big-text">Produk</h3>
+            <div class="container">
+                <div class="section-title text-center">
+                    <div class="section-title__tagline-box">
+                        <div class="section-title__tagline-shape">
+                            <img src="assets/images/shapes/section-title-tagline-shape.png" alt="">
+                        </div>
+                        <span class="section-title__tagline">Produk List</span>
+                    </div>
+                    <h2 class="section-title__title">Apa Yang Kami Tawarkan</h2>
+                </div>
+                <div class="row">
+                    @foreach($landings as $landing)
+                        @php
+                            $item = $landing->tipe === 'produk' ? $landing->product : $landing->service;
+                        @endphp
+
+                        @if($item)
+                        <div class="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay="{{ $loop->iteration * 200 }}ms">
+                            <div class="services-one__single">
+                                <div class="services-one__img-box">
+                                    <div class="services-one__img">
+                                        <img src="{{ asset('storage/'.$item->image ?? 'assets/images/default.jpg') }}" alt="{{ $item->name }}">
+                                    </div>
+                                </div>
+                                <div class="services-one__content-wrap">
+                                    <div class="services-one__icon">
+                                        <span class="icon-{{ $landing->tipe === 'produk' ? 'productivity' : 'creative' }}"></span>
+                                    </div>
+                                    <div class="services-one__content">
+                                        <h3 class="services-one__title">
+                                            <a href="#">{{ $item->name }}</a>
+                                        </h3>
+                                        <p class="services-one__text">
+                                            {{ \Illuminate\Support\Str::limit($item->description, 100) }}
+                                        </p>
+                                        <p class="services-one__text">
+                                            <strong>Rp {{ number_format($item->price, 0, ',', '.') }}</strong>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                    @endforeach
+                </div>
+
+            </div>
+        </section>
+        <!--Services One End-->
 
         <!--Team One Start-->
         <section class="team-one">
