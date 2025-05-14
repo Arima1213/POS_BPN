@@ -3,10 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ShowProductLandingResource\Pages;
+use App\Models\Product;
+use App\Models\Services;
 use App\Models\ShowProductLanding;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class ShowProductLandingResource extends Resource
@@ -24,21 +30,42 @@ class ShowProductLandingResource extends Resource
     {
         return $form
             ->schema([
-                // Tambahkan field sesuai kebutuhan
-                \Filament\Forms\Components\Select::make('tipe')
+                Select::make('tipe')
+                    ->label('Tipe')
                     ->options([
                         'produk' => 'Produk',
                         'jasa' => 'Jasa',
                     ])
-                    ->required(),
-                \Filament\Forms\Components\Select::make('status')
+                    ->required()
+                    ->reactive(), // agar product_id ikut berubah
+
+                Select::make('status')
+                    ->label('Status')
                     ->options([
                         'aktif' => 'Aktif',
                         'tidak' => 'Tidak Aktif',
                     ])
                     ->required(),
-                \Filament\Forms\Components\TextInput::make('product_id')
-                    ->required(),
+
+                Select::make('product_id')
+                    ->label('Produk/Jasa')
+                    ->required()
+                    ->placeholder('Pilih Produk atau Jasa')
+                    ->options(function ($get) {
+                        $tipe = $get('tipe');
+
+                        if ($tipe === 'produk') {
+                            return Product::pluck('name', 'id')->toArray();
+                        }
+
+                        if ($tipe === 'jasa') {
+                            return Services::pluck('name', 'id')->toArray();
+                        }
+
+                        return [];
+                    })
+                    ->disabled(fn($get) => !$get('tipe'))
+                    ->reactive(), // agar field ini merespon perubahan dari field lain
             ]);
     }
 
@@ -46,26 +73,56 @@ class ShowProductLandingResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
-                Tables\Columns\TextColumn::make('tipe')->label('Tipe')->sortable(),
-                Tables\Columns\BadgeColumn::make('status')
+                TextColumn::make('id')->sortable(),
+                TextColumn::make('tipe')->label('Tipe')->sortable(),
+
+                TextColumn::make('nama_item')
+                    ->label('Nama Produk/Jasa')
+                    ->formatStateUsing(function ($record) {
+                        return $record->tipe === 'produk'
+                            ? $record->product?->name
+                            : $record->service?->name;
+                    }),
+                TextColumn::make('harga')
+                    ->label('Harga')
+                    ->money('IDR', true)
+                    ->formatStateUsing(function ($record) {
+                        return $record->tipe === 'produk'
+                            ? $record->product?->price
+                            : $record->service?->price;
+                    }),
+
+                TextColumn::make('status')
                     ->label('Status')
-                    ->enum([
-                        'aktif' => 'Aktif',
-                        'tidak' => 'Tidak Aktif',
-                    ])
-                    ->colors([
-                        'success' => 'aktif',
-                        'danger' => 'tidak',
-                    ]),
-                Tables\Columns\TextColumn::make('product_id')->label('Product ID'),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Dibuat'),
+                    ->formatStateUsing(fn($state) => $state === 'aktif' ? 'Aktif' : 'Tidak Aktif')
+                    ->badge()
+                    ->color(fn($state) => $state === 'aktif' ? 'success' : 'danger'),
+
+                TextColumn::make('created_at')->dateTime()->label('Dibuat'),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                EditAction::make(),
+
+                Action::make('toggleStatus')
+                    ->label(fn($record) => $record->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan')
+                    ->color(fn($record) => $record->status === 'aktif' ? 'danger' : 'success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Ubah Status')
+                    ->modalSubheading(
+                        fn($record) =>
+                        "Apakah Anda yakin ingin " .
+                            ($record->status === 'aktif' ? 'menonaktifkan' : 'mengaktifkan') .
+                            " item ini?"
+                    )
+                    ->action(function ($record) {
+                        $record->update([
+                            'status' => $record->status === 'aktif' ? 'tidak' : 'aktif',
+                        ]);
+                    })
+                    ->icon(fn($record) => $record->status === 'aktif' ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

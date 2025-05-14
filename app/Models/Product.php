@@ -35,4 +35,9 @@ class Product extends Model
     {
         return $this->hasMany(Transactions_Details::class, 'item_id')->where('item_type', self::class);
     }
+
+    public function showProductLandings()
+    {
+        return $this->hasMany(ShowProductLanding::class, 'product_id');
+    }
 }
