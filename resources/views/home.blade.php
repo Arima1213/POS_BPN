@@ -296,61 +296,6 @@
         </section>
         <!--Main Slider End-->
 
-          <!--About One Start-->
-        <section class="about-one">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-5">
-                        <div class="about-one__left wow fadeInLeft" data-wow-delay="100ms">
-                            <div class="about-one__img">
-                                <img src="assets/images/resources/about-one-img-1.jpg" alt="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-7">
-                        <div class="about-one__right wow fadeInRight" data-wow-delay="300ms">
-                            <div class="section-title text-left">
-                                <div class="section-title__tagline-box">
-                                    <div class="section-title__tagline-shape">
-                                        <img src="assets/images/shapes/section-title-tagline-shape.png" alt="">
-                                    </div>
-                                    <span class="section-title__tagline">About Company</span>
-                                </div>
-                                <h2 class="section-title__title">We provide the best Advisors
-                                    to grow your business</h2>
-                            </div>
-                            <p class="about-one__big-text">Suspendisse vel iaculis leo.Curabitur scelerisque mi porta
-                                justo fermentum porta.</p>
-                            <p class="about-one__text">Aliquam eros justo,Posuere lobortis viverr augue mattis fermentum
-                                non ullamcorper
-                                viverra laoreet augue.Aliquam eros justo,posuere lobortis non,viverra laoreet augue
-                                mattis fermentum non ullamcorper</p>
-                            <ul class="about-one__points list-unstyled">
-                                <li>
-                                    <div class="icon">
-                                        <span class="icon-profit"></span>
-                                    </div>
-                                    <h4>Best Quality
-                                        <br> Project</h4>
-                                </li>
-                                <li>
-                                    <div class="icon">
-                                        <span class="icon-discussion"></span>
-                                    </div>
-                                    <h4>Get Free
-                                        <br> Consultation</h4>
-                                </li>
-                            </ul>
-                            <div class="about-one__btn-box">
-                                <a href="contact.html" class="about-one__btn thm-btn">Get Free Quote</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!--About One End-->
-
         <!--Services One Start-->
         <section class="services-one">
             <h3 class="services-one__big-text">Produk</h3>
@@ -403,6 +348,53 @@
             </div>
         </section>
         <!--Services One End-->
+
+        <!--About One Start-->
+        <section class="about-one">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-5">
+                        <div class="about-one__left wow fadeInLeft" data-wow-delay="100ms">
+                            <div class="about-one__img">
+                                <img src="{{ asset('storage/berkahpadi.jpeg')}}" alt="Tentang PT Berkah Padi Nusantara">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-7">
+                        <div class="about-one__right wow fadeInRight" data-wow-delay="300ms">
+                            <div class="section-title text-left">
+                                <div class="section-title__tagline-box">
+                                    <div class="section-title__tagline-shape">
+                                        <img src="assets/images/shapes/section-title-tagline-shape.png" alt="">
+                                    </div>
+                                    <span class="section-title__tagline">Tentang Perusahaan</span>
+                                </div>
+                                <h2 class="section-title__title">Solusi Terbaik untuk Penggilingan Padi & Produk Pertanian Anda</h2>
+                            </div>
+                            <p class="about-one__big-text">Kami berkomitmen untuk memberikan layanan penggilingan padi yang efisien serta produk pertanian berkualitas tinggi.</p>
+                            <p class="about-one__text">PT Berkah Padi Nusantara hadir untuk mendukung petani lokal dengan layanan penggilingan padi modern dan distribusi hasil pertanian terbaik. Dengan tenaga profesional dan teknologi tepat guna, kami siap menjadi mitra pertanian terpercaya di Indonesia.</p>
+                            <ul class="about-one__points list-unstyled">
+                                <li>
+                                    <div class="icon">
+                                        <span class="icon-profit"></span>
+                                    </div>
+                                    <h6>Layanan Penggilingan
+                                        <br> Modern</h6>
+                                </li>
+                                <li>
+                                    <div class="icon">
+                                        <span class="icon-discussion"></span>
+                                    </div>
+                                    <h6>Konsultasi & Kerja Sama
+                                        <br> Pertanian</h6>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--About One End-->
 
         <!--Team One Start-->
         <section class="team-one">
