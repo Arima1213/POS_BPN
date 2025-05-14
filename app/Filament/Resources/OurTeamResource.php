@@ -17,7 +17,11 @@ class OurTeamResource extends Resource
 {
     protected static ?string $model = OurTeam::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationLabel = 'Tim Kami';
+    protected static ?string $navigationGroup = 'Landing Page';
+    protected static ?string $pluralLabel = 'Tim Kami';
+    protected static ?string $slug = 'tim-kami';
 
     public static function form(Form $form): Form
     {
