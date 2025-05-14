@@ -46,9 +46,9 @@ class ChartOfAccounts extends Seeder
             // ===== BEBAN-BEBAN =====
             ['kode' => '5000', 'nama' => 'Beban Gaji Karyawan', 'kelompok' => 'beban', 'tipe' => 'operasional', 'jenis_beban' => 'beban_kas', 'deskripsi' => 'Biaya tenaga kerja'],
             ['kode' => '5010', 'nama' => 'Beban Solar & Listrik Mesin', 'kelompok' => 'beban', 'tipe' => 'operasional', 'jenis_beban' => 'beban_kas', 'deskripsi' => 'BBM dan listrik operasional'],
-            ['kode' => '5020', 'nama' => 'Beban Penyusutan Mesin', 'kelompok' => 'beban', 'tipe' => 'non_operasional', 'jenis_beban' => 'beban_non_kas', 'deskripsi' => 'Penyusutan mesin dan alat'],
-            ['kode' => '5030', 'nama' => 'Beban Perawatan Alat', 'kelompok' => 'beban', 'tipe' => 'operasional', 'jenis_beban' => 'beban_usaha', 'deskripsi' => 'Perbaikan mesin, traktor, dll'],
-            ['kode' => '5040', 'nama' => 'Beban Operasional Toko', 'kelompok' => 'beban', 'tipe' => 'operasional', 'jenis_beban' => 'beban_usaha', 'deskripsi' => 'Biaya air, telepon, internet, dll'],
+            ['kode' => '5020', 'nama' => 'Beban Penyusutan', 'kelompok' => 'beban', 'tipe' => 'non_operasional', 'jenis_beban' => 'beban_non_kas', 'deskripsi' => 'Penyusutan mesin dan alat'],
+            ['kode' => '5030', 'nama' => 'Beban Perawatan', 'kelompok' => 'beban', 'tipe' => 'operasional', 'jenis_beban' => 'beban_usaha', 'deskripsi' => 'Perbaikan mesin, traktor, dll'],
+            ['kode' => '5040', 'nama' => 'Beban Operasional', 'kelompok' => 'beban', 'tipe' => 'operasional', 'jenis_beban' => 'beban_usaha', 'deskripsi' => 'Biaya air, telepon, internet, dll'],
 
 
         ];
