@@ -14,10 +14,10 @@ class ShowProductLandingResource extends Resource
     protected static ?string $model = ShowProductLanding::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-cube';
-    protected static ?string $navigationLabel = 'Kelola Produk Landing';
+    protected static ?string $navigationLabel = 'Produk Ditampilkan';
     protected static ?string $navigationGroup = 'Landing Page';
-    protected static ?string $pluralLabel = 'Kelola Produk Landing';
-    protected static ?string $slug = 'kelola-produk-Landing';
+    protected static ?string $pluralLabel = 'Produk Ditampilkan';
+    protected static ?string $slug = 'Produk-Ditampilkan';
 
 
     public static function form(Form $form): Form
