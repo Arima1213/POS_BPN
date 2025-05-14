@@ -14,6 +14,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ShowProductLandingResource extends Resource
 {
@@ -72,25 +73,20 @@ class ShowProductLandingResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn(Builder $query) => $query->with(['product', 'service']))
             ->columns([
                 TextColumn::make('id')->sortable(),
+
                 TextColumn::make('tipe')->label('Tipe')->sortable(),
 
-                TextColumn::make('nama_item')
-                    ->label('Nama Produk/Jasa')
-                    ->formatStateUsing(function ($record) {
-                        return $record->tipe === 'produk'
-                            ? $record->product?->name
-                            : $record->service?->name;
-                    }),
-                TextColumn::make('harga')
+                TextColumn::make('item_name')->label('Nama Produk/Jasa'),
+                TextColumn::make('item_price')
                     ->label('Harga')
-                    ->money('IDR', true)
-                    ->formatStateUsing(function ($record) {
-                        return $record->tipe === 'produk'
-                            ? $record->product?->price
-                            : $record->service?->price;
-                    }),
+                    ->formatStateUsing(
+                        fn($state) =>
+                        $state !== null ? 'Rp ' . number_format($state, 0, ',', '.') : '-'
+                    ),
+
 
                 TextColumn::make('status')
                     ->label('Status')
@@ -100,11 +96,8 @@ class ShowProductLandingResource extends Resource
 
                 TextColumn::make('created_at')->dateTime()->label('Dibuat'),
             ])
-            ->filters([
-                //
-            ])
             ->actions([
-                EditAction::make(),
+                Tables\Actions\EditAction::make(),
 
                 Action::make('toggleStatus')
                     ->label(fn($record) => $record->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan')
@@ -121,8 +114,7 @@ class ShowProductLandingResource extends Resource
                         $record->update([
                             'status' => $record->status === 'aktif' ? 'tidak' : 'aktif',
                         ]);
-                    })
-                    ->icon(fn($record) => $record->status === 'aktif' ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle'),
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

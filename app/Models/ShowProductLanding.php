@@ -29,4 +29,18 @@ class ShowProductLanding extends Model
     {
         return $this->belongsTo(Services::class, 'product_id');
     }
+
+    public function getItemNameAttribute()
+    {
+        return $this->tipe === 'produk'
+            ? $this->product?->name
+            : $this->service?->name;
+    }
+
+    public function getItemPriceAttribute()
+    {
+        return $this->tipe === 'produk'
+            ? $this->product?->price
+            : $this->service?->price;
+    }
 }
