@@ -26,6 +26,7 @@ class ChartOfAccounts extends Seeder
             ['kode' => '1100', 'nama' => 'Mesin Penggiling Padi', 'kelompok' => 'aset', 'tipe' => 'tetap', 'deskripsi' => 'Mesin utama jasa giling'],
             ['kode' => '1101', 'nama' => 'Alat Pertanian (Traktor, Pompa)', 'kelompok' => 'aset', 'tipe' => 'tetap', 'deskripsi' => 'Aset tetap pertanian'],
             ['kode' => '1110', 'nama' => 'Bangunan Gudang', 'kelompok' => 'aset', 'tipe' => 'tetap', 'deskripsi' => 'Gudang penyimpanan hasil'],
+            ['kode' => '1990', 'nama' => 'Akumulasi Penyusutan Aset Tetap', 'kelompok' => 'aset', 'tipe' => 'kontra_aset', 'deskripsi' => 'Akumulasi penyusutan aset tetap'],
 
             // ===== KEWAJIBAN =====
             ['kode' => '2000', 'nama' => 'Hutang Usaha', 'kelompok' => 'kewajiban', 'tipe' => 'jangka_pendek', 'deskripsi' => 'Hutang pembelian produk'],
@@ -40,6 +41,7 @@ class ChartOfAccounts extends Seeder
             ['kode' => '4000', 'nama' => 'Pendapatan Penjualan Produk', 'kelompok' => 'pendapatan', 'tipe' => 'operasional', 'deskripsi' => 'Pendapatan dari pupuk, benih, alat pertanian'],
             ['kode' => '4010', 'nama' => 'Pendapatan Jasa Giling Padi', 'kelompok' => 'pendapatan', 'tipe' => 'operasional', 'deskripsi' => 'Jasa penggilingan padi menjadi beras'],
             ['kode' => '4020', 'nama' => 'Pendapatan Lainnya', 'kelompok' => 'pendapatan', 'tipe' => 'non_operasional', 'deskripsi' => 'Misalnya sewa lahan, jasa tambahan'],
+            ['kode' => '4030', 'nama' => 'Laba/Rugi Pelepasan Aset', 'kelompok' => 'pendapatan', 'tipe' => 'non_operasional', 'deskripsi' => 'Laba atau rugi dari pelepasan aset tetap'],
 
             // ===== BEBAN-BEBAN =====
             ['kode' => '5000', 'nama' => 'Beban Gaji Karyawan', 'kelompok' => 'beban', 'tipe' => 'operasional', 'jenis_beban' => 'beban_kas', 'deskripsi' => 'Biaya tenaga kerja'],
@@ -47,6 +49,7 @@ class ChartOfAccounts extends Seeder
             ['kode' => '5020', 'nama' => 'Beban Penyusutan Mesin', 'kelompok' => 'beban', 'tipe' => 'non_operasional', 'jenis_beban' => 'beban_non_kas', 'deskripsi' => 'Penyusutan mesin dan alat'],
             ['kode' => '5030', 'nama' => 'Beban Perawatan Alat', 'kelompok' => 'beban', 'tipe' => 'operasional', 'jenis_beban' => 'beban_usaha', 'deskripsi' => 'Perbaikan mesin, traktor, dll'],
             ['kode' => '5040', 'nama' => 'Beban Operasional Toko', 'kelompok' => 'beban', 'tipe' => 'operasional', 'jenis_beban' => 'beban_usaha', 'deskripsi' => 'Biaya air, telepon, internet, dll'],
+
 
         ];
 

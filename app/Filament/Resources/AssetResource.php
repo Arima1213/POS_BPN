@@ -71,6 +71,63 @@ class AssetResource extends Resource
             ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('dispose')
+                    ->label('Lepas Aset')
+                    ->color('danger')
+                    ->icon('heroicon-o-trash')
+                    ->visible(fn($record) => $record->status === 'active')
+                    ->requiresConfirmation()
+                    ->action(function ($record) {
+                        $asset = $record;
+
+                        $bookValue = $asset->purchase_price - $asset->accumulated_depreciation;
+                        $sellPrice = 0;
+                        $difference = $sellPrice - $bookValue;
+
+                        DB::transaction(function () use ($asset, $bookValue, $difference) {
+                            $journal = JournalEntry::create([
+                                'tanggal' => now(),
+                                'kode' => 'DIS-' . strtoupper(uniqid()),
+                                'keterangan' => 'Pelepasan Aset: ' . $asset->asset_name,
+                                'kategori' => 'disposal',
+                            ]);
+
+                            $accumulatedAccount = ChartOfAccount::where('kode', '1990')->first(); // Akumulasi Penyusutan
+                            $assetAccount = ChartOfAccount::where('kode', '1100')->first(); // Aset Tetap
+                            $gainLossAccount = ChartOfAccount::where('kode', '4030')->first(); // Laba/Rugi Pelepasan Aset
+
+                            // Kredit aset
+                            JournalEntryDetail::create([
+                                'journal_entry_id' => $journal->id,
+                                'chart_of_account_id' => $assetAccount->id,
+                                'tipe' => 'kredit',
+                                'jumlah' => $asset->purchase_price,
+                                'deskripsi' => 'Penghapusan aset: ' . $asset->asset_name,
+                            ]);
+
+                            // Debit akumulasi penyusutan
+                            JournalEntryDetail::create([
+                                'journal_entry_id' => $journal->id,
+                                'chart_of_account_id' => $accumulatedAccount->id,
+                                'tipe' => 'debit',
+                                'jumlah' => $asset->accumulated_depreciation,
+                                'deskripsi' => 'Penghapusan akumulasi penyusutan',
+                            ]);
+
+                            // Laba/Rugi selisih
+                            JournalEntryDetail::create([
+                                'journal_entry_id' => $journal->id,
+                                'chart_of_account_id' => $gainLossAccount->id,
+                                'tipe' => $difference >= 0 ? 'kredit' : 'debit',
+                                'jumlah' => abs($difference),
+                                'deskripsi' => 'Selisih nilai buku vs jual',
+                            ]);
+
+                            $asset->update([
+                                'status' => 'retired',
+                            ]);
+                        });
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
