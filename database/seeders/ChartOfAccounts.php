@@ -26,7 +26,7 @@ class ChartOfAccounts extends Seeder
             ['kode' => '1100', 'nama' => 'Mesin Penggiling Padi', 'kelompok' => 'aset', 'tipe' => 'tetap', 'deskripsi' => 'Mesin utama jasa giling'],
             ['kode' => '1101', 'nama' => 'Alat Pertanian (Traktor, Pompa)', 'kelompok' => 'aset', 'tipe' => 'tetap', 'deskripsi' => 'Aset tetap pertanian'],
             ['kode' => '1110', 'nama' => 'Bangunan Gudang', 'kelompok' => 'aset', 'tipe' => 'tetap', 'deskripsi' => 'Gudang penyimpanan hasil'],
-            ['kode' => '1990', 'nama' => 'Akumulasi Penyusutan Aset Tetap', 'kelompok' => 'aset', 'tipe' => 'kontra_aset', 'deskripsi' => 'Akumulasi penyusutan aset tetap'],
+            ['kode' => '1990', 'nama' => 'Akumulasi Penyusutan Aset Tetap', 'kelompok' => 'aset', 'tipe' => 'tetap', 'deskripsi' => 'Akumulasi penyusutan aset tetap'],
 
             // ===== KEWAJIBAN =====
             ['kode' => '2000', 'nama' => 'Hutang Usaha', 'kelompok' => 'kewajiban', 'tipe' => 'jangka_pendek', 'deskripsi' => 'Hutang pembelian produk'],

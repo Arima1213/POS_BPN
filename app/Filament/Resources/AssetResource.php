@@ -66,7 +66,31 @@ class AssetResource extends Resource
                 Tables\Columns\TextColumn::make('category'),
                 Tables\Columns\TextColumn::make('purchase_price')->money('idr'),
                 Tables\Columns\TextColumn::make('purchase_date')->date(),
-                Tables\Columns\TextColumn::make('status')->badge(),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->colors([
+                        'success' => 'active',
+                        'danger' => 'sold',
+                        'warning' => 'damaged',
+                        'gray' => 'retired',
+                        'secondary' => 'lost',
+                    ]),
+                Tables\Columns\TextColumn::make('accumulated_depreciation')->money('idr')->label('Akumulasi Penyusutan'),
+                Tables\Columns\TextColumn::make('depreciation_start_date')
+                    ->date()
+                    ->label('Mulai Penyusutan')
+                    ->placeholder('Belum ada data'),
+                Tables\Columns\TextColumn::make('depreciation_method')
+                    ->label('Metode Penyusutan')
+                    ->formatStateUsing(fn($state) => $state === 'straight_line' ? 'Garis Lurus' : 'Saldo Menurun'),
+                Tables\Columns\TextColumn::make('is_fully_depreciated')
+                    ->label('Sudah Disusutkan')
+                    ->formatStateUsing(fn($state) => $state == '1' ? 'Ya' : 'Belum')
+                    ->colors([
+                        'success' => '1',
+                        'danger' => '0',
+                    ])
+                    ->badge(),
             ])
             ->filters([])
             ->actions([
@@ -89,7 +113,7 @@ class AssetResource extends Resource
                                 'tanggal' => now(),
                                 'kode' => 'DIS-' . strtoupper(uniqid()),
                                 'keterangan' => 'Pelepasan Aset: ' . $asset->asset_name,
-                                'kategori' => 'disposal',
+                                'kategori' => 'aset',
                             ]);
 
                             $accumulatedAccount = ChartOfAccount::where('kode', '1990')->first(); // Akumulasi Penyusutan
