@@ -91,15 +91,14 @@ class ListAssets extends ListRecords
                             // Hitung nilai sisa (book value)
                             $newAccumulated = $a->accumulated_depreciation + $penyusutanPerBulan;
                             $bookValue = $a->purchase_price - $newAccumulated;
-
                             // Cek apakah sudah fully depreciated
                             $isFullyDepreciated = false;
                             if ($newAccumulated >= ($a->purchase_price - $a->residual_value)) {
                                 $isFullyDepreciated = true;
                                 $bookValue = $a->residual_value;
                             }
-
                             $a->update([
+                                'book_value' => $bookValue,
                                 'accumulated_depreciation' => $newAccumulated,
                                 'is_fully_depreciated' => $isFullyDepreciated ? 1 : 0,
                                 'journal_entry_id' => $journal->id,

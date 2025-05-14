@@ -28,6 +28,7 @@ return new class extends Migration
             $table->date('depreciation_start_date')->nullable();
             $table->boolean('is_fully_depreciated')->default(false);
             $table->enum('depreciation_method', ['straight_line', 'declining_balance'])->default('straight_line');
+            $table->decimal('book_value', 20, 2)->default(0);
             $table->timestamps();
         });
     }

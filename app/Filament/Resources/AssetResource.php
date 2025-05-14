@@ -84,13 +84,14 @@ class AssetResource extends Resource
                     ->label('Metode Penyusutan')
                     ->formatStateUsing(fn($state) => $state === 'straight_line' ? 'Garis Lurus' : 'Saldo Menurun'),
                 Tables\Columns\TextColumn::make('is_fully_depreciated')
-                    ->label('Sudah Disusutkan')
-                    ->formatStateUsing(fn($state) => $state == '1' ? 'Ya' : 'Belum')
+                    ->label('Depriasi Penuh')
+                    ->formatStateUsing(fn($state) => $state == '1' ? 'Sudah' : 'Belum')
                     ->colors([
-                        'success' => '1',
-                        'danger' => '0',
+                        'success' => fn($state) => $state == '1',
+                        'danger' => fn($state) => $state == '0',
                     ])
                     ->badge(),
+                Tables\Columns\TextColumn::make('book_value')->money('idr')->label('Nilai Buku'),
             ])
             ->filters([])
             ->actions([

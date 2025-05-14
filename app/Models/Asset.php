@@ -22,6 +22,7 @@ class Asset extends Model
         'depreciation_start_date',
         'is_fully_depreciated',
         'depreciation_method',
+        'book_value',
     ];
 
     protected $casts = [
