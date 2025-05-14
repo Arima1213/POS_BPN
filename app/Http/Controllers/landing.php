@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OurTeam;
 use App\Models\ShowProductLanding;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,8 @@ class landing extends Controller
             ->with(['product', 'service']) // eager load dua-duanya
             ->get();
 
-        return view('home', compact('landings'));
+        $teams = OurTeam::all();
+
+        return view('home', compact('landings', 'teams'));
     }
 }

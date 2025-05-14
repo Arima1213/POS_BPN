@@ -413,76 +413,44 @@
                     <h2 class="section-title__title">Meet Our Professtionals Team</h2>
                 </div>
                 <div class="row">
-                    <!--Team One Single Start-->
-                    <div class="col-xl-4 col-lg-4 wow fadeInLeft" data-wow-delay="100ms">
+                @foreach ($teams as $index => $team)
+                    <div class="col-xl-4 col-lg-4 wow
+                        @if($index % 3 == 0) fadeInLeft
+                        @elseif($index % 3 == 1) fadeInUp
+                        @else fadeInRight
+                        @endif"
+                        data-wow-delay="{{ ($index + 1) * 100 }}ms">
+
                         <div class="team-one__single">
                             <div class="team-one__img-box">
                                 <div class="team-one__img">
-                                    <img src="assets/images/team/team-1-1.jpg" alt="">
+                                    <img src="{{ asset('storage/' . $team->image) }}" alt="{{ $team->nama }}">
                                 </div>
                             </div>
                             <div class="team-one__content-inner">
                                 <div class="team-one__content">
-                                    <h3 class="team-one__name"><a href="team-details.html">Leslie Alexander</a></h3>
-                                    <p class="team-one__sub-title">Digital Marketer</p>
+                                    <h3 class="team-one__name">
+                                        <a href="#">{{ $team->nama }}</a>
+                                    </h3>
+                                    <p class="team-one__sub-title">{{ $team->deskripsi }}</p>
                                     <div class="team-one__social">
-                                        <a href="team-details.html"><span class="icon-twitter"></span></a>
-                                        <a href="team-details.html"><span class="icon-facebook"></span></a>
-                                        <a href="team-details.html"><span class="icon-google-plus-logo"></span></a>
-                                        <a href="team-details.html"><span class="icon-pinterest"></span></a>
+                                        @if($team->facebook_url)
+                                            <a href="{{ $team->facebook_url }}" target="_blank"><span class="icon-facebook"></span></a>
+                                        @endif
+                                        @if($team->instagram_url)
+                                            <a href="{{ $team->instagram_url }}" target="_blank"><span class="icon-instagram"></span></a>
+                                        @endif
+                                        @if($team->whatsapp_url)
+                                            <a href="https://wa.me/{{ ltrim($team->whatsapp_url, '+') }}" target="_blank"><span class="icon-whatsapp"></span></a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!--Team One Single End-->
-                    <!--Team One Single Start-->
-                    <div class="col-xl-4 col-lg-4 wow fadeInUp" data-wow-delay="200ms">
-                        <div class="team-one__single">
-                            <div class="team-one__img-box">
-                                <div class="team-one__img">
-                                    <img src="assets/images/team/team-1-2.jpg" alt="">
-                                </div>
-                            </div>
-                            <div class="team-one__content-inner">
-                                <div class="team-one__content">
-                                    <h3 class="team-one__name"><a href="team-details.html">Kendra Pual</a></h3>
-                                    <p class="team-one__sub-title">Developer</p>
-                                    <div class="team-one__social">
-                                        <a href="team-details.html"><span class="icon-twitter"></span></a>
-                                        <a href="team-details.html"><span class="icon-facebook"></span></a>
-                                        <a href="team-details.html"><span class="icon-google-plus-logo"></span></a>
-                                        <a href="team-details.html"><span class="icon-pinterest"></span></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Team One Single End-->
-                    <!--Team One Single Start-->
-                    <div class="col-xl-4 col-lg-4 wow fadeInRight" data-wow-delay="300ms">
-                        <div class="team-one__single">
-                            <div class="team-one__img-box">
-                                <div class="team-one__img">
-                                    <img src="assets/images/team/team-1-3.jpg" alt="">
-                                </div>
-                            </div>
-                            <div class="team-one__content-inner">
-                                <div class="team-one__content">
-                                    <h3 class="team-one__name"><a href="team-details.html">Devid L.Musilal</a></h3>
-                                    <p class="team-one__sub-title">Digital Marketer</p>
-                                    <div class="team-one__social">
-                                        <a href="team-details.html"><span class="icon-twitter"></span></a>
-                                        <a href="team-details.html"><span class="icon-facebook"></span></a>
-                                        <a href="team-details.html"><span class="icon-google-plus-logo"></span></a>
-                                        <a href="team-details.html"><span class="icon-pinterest"></span></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Team One Single End-->
-                </div>
+                @endforeach
+            </div>
+
             </div>
         </section>
         <!--Team One End-->
