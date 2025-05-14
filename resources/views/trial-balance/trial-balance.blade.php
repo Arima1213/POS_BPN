@@ -48,7 +48,7 @@
                         $totalDebit += $row['debit'];
                         $totalKredit += $row['kredit'];
                     @endphp
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-600 border-b border-gray-100 dark:border-gray-800">
+                    <tr class=" border-b border-gray-100 dark:border-gray-800">
                         <td class="px-4 py-2">{{ $row['akun']->kode }}</td>
                         <td class="px-4 py-2">{{ $row['akun']->nama }}</td>
                         <td class="px-4 py-2 text-right">{{ number_format($row['debit'], 2, ',', '.') }}</td>

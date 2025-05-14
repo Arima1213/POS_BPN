@@ -30,7 +30,7 @@
 
     <div class="overflow-x-auto w-full rounded-xl shadow ring-1 ring-gray-200 dark:ring-gray-700 bg-white dark:bg-gray-900 p-4">
         <table class="w-full text-sm text-gray-800 dark:text-gray-100 table-auto">
-            <thead class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-b border-gray-300 dark:border-gray-700">
+            <thead class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-100 border-b border-gray-300 dark:border-gray-700">
                 <tr class="text-sm uppercase tracking-wide">
                     <th class="px-4 py-2 text-left">Kategori</th>
                     <th class="px-4 py-2 text-left">Nama Akun</th>
