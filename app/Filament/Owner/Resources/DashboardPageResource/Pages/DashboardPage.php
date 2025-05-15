@@ -28,9 +28,14 @@ class DashboardPage extends Page
 
     public function getStatsData()
     {
-        // Biasanya, Anda bisa trigger refresh widget atau data di sini
-        // Livewire akan otomatis update data jika properti berubah
-        // Jika perlu, bisa tambahkan logic lain di sini
+        // Mengganti nilai filter dan menerapkan filter pada widget
+        $this->from = request()->input('from', $this->from);
+        $this->until = request()->input('until', $this->until);
+
+        // Terapkan filter ke widget (jika diperlukan, bisa trigger refresh)
+        PendapatanBiayaPriveBulanIni::setFilters($this->from, $this->until);
+        ModalVsPrive::setFilters($this->from, $this->until);
+        LabaRugiTren::setFilters($this->from, $this->until);
     }
 
     protected function getHeaderWidgets(): array
