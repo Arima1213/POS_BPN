@@ -52,6 +52,10 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
+    public function salaries()
+    {
+        return $this->hasMany(Salary::class);
+    }
 
     public function role(): BelongsTo
     {

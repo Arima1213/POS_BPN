@@ -49,8 +49,7 @@ class ChartOfAccounts extends Seeder
             ['kode' => '5020', 'nama' => 'Beban Penyusutan', 'kelompok' => 'beban', 'tipe' => 'non_operasional', 'jenis_beban' => 'beban_non_kas', 'deskripsi' => 'Penyusutan mesin dan alat'],
             ['kode' => '5030', 'nama' => 'Beban Perawatan', 'kelompok' => 'beban', 'tipe' => 'operasional', 'jenis_beban' => 'beban_usaha', 'deskripsi' => 'Perbaikan mesin, traktor, dll'],
             ['kode' => '5040', 'nama' => 'Beban Operasional', 'kelompok' => 'beban', 'tipe' => 'operasional', 'jenis_beban' => 'beban_usaha', 'deskripsi' => 'Biaya air, telepon, internet, dll'],
-
-
+            ['kode' => '5060', 'nama' => 'Beban Pajak Penghasilan', 'kelompok' => 'beban', 'tipe' => 'non_operasional', 'jenis_beban' => 'beban_non_kas', 'deskripsi' => 'Pajak penghasilan'],
         ];
 
         foreach ($accounts as $account) {
