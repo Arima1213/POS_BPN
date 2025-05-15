@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('salary_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('salary_id')->constrained()->onDelete('cascade'); // Relasi ke salary
-            $table->foreignId('processed_by')->constrained('users')->onDelete('set null')->nullable(); // Admin/Petugas gaji
+            $table->foreignId('processed_by')->nullable()->constrained('users')->onDelete('set null'); // Admin/Petugas gaji
             $table->date('tanggal_pembayaran');
             $table->timestamps();
         });
