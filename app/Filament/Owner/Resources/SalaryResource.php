@@ -23,7 +23,34 @@ class SalaryResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->required()
+                    ->label('Karyawan'),
+                Forms\Components\DatePicker::make('periode')
+                    ->required()
+                    ->label('Periode'),
+                Forms\Components\TextInput::make('gaji_pokok')
+                    ->numeric()
+                    ->required()
+                    ->label('Gaji Pokok'),
+                Forms\Components\TextInput::make('tunjangan')
+                    ->numeric()
+                    ->default(0)
+                    ->required()
+                    ->label('Tunjangan'),
+                Forms\Components\TextInput::make('potongan')
+                    ->numeric()
+                    ->default(0)
+                    ->required()
+                    ->label('Potongan'),
+                Forms\Components\TextInput::make('total_gaji')
+                    ->numeric()
+                    ->required()
+                    ->label('Total Gaji'),
+                Forms\Components\Textarea::make('keterangan')
+                    ->label('Keterangan')
+                    ->nullable(),
             ]);
     }
 
@@ -31,7 +58,14 @@ class SalaryResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('user.name')->label('Karyawan')->searchable(),
+                Tables\Columns\TextColumn::make('periode')->date()->label('Periode'),
+                Tables\Columns\TextColumn::make('gaji_pokok')->money('IDR')->label('Gaji Pokok'),
+                Tables\Columns\TextColumn::make('tunjangan')->money('IDR')->label('Tunjangan'),
+                Tables\Columns\TextColumn::make('potongan')->money('IDR')->label('Potongan'),
+                Tables\Columns\TextColumn::make('total_gaji')->money('IDR')->label('Total Gaji'),
+                Tables\Columns\TextColumn::make('keterangan')->limit(30)->label('Keterangan'),
+                Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Dibuat'),
             ])
             ->filters([
                 //
