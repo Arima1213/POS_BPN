@@ -11,6 +11,15 @@ class LabaRugiTren extends ChartWidget
     protected static ?string $heading = 'Laba / Rugi Bulanan (12 Bulan Terakhir)';
     protected static ?int $sort = 4;
 
+    protected static ?string $from = null;
+    protected static ?string $until = null;
+
+    public static function setFilters(string $from, string $until): void
+    {
+        static::$from = $from;
+        static::$until = $until;
+    }
+
     protected function getData(): array
     {
         $labels = [];
@@ -18,35 +27,41 @@ class LabaRugiTren extends ChartWidget
         $biaya = [];
         $labaRugi = [];
 
-        for ($i = 11; $i >= 0; $i--) {
-            $start = now()->subMonths($i)->startOfMonth()->toDateString();
-            $end = now()->subMonths($i)->endOfMonth()->toDateString();
-            $label = Carbon::parse($start)->translatedFormat('M Y');
+        $from = static::$from ? Carbon::parse(static::$from)->startOfMonth() : now()->subMonths(11)->startOfMonth();
+        $until = static::$until ? Carbon::parse(static::$until)->endOfMonth() : now()->endOfMonth();
+
+        $period = [];
+        $current = $from->copy();
+        while ($current->lessThanOrEqualTo($until)) {
+            $period[] = $current->copy();
+            $current->addMonth();
+        }
+
+        foreach ($period as $date) {
+            $start = $date->copy()->startOfMonth()->toDateString();
+            $end = $date->copy()->endOfMonth()->toDateString();
+            $label = $date->translatedFormat('M Y');
 
             $labels[] = $label;
 
             $totalPendapatan = JournalEntryDetail::whereHas(
                 'akun',
-                fn($q) =>
-                $q->where('kelompok', 'pendapatan')
+                fn($q) => $q->where('kelompok', 'pendapatan')
             )
                 ->whereHas(
                     'jurnal',
-                    fn($q) =>
-                    $q->whereBetween('tanggal', [$start, $end])
+                    fn($q) => $q->whereBetween('tanggal', [$start, $end])
                 )
                 ->get()
                 ->sum(fn($d) => $d->tipe === 'kredit' ? $d->jumlah : -$d->jumlah);
 
             $totalBiaya = JournalEntryDetail::whereHas(
                 'akun',
-                fn($q) =>
-                $q->where('kelompok', 'beban')
+                fn($q) => $q->where('kelompok', 'beban')
             )
                 ->whereHas(
                     'jurnal',
-                    fn($q) =>
-                    $q->whereBetween('tanggal', [$start, $end])
+                    fn($q) => $q->whereBetween('tanggal', [$start, $end])
                 )
                 ->get()
                 ->sum(fn($d) => $d->tipe === 'debit' ? $d->jumlah : -$d->jumlah);

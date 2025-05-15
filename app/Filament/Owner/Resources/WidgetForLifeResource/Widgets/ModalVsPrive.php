@@ -9,6 +9,14 @@ use Filament\Widgets\ChartWidget;
 class ModalVsPrive extends ChartWidget
 {
     protected static ?string $heading = 'Modal vs Prive (Bulan Ini)';
+    protected static ?string $from = null;
+    protected static ?string $until = null;
+
+    public static function setFilters(string $from, string $until): void
+    {
+        static::$from = $from;
+        static::$until = $until;
+    }
 
     protected function getType(): string
     {
@@ -17,8 +25,8 @@ class ModalVsPrive extends ChartWidget
 
     protected function getData(): array
     {
-        $from = now()->startOfMonth()->toDateString();
-        $until = now()->endOfMonth()->toDateString();
+        $from = static::$from ?? now()->startOfMonth()->toDateString();
+        $until = static::$until ?? now()->endOfMonth()->toDateString();
 
         $akunModal = ChartOfAccount::where('kode', '3000')->first();
         $akunPrive = ChartOfAccount::where('kode', '3010')->first();
