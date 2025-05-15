@@ -17,7 +17,12 @@ class SalaryResource extends Resource
 {
     protected static ?string $model = Salary::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+    protected static ?string $label = 'Gaji';
+    protected static ?string $pluralLabel = 'Kelola gaji';
+    protected static ?string $slug = 'gaji';
+    protected static ?string $navigationLabel = 'Kelola Gaji';
+    protected static ?string $navigationGroup = 'Manajemen';
 
     public static function form(Form $form): Form
     {
@@ -64,8 +69,6 @@ class SalaryResource extends Resource
                 Tables\Columns\TextColumn::make('tunjangan')->money('IDR')->label('Tunjangan'),
                 Tables\Columns\TextColumn::make('potongan')->money('IDR')->label('Potongan'),
                 Tables\Columns\TextColumn::make('total_gaji')->money('IDR')->label('Total Gaji'),
-                Tables\Columns\TextColumn::make('keterangan')->limit(30)->label('Keterangan'),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Dibuat'),
             ])
             ->filters([
                 //
