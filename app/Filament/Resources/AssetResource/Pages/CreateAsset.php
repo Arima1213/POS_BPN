@@ -53,4 +53,9 @@ class CreateAsset extends CreateRecord
             ]);
         });
     }
+
+    public function getTitle(): string
+    {
+        return 'Tambah Aset';
+    }
 }

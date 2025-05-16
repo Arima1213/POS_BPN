@@ -15,8 +15,15 @@ class EditAsset extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->label('Hapus Aset')
+                ->modalHeading('Hapus Aset'),
         ];
+    }
+
+    public function getTitle(): string
+    {
+        return 'Ubah Aset';
     }
 
     protected function afterRecordUpdated(): void
