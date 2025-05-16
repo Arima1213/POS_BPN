@@ -32,10 +32,18 @@ class CreateTransactions extends CreateRecord
 
     protected function afterCreate(): void
     {
-
-
         /** @var Transactions $record */
         $record = $this->record;
+
+        // Kurangi stok produk terkait
+        foreach ($record->details as $detail) {
+            if ($detail->item_type === 'product') {
+                $product = \App\Models\Product::find($detail->item_id);
+                if ($product && $product->productStock) {
+                    $product->productStock->decrement('current_stock', $detail->quantity);
+                }
+            }
+        }
 
         // Jika uang pembeli kurang dari total, maka buatkan hutang
         if ($record->paid_amount < $record->total) {

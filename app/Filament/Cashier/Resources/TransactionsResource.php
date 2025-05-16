@@ -138,9 +138,19 @@ class TransactionsResource extends Resource
                                 Select::make('item_id')
                                     ->label('Produk / Jasa')
                                     ->options(function (callable $get) {
-                                        return $get('item_type') === 'service'
-                                            ? Services::pluck('name', 'id')
-                                            : Product::pluck('name', 'id');
+                                        if ($get('item_type') === 'service') {
+                                            return Services::pluck('name', 'id');
+                                        } else {
+                                            // Ambil produk beserta stoknya
+                                            return \App\Models\Product::with('productStock')
+                                                ->get()
+                                                ->mapWithKeys(function ($product) {
+                                                    $stock = $product->productStock ? $product->productStock->current_stock : 0;
+                                                    return [
+                                                        $product->id => $product->name . ' (Stok: ' . $stock . ')'
+                                                    ];
+                                                });
+                                        }
                                     })
                                     ->reactive()
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
