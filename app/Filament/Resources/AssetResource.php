@@ -26,18 +26,43 @@ class AssetResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('asset_name')->required(),
+                Forms\Components\TextInput::make('asset_name')
+                    ->label('Nama Aset')
+                    ->placeholder('Masukkan nama aset')
+                    ->required(),
                 Forms\Components\TextInput::make('asset_code')
+                    ->label('Kode Aset')
+                    ->placeholder('Otomatis jika dikosongkan')
                     ->required()
                     ->unique(Asset::class, 'asset_code')
                     ->default(fn() => 'ASSET-' . strtoupper(uniqid())),
-                Forms\Components\Textarea::make('description'),
-                Forms\Components\TextInput::make('purchase_price')->required()->numeric(),
-                Forms\Components\DatePicker::make('purchase_date')->required(),
-                Forms\Components\TextInput::make('useful_life_years')->required()->numeric(),
-                Forms\Components\TextInput::make('residual_value')->numeric()->default(0),
-                Forms\Components\TextInput::make('location'),
+                Forms\Components\Textarea::make('description')
+                    ->label('Deskripsi')
+                    ->placeholder('Deskripsi aset (opsional)'),
+                Forms\Components\TextInput::make('purchase_price')
+                    ->label('Harga Beli')
+                    ->placeholder('Masukkan harga beli')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\DatePicker::make('purchase_date')
+                    ->label('Tanggal Pembelian')
+                    ->placeholder('Pilih tanggal pembelian')
+                    ->required(),
+                Forms\Components\TextInput::make('useful_life_years')
+                    ->label('Umur Manfaat (tahun)')
+                    ->placeholder('Masukkan umur manfaat dalam tahun')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('residual_value')
+                    ->label('Nilai Residu')
+                    ->placeholder('Masukkan nilai residu (jika ada)')
+                    ->numeric()
+                    ->default(0),
+                Forms\Components\TextInput::make('location')
+                    ->label('Lokasi')
+                    ->placeholder('Masukkan lokasi aset'),
                 Forms\Components\Select::make('category')
+                    ->label('Kategori')
                     ->options([
                         'vehicle' => 'Kendaraan',
                         'office_equipment' => 'Peralatan Kantor',
@@ -45,8 +70,10 @@ class AssetResource extends Resource
                         'land' => 'Tanah',
                         'others' => 'Lainnya',
                     ])
+                    ->placeholder('Pilih kategori')
                     ->required(),
                 Forms\Components\Select::make('status')
+                    ->label('Status')
                     ->options([
                         'active' => 'Aktif',
                         'sold' => 'Terjual',
@@ -54,6 +81,7 @@ class AssetResource extends Resource
                         'lost' => 'Hilang',
                         'retired' => 'Pensiun',
                     ])
+                    ->placeholder('Pilih status')
                     ->default('active'),
             ]);
     }
@@ -62,10 +90,17 @@ class AssetResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('asset_name')->searchable(),
-                Tables\Columns\TextColumn::make('category'),
-                Tables\Columns\TextColumn::make('purchase_price')->money('idr'),
-                Tables\Columns\TextColumn::make('purchase_date')->date(),
+                Tables\Columns\TextColumn::make('asset_name')
+                    ->label('Nama Aset')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('category')
+                    ->label('Kategori'),
+                Tables\Columns\TextColumn::make('purchase_price')
+                    ->label('Harga Beli')
+                    ->money('idr'),
+                Tables\Columns\TextColumn::make('purchase_date')
+                    ->label('Tanggal Beli')
+                    ->date(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->colors([
