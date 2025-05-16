@@ -13,7 +13,14 @@ class EditTransactions extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->label('Hapus Transaksi')
+                ->modalHeading('Hapus Transaksi'),
         ];
+    }
+
+    public function getTitle(): string
+    {
+        return 'Ubah Transaksi';
     }
 }

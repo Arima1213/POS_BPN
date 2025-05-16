@@ -16,6 +16,11 @@ class CreateTransactions extends CreateRecord
 {
     protected static string $resource = TransactionsResource::class;
 
+    public function getTitle(): string
+    {
+        return 'Tambah Transaksi';
+    }
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         // Cek apakah user tambah customer baru
