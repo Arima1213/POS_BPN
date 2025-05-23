@@ -14,7 +14,10 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateProcurement extends CreateRecord
 {
     protected static string $resource = ProcurementResource::class;
-
+    public function getTitle(): string
+    {
+        return 'Tambah Pengadaan';
+    }
     protected function afterCreate(): void
     {
         $procurement = $this->record;
