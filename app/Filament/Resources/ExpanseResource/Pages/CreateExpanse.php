@@ -15,6 +15,11 @@ class CreateExpanse extends CreateRecord
 {
     protected static string $resource = ExpanseResource::class;
 
+    public function getTitle(): string
+    {
+        return 'Tambah Beban';
+    }
+
     protected function afterCreate(): void
     {
         $expense = $this->record;

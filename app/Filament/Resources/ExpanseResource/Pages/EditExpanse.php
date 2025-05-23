@@ -13,7 +13,11 @@ class EditExpanse extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()->label('Tambah Beban'),
         ];
+    }
+    public function getTitle(): string
+    {
+        return 'Ubah Beban';
     }
 }

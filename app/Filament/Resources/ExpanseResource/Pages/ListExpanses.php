@@ -14,7 +14,7 @@ class ListExpanses extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('Tambah Beban'),
             Actions\ExportAction::make()
                 ->exporter(ExpanseExporter::class)
         ];
