@@ -14,8 +14,8 @@ class ListJournalEntries extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
-            Actions\ExportAction::make()
+            Actions\CreateAction::make()->label('Tambah Jurnal'),
+            Actions\ExportAction::make()->label('Ekspor Jurnal')
                 ->exporter(JournalEntryExporter::class)
         ];
     }

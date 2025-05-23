@@ -13,7 +13,12 @@ class EditJournalEntry extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()->label('Hapus Jurnal'),
         ];
+    }
+
+    public function getTitle(): string
+    {
+        return 'Ubah Jurnal';
     }
 }
