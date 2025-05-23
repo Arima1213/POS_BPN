@@ -13,7 +13,12 @@ class EditCategory extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()->label('Hapus Kategori'),
         ];
+    }
+
+    public function getTitle(): string
+    {
+        return 'Ubah Kategori';
     }
 }
