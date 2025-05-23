@@ -13,6 +13,9 @@ class IncomeStatement extends Page
     use WithPagination;
 
     protected static string $resource = IncomeStatementResource::class;
+    protected static ?string $title = 'Laba Rugi';
+    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
+    protected static ?string $navigationLabel = 'Laba Rugi';
 
     protected static string $view = 'income-statement.income-statement';
 

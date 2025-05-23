@@ -10,6 +10,8 @@ use Filament\Resources\Pages\Page;
 class TrialBalance extends Page
 {
     protected static string $resource = TrialBalanceResource::class;
+    protected static ?string $title = 'Neraca Saldo';
+    protected static ?string $navigationLabel = 'Neraca Saldo';
 
     protected static string $view = 'trial-balance.trial-balance';
 
