@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateTransactionLog extends CreateRecord
 {
     protected static string $resource = TransactionLogResource::class;
+
+    public function getTitle(): string
+    {
+        return 'Tambah Transaksi';
+    }
 }
