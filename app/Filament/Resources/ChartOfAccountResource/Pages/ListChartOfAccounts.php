@@ -14,8 +14,8 @@ class ListChartOfAccounts extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
-            Actions\ExportAction::make()
+            Actions\CreateAction::make()->label('Tambah Akun'),
+            Actions\ExportAction::make()->label('Ekspor Akun')
                 ->exporter(ChartOfAccountExporter::class),
         ];
     }
