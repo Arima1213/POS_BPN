@@ -13,7 +13,12 @@ class EditSupplier extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()->label('Hapus Supplier'),
         ];
+    }
+
+    public function getTitle(): string
+    {
+        return 'Ubah Supplier';
     }
 }
