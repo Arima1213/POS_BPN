@@ -16,7 +16,6 @@ class GeneralLedgerResource extends Resource
     protected static ?string $slug = 'buku-besar';
     protected static ?string $navigationLabel = 'Buku Besar';
     protected static ?string $navigationGroup = 'Laporan Keuangan';
-
     protected static ?int $navigationSort = 2;
 
 

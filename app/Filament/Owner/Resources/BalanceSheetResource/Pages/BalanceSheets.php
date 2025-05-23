@@ -10,6 +10,11 @@ use Filament\Resources\Pages\Page;
 class BalanceSheets extends Page
 {
     protected static string $resource = BalanceSheetResource::class;
+    protected static ?string $title = 'Posisi Keuangan';
+    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationGroup = 'Laporan';
+    protected static ?string $navigationLabel = 'Posisi Keuangan';
+
 
     protected static string $view = 'balance-sheet.balance-sheet';
 

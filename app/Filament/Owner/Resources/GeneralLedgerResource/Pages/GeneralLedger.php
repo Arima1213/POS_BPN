@@ -10,6 +10,15 @@ use Filament\Resources\Pages\Page;
 class GeneralLedger extends Page
 {
     protected static string $resource = GeneralLedgerResource::class;
+    protected static ?string $title = 'Buku Besar';
+    protected static ?string $navigationLabel = 'Buku Besar';
+    protected static ?string $navigationGroup = 'Laporan';
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $slug = 'buku-besar';
+    protected static ?string $label = 'Buku Besar';
+    protected static ?string $pluralLabel = 'Buku Besar';
+
 
     protected static string $view = 'general-ledger.general-ledger';
 
