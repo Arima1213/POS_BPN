@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateServices extends CreateRecord
 {
     protected static string $resource = ServicesResource::class;
+
+    public function getTitle(): string
+    {
+        return 'Tambah Jasa';
+    }
 }

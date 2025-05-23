@@ -13,7 +13,12 @@ class EditServices extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()->label('Hapus Jasa'),
         ];
+    }
+
+    public function getTitle(): string
+    {
+        return 'Ubah Jasa';
     }
 }
