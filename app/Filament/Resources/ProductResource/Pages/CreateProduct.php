@@ -15,6 +15,11 @@ class CreateProduct extends CreateRecord
 {
     protected static string $resource = ProductResource::class;
 
+    public function getTitle(): string
+    {
+        return 'Tambah Produk';
+    }
+
     protected function afterCreate(): void
     {
         ProductStock::create([

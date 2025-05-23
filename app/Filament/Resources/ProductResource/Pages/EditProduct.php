@@ -13,7 +13,12 @@ class EditProduct extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()->label('Hapus Produk'),
         ];
+    }
+
+    public function getTitle(): string
+    {
+        return 'Ubah Produk';
     }
 }
