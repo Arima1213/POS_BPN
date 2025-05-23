@@ -10,6 +10,11 @@ use Filament\Resources\Pages\Page;
 class ChangesInEquity extends Page
 {
     protected static string $resource = ChangesInEquityResource::class;
+    protected static ?string $title = 'Perubahan Equitas';
+    protected static ?string $navigationLabel = 'Perubahan Equitas';
+    protected static ?string $navigationGroup = 'Laporan';
+    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
+
     protected static string $view = 'changes-in-equity.changes-in-equity';
 
     public $from;
