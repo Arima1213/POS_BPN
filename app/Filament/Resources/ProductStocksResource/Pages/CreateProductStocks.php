@@ -10,4 +10,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateProductStocks extends CreateRecord
 {
     protected static string $resource = ProductStocksResource::class;
+
+    public function getTitle(): string
+    {
+        return 'Tambah Stok Produk';
+    }
 }

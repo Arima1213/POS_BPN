@@ -11,6 +11,11 @@ class EditProductStocks extends EditRecord
 {
     protected static string $resource = ProductStocksResource::class;
 
+    public function getTitle(): string
+    {
+        return 'Ubah Stok Produk';
+    }
+
 
     // Variabel untuk menyimpan stok lama
     protected int $originalStock = 0;
